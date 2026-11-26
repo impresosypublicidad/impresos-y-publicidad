@@ -164,6 +164,7 @@ a.chip{text-decoration:none;color:var(--ink)}
 .toggle.agil{border:2px solid var(--c2);background:#fff}
 [hidden]{display:none!important}
 /* v3 */
+#nav a.navpanel{background:var(--c1);color:#fff;border-radius:999px;padding:8px 16px}
 .notice.okstock{background:#fff;border:2px solid var(--c1)}
 .sharerow{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 12px}
 .links summary{cursor:pointer}.linkrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.linkrow>div{display:flex;flex-direction:column;min-width:0}.linkrow .small{overflow-wrap:anywhere}.linkrow .acts{flex:none;display:flex;gap:6px}
@@ -417,7 +418,8 @@ async function refreshOrders(){const{data:raw,error}=await sb.from('orders').sel
   loadCrm();render();toast(fresh.length===1?'¡Llegó un pedido nuevo!':'¡Llegaron '+fresh.length+' pedidos nuevos!')}}
 let cart=[];try{cart=JSON.parse(sessionStorage.getItem(KEY+'c'))||[]}catch(e){}
 const saveCart=()=>{try{sessionStorage.setItem(KEY+'c',JSON.stringify(cart))}catch(e){};$('#cartN').textContent=cart.length};
-let admin=false,cat='todos';
+let admin=false,cat='todos',authChecking=LIVE;
+if(!LIVE){try{admin=sessionStorage.getItem('ip-admin')==='1'}catch(e){}}
 
 const mat=id=>S.mats.find(m=>m.id===id);
 const prod=id=>S.products.find(p=>p.id===id);
@@ -717,6 +719,7 @@ async function loadCustFiles(){if(!cust)return;const{data}=await sb.storage.from
  custFiles=files.map(f=>{const path=cust.id+'/'+f.name;const imp=f.name.startsWith('imp-');return{path,imp,label:f.name.replace(/^imp-/,'').replace(/^\d+-/,''),url:urls[path]||'',dl:dl[path]||'',date:f.created_at}});if(location.hash==='#cuenta')render()}
 const safeUrl=u=>u&&/^https:\/\//.test(u)?u:'';
 function viewAccount(){
+ if(admin)return `<section class="band"><div class="wrap track"><div class="acchead">${ownerAv('lg')}<div class="acctxt"><h1>Hola, ${esc((S.owner?.name||'').split(' ')[0])} 💖</h1><span class="muted">Tienes la sesión de administradora abierta.</span></div></div><a class="btn pri" href="#panel">Ir a mi panel</a></div></section>`;
  if(!LIVE)return `<section class="band"><div class="wrap track"><h1>Mi cuenta</h1><p class="muted">Las cuentas de clientas funcionan en la página publicada, <b>impresosypublicidad.com</b>. Allí puedes registrarte para guardar tus datos y los de tu marca, ver tus pedidos, volver a pedir y descargar tus diseños.</p></div></section>`;
  if(!cust){const reg=authMode==='registro';
   return `<section class="band"><div class="wrap track"><h1>${reg?'Crea tu cuenta':'Inicia sesión'}</h1>
@@ -725,7 +728,7 @@ function viewAccount(){
   <form id="authForm" class="box">${reg?`
    <h3>Tu marca</h3>
    <div class="avrow">${okAv(avPend.reg)?`<img class="av lg" id="avPrev-reg" src="${avPend.reg}" alt="">`:`<span class="av ini lg" id="avPrev-reg" aria-hidden="true">+</span>`}<div><label class="btn alt sm filebtn">Subir foto o logo<input type="file" accept="image/*" data-av="reg" hidden></label><p class="small muted" style="margin:6px 0 0">Opcional. Así te reconocemos rápido.</p></div></div>
-   <div class="row2"><div><label for="ab">Nombre de tu marca (opcional)</label><input id="ab" placeholder="Ej.: Lashes by Lau"></div><div><label for="ai">Instagram (opcional)</label><input id="ai" placeholder="@tumarca" autocapitalize="off"></div></div>
+   <div class="row2"><div><label for="ab">Nombre de tu marca</label><input id="ab" required minlength="2" placeholder="Ej.: Lashes by Lau"></div><div><label for="ai">Instagram de tu marca</label><input id="ai" required placeholder="@tumarca" autocapitalize="off"></div></div>
    <h3 style="margin-top:18px">Tus datos</h3>
    <div class="row2"><div><label for="an">Tu nombre</label><input id="an" required autocomplete="name"></div><div><label for="aw">WhatsApp</label><input id="aw" required inputmode="tel" autocomplete="tel"></div></div>`:''}
   <label for="ae">Correo</label><input id="ae" type="email" required autocomplete="email">
@@ -751,7 +754,7 @@ function viewAccount(){
   ${mine.length?mine.map(f=>`<div class="line"><span class="fname">${esc(f.label)}</span><span class="acts">${safeUrl(f.url)?`<a class="btn alt sm" href="${esc(f.url)}" target="_blank" rel="noopener">Ver</a>`:''}<button class="btn alt sm" type="button" data-dsdel="${esc(f.path)}">Borrar</button></span></div>`).join(''):'<p class="muted small" style="margin-top:12px">Aún no has guardado archivos.</p>'}</div>`}
  if(acTab==='datos'){body=`<form id="profForm" class="box"><h3>Tu marca</h3>
   <div class="avrow">${avHtml(cust,'lg')}<div><label class="btn alt sm filebtn">${okAv(cust.avatar)?'Cambiar foto o logo':'Subir foto o logo'}<input type="file" accept="image/*" data-av="prof" hidden></label><p class="small muted" style="margin:6px 0 0">Sube tu logo o una foto tuya para que te reconozcamos rápido.</p></div></div>
-  <div class="row2"><div><label for="pb">Nombre de tu marca</label><input id="pb" value="${esc(cust.brand||'')}" placeholder="Ej.: Lashes by Lau"></div><div><label for="pi">Instagram</label><input id="pi" value="${esc(cust.ig?'@'+cust.ig:'')}" placeholder="@tumarca" autocapitalize="off"></div></div>
+  <div class="row2"><div><label for="pb">Nombre de tu marca</label><input id="pb" value="${esc(cust.brand||'')}" required minlength="2" placeholder="Ej.: Lashes by Lau"></div><div><label for="pi">Instagram</label><input id="pi" value="${esc(cust.ig?'@'+cust.ig:'')}" required placeholder="@tumarca" autocapitalize="off"></div></div>
   <h3 style="margin-top:22px">Tus datos</h3>
   <div class="row2"><div><label for="pn">Tu nombre</label><input id="pn" value="${esc(cust.name||'')}" required></div><div><label for="pw">WhatsApp</label><input id="pw" value="${esc(cust.wa||'')}" inputmode="tel" required></div></div>
   <h3 style="margin-top:22px">Dirección de entrega</h3><p class="small muted" style="margin:0">Opcional. Si la guardas, te sale lista cuando pidas domicilio.</p>
@@ -761,7 +764,7 @@ function viewAccount(){
   <p class="small muted">¿Quieres eliminar tu cuenta y tus datos? Escríbenos al WhatsApp ${esc(S.wa.replace(/^57/,''))} y lo hacemos.</p>`}
  const first=cust.name?cust.name.split(' ')[0]:'';
  return `<section class="band"><div class="wrap track"><div class="acchead">${avHtml(cust,'lg')}<div class="acctxt"><h1>Hola${first?', '+esc(first):''} 💖</h1><span class="muted">${esc(cust.brand||'')}${cust.brand&&cust.ig?' · ':''}${cust.ig?'@'+esc(cust.ig):''}</span></div><button class="btn alt sm" type="button" id="custOut">Cerrar sesión</button></div>
- ${!cust.brand&&!okAv(cust.avatar)&&acTab!=='datos'?`<div class="okmsg">Cuéntanos de tu marca y sube tu logo para reconocerte más rápido. <button class="btn sm" type="button" data-actab="datos">Completar mis datos</button></div>`:''}
+ ${(!cust.brand||!cust.ig)&&acTab!=='datos'?`<div class="okmsg">Completa el nombre y el Instagram de tu marca para reconocerte más rápido. <button class="btn sm" type="button" data-actab="datos">Completar mis datos</button></div>`:''}
  <div class="tabs">${T.map(([k,n])=>`<button class="chip" type="button" data-actab="${k}" aria-pressed="${acTab===k}">${n}</button>`).join('')}</div>${body}</div></section>`;
 }
 document.addEventListener('click',async e=>{const t=e.target.closest('button');if(!t)return;
@@ -774,13 +777,13 @@ document.addEventListener('click',async e=>{const t=e.target.closest('button');i
 });
 document.addEventListener('submit',async e=>{const id=e.target.id;
  if(id==='authForm'){e.preventDefault();const btn=e.target.querySelector('button.pri');btn.disabled=true;const email=$('#ae').value.trim(),password=$('#ap').value;
-  if(authMode==='registro'){const name=$('#an').value.trim(),wa=$('#aw').value.replace(/\D/g,''),brand=$('#ab').value.trim().slice(0,80),ig=cleanIg($('#ai').value);
+  if(authMode==='registro'){const name=$('#an').value.trim(),wa=$('#aw').value.replace(/\D/g,''),brand=$('#ab').value.trim().slice(0,80),ig=cleanIg($('#ai').value);if(brand.length<2||!ig){toast('Escribe el nombre y el Instagram de tu marca');return}
    const{data,error}=await sb.auth.signUp({email,password,options:{data:{name,wa,brand,ig},emailRedirectTo:location.origin+location.pathname+'#cuenta'}});btn.disabled=false;
    if(error){toast(/registered|exists/i.test(error.message)?'Ese correo ya tiene cuenta. Inicia sesión.':'No se pudo crear la cuenta. Revisa los datos.');return}
    if(data.session){await loadCustomer();toast('¡Bienvenida! Tu cuenta quedó creada 💖')}else toast('Te enviamos un correo para confirmar tu cuenta')}
   else{const{error}=await sb.auth.signInWithPassword({email,password});btn.disabled=false;if(error){toast('Correo o contraseña incorrectos');return}
    const isA=await enterAdmin(true);if(isA){location.hash='#panel';return}await loadCustomer()}}
- if(id==='profForm'){e.preventDefault();const up={id:cust.id,email:cust.email,name:$('#pn').value.trim(),wa:$('#pw').value.replace(/\D/g,''),brand:$('#pb').value.trim().slice(0,80),ig:cleanIg($('#pi').value),zone:$('#pz').value,...readAddr('p')};
+ if(id==='profForm'){e.preventDefault();if($('#pb').value.trim().length<2||!cleanIg($('#pi').value)){toast('Escribe el nombre y el Instagram de tu marca');return}const up={id:cust.id,email:cust.email,name:$('#pn').value.trim(),wa:$('#pw').value.replace(/\D/g,''),brand:$('#pb').value.trim().slice(0,80),ig:cleanIg($('#pi').value),zone:$('#pz').value,...readAddr('p')};
   const r=await custUpsert(up);if(r.error){toast('No se pudo guardar');return}Object.assign(cust,up);toast(r.partial?'Guardamos tu nombre y WhatsApp. Lo demás se activa pronto.':'Datos guardados 💖');render()}
  if(id==='newPass'){e.preventDefault();const{error}=await sb.auth.updateUser({password:$('#np1').value});toast(error?'No se pudo cambiar la contraseña':'Contraseña actualizada');if(!error){close();loadCustomer()}}
 });
@@ -1012,6 +1015,7 @@ document.addEventListener('submit',async e=>{if(e.target.id!=='supForm')return;e
 /* ---------- panel ---------- */
 let tab='pedidos',filt='activos',openOrder=null,oq='';
 function viewPanel(){
+ if(!admin&&authChecking)return `<section class="band"><div class="gate"><img src="${LOGO}" alt="" width="96" height="96" style="border-radius:50%"><h1>Abriendo tu panel…</h1><p class="muted">Un momento 💖</p></div></section>`;
  if(!admin)return `<section class="band"><form class="gate" id="gate"><img src="${LOGO}" alt="" width="96" height="96" style="border-radius:50%"><h1>Panel interno</h1><p class="muted">Solo para ti.</p>${LIVE?`<input id="gem" type="email" placeholder="Tu correo" autocomplete="username" required style="margin-bottom:10px">`:''}<input id="pin" type="password" placeholder="${LIVE?'Contraseña':'Clave'}" autocomplete="current-password"><button class="btn pri" style="width:100%;margin-top:12px">Entrar</button>${LIVE?'':'<p class="muted small">Clave de prueba: 1234 (cámbiala en Ajustes).</p>'}</form></section>`;
  const toBuy=S.mats.filter(m=>m.stock!=null&&matStats(m).state!=='bien').length;
  const nSup=(S.support||[]).filter(x=>!x.done).length;
@@ -1354,14 +1358,14 @@ document.addEventListener('click',e=>{
   if(!S.custs.some(c=>c.id==='demo-laura'))S.custs.unshift({id:'demo-laura',name:'Laura Gómez',brand:'Lashes by Lau',ig:'lashesbylau',wa:'3001234567',email:'laura@correo.com',city:'Medellín',barrio:'El Poblado',addr:'Cra 43A # 1-50',ref:'Frente al parque',unit:true,unidad:'Torres del Parque',torre:'2',apto:'804',zone:'Medellín'});
   const dad={city:'Medellín',barrio:'El Poblado',addr:'Cra 43A # 1-50',ref:'Frente al parque',unit:true,unidad:'Torres del Parque',torre:'2',apto:'804'};
   const z=S.sched.zones[0]||{name:'Medellín',price:null};S.orders.unshift({code,uid:'demo-laura',date:new Date().toISOString(),name:'Laura Gómez',wa:'3001234567',how:'domicilio',zone:z.name,fee:z.price||0,feePending:z.price==null,ad:dad,addr:addrTxt(dad),items:[it],sub:it.price,total:it.price+(z.price||0),status:'recibido',hist:[{s:'recibido',t:new Date().toISOString()}]});save();render();toast('Pedido de prueba creado')}
- if(t.id==='logout'){(async()=>{clearTimeout(syncT);while(syncing)await new Promise(r=>setTimeout(r,100));await syncNow();await sb.auth.signOut();location.reload()})()}
+ if(t.id==='logout'){try{sessionStorage.removeItem('ip-admin')}catch(e){}(async()=>{clearTimeout(syncT);while(syncing)await new Promise(r=>setTimeout(r,100));await syncNow();await sb.auth.signOut();location.reload()})()}
  if(t.id==='refreshOrders'){refreshOrders().then(()=>toast('Pedidos actualizados'))}
  if(t.id==='reset'){S=JSON.parse(JSON.stringify(DEF));save();render();toast('Datos iniciales restaurados')}
 });
 document.addEventListener('submit',e=>{
  const id=e.target.id;
  if(id==='gate'){e.preventDefault();if(LIVE){const btn=e.target.querySelector('button');btn.disabled=true;sb.auth.signInWithPassword({email:$('#gem').value.trim(),password:$('#pin').value}).then(async({error})=>{if(error){btn.disabled=false;toast('Correo o contraseña incorrectos');return}cust=null;await enterAdmin()});return}
-  if($('#pin').value===S.pin){admin=true;render()}else toast('Clave incorrecta')}
+  if($('#pin').value===S.pin){admin=true;try{sessionStorage.setItem('ip-admin','1')}catch(e){}render()}else toast('Clave incorrecta')}
  if(id==='restock'){e.preventDefault();const m=mat(e.target.dataset.m);const q=Math.max(0,+$('#rq').value||0);if(!q)return;const paid=+$('#rc').value||0;
   m.stock+=q;move(m.id,q,'Compra'+(paid?' · '+fmt(paid):''));if(paid)S.moves[0].c=paid;if(paid)m.cost=Math.round(paid/q);allocate(m.id);save();close();render();toast('¡Inventario completado! '+m.name+': '+m.stock+' '+munit(m))}
  if(id==='adjust'){e.preventDefault();const m=mat(e.target.dataset.m);const v=Math.max(0,+$('#aq').value||0);move(m.id,v-m.stock,'Ajuste');m.stock=v;m.min=Math.max(0,+$('#am').value||0);m.cost=Math.max(0,+$('#ac').value||0);save();close();render();toast('Guardado')}
@@ -1387,7 +1391,7 @@ function render(){
  $('#app').innerHTML=view==='seguimiento'?viewTrack():view==='panel'?viewPanel():view==='cuenta'?viewAccount():view==='terminos'?viewLegal('terminos'):view==='privacidad'?viewLegal('privacidad'):view==='catalogo'?viewCatalog():viewHome();
  document.querySelectorAll('#nav > a').forEach(a=>a.toggleAttribute('aria-current',a.getAttribute('href')==='#'+view));
  $('#ddCats').innerHTML=[['todos','Ver todo'],...CATS].map(([k,n])=>`<a href="#${k==='todos'?'catalogo':'cat-'+k}"${view==='catalogo'&&cat===k?' aria-current="true"':''}>${n}</a>`).join('');
- $('#navCat').classList.toggle('on',view==='catalogo');$('#helpBtn').hidden=view==='panel';$('#navCuenta').textContent=cust?'Mi cuenta':'Iniciar sesión / Crear cuenta';
+ $('#navCat').classList.toggle('on',view==='catalogo');$('#helpBtn').hidden=view==='panel';$('#navCuenta').textContent=admin?'Mi panel':cust?'Mi cuenta':'Iniciar sesión / Crear cuenta';$('#navCuenta').setAttribute('href',admin?'#panel':'#cuenta');$('#navCuenta').classList.toggle('navpanel',admin);
  $('#foot').innerHTML=`<div class="footgrid"><div><b>Impresos y Publicidad</b> · Medellín · Envíos a toda Colombia<br>WhatsApp <a href="${esc(waLink(S.wa,'¡Hola! Quiero información de impresos'))}" target="_blank" rel="noopener">${esc(S.wa.replace(/^57/,''))}</a> · Instagram <a href="https://instagram.com/${encodeURIComponent(S.ig)}" target="_blank" rel="noopener">@${esc(S.ig)}</a></div>
   <nav class="footlinks" aria-label="Información legal"><a href="#terminos">Términos y condiciones</a><a href="#privacidad">Política de privacidad</a><a href="#seguimiento">Mi pedido</a></nav></div>
   <p class="copy">© ${new Date().getFullYear()} Impresos y Publicidad · Medellín, Colombia. Todos los derechos reservados. Las fotos, textos, diseños y el logo de esta página son propiedad de Impresos y Publicidad y no pueden usarse sin autorización.</p>`;
@@ -1396,7 +1400,7 @@ function render(){
 }
 window.addEventListener('hashchange',()=>{close();$('#navCat').open=false;render();if(location.hash!=='#productos')scrollTo(0,0)});
 saveCart();render();
-if(LIVE){loadPublic().then(()=>sb.auth.getSession()).then(({data})=>{if(data.session)enterAdmin(true).then(ok=>{if(!ok)loadCustomer()})});
+if(LIVE){loadPublic().then(()=>sb.auth.getSession()).then(async({data})=>{if(data.session){const ok=await enterAdmin(true);if(!ok)await loadCustomer()}}).catch(()=>{}).finally(()=>{authChecking=false;render()});
  sb.auth.onAuthStateChange(ev=>{if(ev==='PASSWORD_RECOVERY')setTimeout(()=>open(`<div class="dlghead"><h2>Nueva contraseña</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div><form id="newPass"><label for="np1">Escribe tu nueva contraseña</label><input id="np1" type="password" minlength="6" required autocomplete="new-password"><button class="btn pri" style="width:100%;margin-top:14px">Guardar contraseña</button></form>`),300)});setInterval(()=>{if(admin&&!document.hidden)refreshOrders()},60000)}
 }
 </script>
