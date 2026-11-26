@@ -136,6 +136,9 @@ input,select,textarea{border-color:var(--line)}
 .bars{display:grid;gap:6px}.brow{display:grid;grid-template-columns:76px minmax(0,1fr) 92px;gap:10px;align-items:center;font-size:14px}
 .bl{color:var(--mut)}.bt{height:14px;background:var(--soft);border-radius:99px;overflow:hidden}.bt i{display:block;height:100%;background:var(--c1);border-radius:99px;min-width:2px}.bv{text-align:right}
 .kpi span.small{display:block}
+.legal{max-width:760px}.legal h2{font-size:21px;margin:26px 0 8px}.legal ul{padding-left:20px}.legal li{margin:6px 0}.legal a{color:var(--c1d)}
+.footgrid{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.footlinks{display:flex;gap:14px;flex-wrap:wrap}.footlinks a{font-weight:600}
+.copy{margin:16px 0 0;font-size:13px;opacity:.85}
 </style>
 <script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -267,7 +270,8 @@ const DEF={
 let S=null;if(!LIVE){try{S=JSON.parse(localStorage.getItem(KEY))||null}catch(e){S=null}}
 if(!S)S=JSON.parse(JSON.stringify(DEF));
 if(!S.page)S.page=JSON.parse(JSON.stringify(DEF.page));
-const okImg=u=>typeof u==='string'&&(/^data:image\/(jpeg|png|webp);base64,/.test(u)||/^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/v1\/object\/public\/fotos\/[\w.\-]+$/.test(u));
+const HERO_DEF='banner-impresos.jpg';
+const okImg=u=>typeof u==='string'&&(u===HERO_DEF||/^data:image\/(jpeg|png|webp);base64,/.test(u)||/^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/v1\/object\/public\/fotos\/[\w.\-]+$/.test(u));
 const pimg=p=>okImg(p.photo)?p.photo:p.img?`${p.img}.jpg`:LOGO;
 const paidOf=o=>(o.pays||[]).reduce((s,x)=>s+x.a,0);
 const dueOf=o=>Math.max(0,o.total-paidOf(o));
@@ -381,7 +385,7 @@ function viewCatalog(){
   <p>${esc(S.page.sub)}</p>
   <a class="btn" href="#productos" style="display:inline-block;text-decoration:none">${esc(S.page.btn||'Ver catálogo')}</a>
   <div class="lams">${[[holos()[0],'Holográficos · '+holos().length+' diseños'],[mat('glitter'),'Glitter'],[mat('brillo'),'Brillo UV'],[mat('mate'),'Mate'],[mat('foil'),'Foil']].filter(x=>x[0]).map(([m,n])=>`<span class="lamtag">${swHtml(m)}${esc(n)}</span>`).join('')}</div></div>
-  <div class="fig">${okImg(S.page.hero)?`<img class="heroimg" src="${S.page.hero}" alt="">`:heroArt()}</div></div></section>
+  <div class="fig">${`<img class="heroimg" src="${okImg(S.page.hero)?S.page.hero:HERO_DEF}" alt="Tarjetas con laminado holográfico de Impresos y Publicidad">`}</div></div></section>
  <section class="band" id="productos"><div class="wrap">
   <h2>Catálogo</h2>
   <div class="chips cats" style="margin:8px 0 22px">${[['todos','Todo'],...CATS].map(([k,n])=>`<button class="chip" type="button" data-cat="${k}" aria-pressed="${cat===k}">${n}</button>`).join('')}</div>
@@ -494,6 +498,7 @@ function openCart(){
    <div id="zoneBox" hidden><label for="cz">Zona de entrega</label><select id="cz">${S.sched.zones.map((z,i)=>`<option value="${i}">${esc(z.name)} · ${feeTxt(z)}</option>`).join('')}</select></div>
    <div id="addr" hidden><label for="ca" id="caLbl">Dirección y barrio</label><input id="ca" autocomplete="street-address"></div>
    <p class="muted small" id="addrNote" hidden></p>
+   <label class="toggle" style="border-style:solid"><input type="checkbox" id="cterms" required><span class="small">Acepto los <a href="#terminos" target="_blank">Términos y condiciones</a> y autorizo el tratamiento de mis datos según la <a href="#privacidad" target="_blank">Política de privacidad</a>.</span></label>
    <button class="btn pri" style="width:100%;margin-top:18px">Enviar cotización por WhatsApp</button>
   </form>`);
 }
@@ -534,6 +539,64 @@ $('#dlg').addEventListener('submit',async e=>{
  render();
 });
 
+const LEGAL_DATE='26 de noviembre de 2026';
+function viewLegal(k){
+ const wa=esc(S.wa.replace(/^57/,'')),mail='impresionesypublicidadmedellin@gmail.com';
+ const T={
+ terminos:{t:'Términos y condiciones',b:`
+ <p>Estos términos aplican a todas las compras y cotizaciones hechas en esta página, por WhatsApp o en nuestras redes de <b>Impresos y Publicidad</b>, Medellín, Colombia. Al enviar una cotización aceptas estas condiciones.</p>
+ <h2>1. Cómo funciona un pedido</h2>
+ <ul><li>En la página escoges tus productos y nos envías una <b>cotización</b>. Enviarla no es todavía un pedido confirmado.</li>
+ <li>Te escribimos por WhatsApp para confirmar detalles, tiempo de entrega y datos de pago. <b>El pedido queda confirmado cuando lo confirmamos por WhatsApp y recibimos el pago o el abono acordado.</b></li>
+ <li>Los precios están en pesos colombianos (COP) y pueden cambiar sin previo aviso. El precio válido es el que te confirmamos por WhatsApp. Si hay un error evidente de precio en la página, te lo informamos antes de cobrar.</li>
+ <li>El valor de domicilios y envíos se suma al pedido y se informa antes del pago.</li></ul>
+ <h2>2. Archivos y diseño</h2>
+ <ul><li>Si traes tu diseño, debe estar <b>listo para imprimir en PDF</b> (preferiblemente exportado desde Canva). No recibimos imágenes hechas con inteligencia artificial como archivo de impresión.</li>
+ <li>El servicio de diseño es opcional y tiene un costo adicional que se indica en cada producto. Los ajustes incluidos se acuerdan al cotizar.</li>
+ <li>Antes de imprimir te enviamos la prueba para aprobar. <b>Tú eres responsable de revisar ortografía, números, enlaces, códigos QR y datos.</b> Una vez apruebas, no respondemos por errores en el contenido aprobado.</li>
+ <li>Al enviarnos logos, imágenes o textos declaras que tienes derecho a usarlos. Podemos rechazar trabajos con contenido ilegal o que infrinja derechos de terceros.</li></ul>
+ <h2>3. Producción y tiempos</h2>
+ <ul><li>La producción empieza cuando el pedido está confirmado, pagado o abonado y el diseño aprobado.</li>
+ <li>Los tiempos de entrega se informan por WhatsApp y dependen de la cantidad, del servicio de diseño y de la disponibilidad de materiales y acabados.</li></ul>
+ <h2>4. Colores, acabados y medidas</h2>
+ <ul><li>Los colores pueden variar levemente entre lo que ves en una pantalla y el resultado impreso.</li>
+ <li>Los laminados holográficos y glitter cambian su efecto según la luz y el ángulo; las fotos de la página son de referencia.</li>
+ <li>Puede haber variaciones mínimas de corte propias del proceso de producción.</li></ul>
+ <h2>5. Entregas y envíos</h2>
+ <ul><li><b>Recogida:</b> te avisamos por WhatsApp cuando tu pedido esté listo.</li>
+ <li><b>Domicilio en Medellín y alrededores:</b> solo cubrimos las zonas de nuestra tabla de tarifas. Coordinamos el día de entrega por WhatsApp.</li>
+ <li><b>Otros municipios y envíos nacionales:</b> se despachan por transportadora (por ejemplo Interrapidísimo). El valor lo paga el cliente según destino y peso. Una vez entregado a la transportadora, los tiempos dependen de ella; te compartimos la guía para que hagas seguimiento.</li>
+ <li>Si la entrega falla por datos errados o porque nadie recibe, el nuevo envío tiene costo adicional.</li></ul>
+ <h2>6. Cancelaciones, cambios y retracto</h2>
+ <ul><li>Nuestros productos se fabrican <b>personalizados según tus especificaciones</b>. Por eso, de acuerdo con el Estatuto del Consumidor (Ley 1480 de 2011, artículo 47), no aplica el derecho de retracto.</li>
+ <li>Puedes cancelar antes de que iniciemos la producción; te devolvemos lo pagado descontando el valor del diseño si ya se realizó. Una vez iniciada la producción no hay devolución de dinero.</li>
+ <li>No hacemos cambios por gustos o por errores en un diseño que ya aprobaste.</li></ul>
+ <h2>7. Garantía</h2>
+ <ul><li>Si tu pedido llega con un defecto de fabricación (impresión, laminado o corte), escríbenos dentro de los <b>3 días hábiles</b> siguientes a la entrega con fotos del producto. Revisamos el caso y, si corresponde, lo reimprimimos o corregimos sin costo.</li>
+ <li><b>Tarjetas NFC:</b> garantía por defectos de fabricación (tarjeta partida, doblada o con imperfecciones de impresión) y durante las primeras 24 horas si el enlace configurado falla. No aplica si la tarjeta se modifica o reconfigura con aplicaciones o plataformas de terceros. Cambiar el enlace después de la entrega cuesta $10.000. El envío hacia y desde nuestro taller corre por cuenta del cliente, salvo en los casos de garantía.</li></ul>
+ <h2>8. Propiedad intelectual</h2>
+ <p>El logo, las fotos, los textos y los diseños de esta página pertenecen a Impresos y Publicidad. Los diseños que creamos para ti son para tu uso; los archivos editables no se entregan, salvo que se acuerde.</p>
+ <h2>9. Contacto y cambios a estos términos</h2>
+ <p>Escríbenos al WhatsApp ${wa} o al correo ${mail}. Podemos actualizar estos términos; la versión vigente es la publicada en esta página.</p>`},
+ privacidad:{t:'Política de tratamiento de datos personales',b:`
+ <p>En <b>Impresos y Publicidad</b> cuidamos tus datos personales de acuerdo con la Ley 1581 de 2012 y el Decreto 1377 de 2013 (compilado en el Decreto 1074 de 2015).</p>
+ <h2>1. Responsable</h2>
+ <p>Impresos y Publicidad · Medellín, Antioquia, Colombia · WhatsApp ${wa} · Correo ${mail}.</p>
+ <h2>2. Datos que recogemos</h2>
+ <p>Nombre, número de WhatsApp, dirección y barrio de entrega (cuando pides domicilio o envío), los detalles de tu pedido, los archivos que nos envías y los pagos registrados.</p>
+ <h2>3. Para qué los usamos</h2>
+ <ul><li>Cotizar, confirmar, producir y entregar tu pedido.</li><li>Contactarte por WhatsApp sobre el estado de tu pedido.</li><li>Coordinar domicilios y envíos con mensajeros o transportadoras.</li><li>Llevar el historial de pedidos, pagos y garantías.</li><li>Enviarte promociones solo si nos das tu autorización.</li></ul>
+ <h2>4. Tus derechos</h2>
+ <p>Puedes conocer, actualizar, rectificar y pedir que eliminemos tus datos, solicitar prueba de tu autorización, revocarla, saber cómo los usamos y presentar quejas ante la Superintendencia de Industria y Comercio (SIC).</p>
+ <h2>5. Cómo ejercerlos</h2>
+ <p>Escríbenos al correo ${mail} o al WhatsApp ${wa} indicando tu nombre, tu número y lo que solicitas. Respondemos las consultas en máximo 10 días hábiles y los reclamos en máximo 15 días hábiles.</p>
+ <h2>6. Seguridad y almacenamiento</h2>
+ <p>Tus datos se guardan en servicios en la nube con acceso restringido solo a nosotras. Estos proveedores pueden tener sus servidores fuera de Colombia. Solo compartimos tus datos con quien sea necesario para entregar tu pedido (por ejemplo, el mensajero o la transportadora). No vendemos tus datos.</p>
+ <h2>7. Autorización y vigencia</h2>
+ <p>Al marcar la casilla de aceptación al enviar tu cotización, autorizas el tratamiento de tus datos para las finalidades descritas. Los conservamos mientras sean necesarios para estas finalidades y para cumplir obligaciones legales. Esta política rige desde su publicación.</p>`}};
+ const d=T[k];
+ return `<section class="band"><div class="wrap legal"><p class="muted small"><a href="#catalogo">← Volver al catálogo</a></p><h1>${d.t}</h1><p class="muted small">Última actualización: ${LEGAL_DATE}</p>${d.b}</div></section>`;
+}
 function viewTrack(){
  return `<section class="band"><div class="wrap track"><h1>¿Cómo va mi pedido?</h1>
  <p class="muted">Escribe tu número de pedido y los últimos 4 dígitos de tu WhatsApp.</p>
@@ -714,8 +777,8 @@ function panelPage(){
   <label for="pgs">Texto debajo del título</label><textarea id="pgs" rows="3" maxlength="260">${esc(S.page.sub)}</textarea>
   <label for="pgb">Texto del botón</label><input id="pgb" value="${esc(S.page.btn||'Ver catálogo')}" maxlength="30" style="max-width:260px">
   <label>Imagen principal</label>
-  <div class="imgrow"><div class="thumb">${okImg(S.page.hero)?`<img src="${S.page.hero}" alt="">`:'<span class="muted small">Dibujo de tarjetas (actual)</span>'}</div>
-   <div><label class="btn sm filebtn">Subir imagen<input type="file" accept="image/*" data-up-img="hero" hidden></label> ${okImg(S.page.hero)?'<button class="btn alt sm" type="button" data-rm-img="hero">Volver al dibujo</button>':''}<p class="muted small">Ideal horizontal. Se ajusta sola al espacio.</p></div></div>
+  <div class="imgrow"><div class="thumb"><img src="${okImg(S.page.hero)?S.page.hero:HERO_DEF}" alt=""></div>
+   <div><label class="btn sm filebtn">Subir imagen<input type="file" accept="image/*" data-up-img="hero" hidden></label> ${okImg(S.page.hero)?'<button class="btn alt sm" type="button" data-rm-img="hero">Volver al banner original</button>':''}<p class="muted small">Ideal horizontal. Se ajusta sola al espacio.</p></div></div>
   <button class="btn pri" type="button" id="savePage" style="margin-top:14px">Guardar textos</button></div>
  <div class="box"><h2>Fotos de los productos</h2><p class="muted small">Sube la foto real de cada producto. La pieza completa (ficha) sigue disponible dentro del producto en "Ver ficha completa".</p>
   ${S.products.map(p=>`<div class="imgrow line"><div class="thumb sm"><img src="${esc(pimg(p))}" alt=""></div><div style="flex:1"><b>${esc(p.name)}</b><br><span class="muted small">${okImg(p.photo)?'Foto propia':'Mostrando la ficha'}</span></div>
@@ -808,10 +871,12 @@ document.addEventListener('submit',e=>{
 $('#cartBtn').addEventListener('click',openCart);
 
 function render(){
- const h=location.hash.slice(1)||'catalogo';const view=h==='seguimiento'?'seguimiento':h==='panel'?'panel':'catalogo';
- $('#app').innerHTML=view==='seguimiento'?viewTrack():view==='panel'?viewPanel():viewCatalog();
+ const h=location.hash.slice(1)||'catalogo';const view=['seguimiento','panel','terminos','privacidad'].includes(h)?h:'catalogo';
+ $('#app').innerHTML=view==='seguimiento'?viewTrack():view==='panel'?viewPanel():view==='terminos'?viewLegal('terminos'):view==='privacidad'?viewLegal('privacidad'):viewCatalog();
  document.querySelectorAll('#nav a').forEach(a=>a.toggleAttribute('aria-current',a.getAttribute('href')==='#'+view));
- $('#foot').innerHTML=`<b>Impresos y Publicidad</b> · Medellín · Envíos a toda Colombia<br>WhatsApp <a href="${esc(waLink(S.wa,'¡Hola! Quiero información de impresos'))}" target="_blank" rel="noopener">${esc(S.wa.replace(/^57/,''))}</a> · Instagram <a href="https://instagram.com/${encodeURIComponent(S.ig)}" target="_blank" rel="noopener">@${esc(S.ig)}</a>`;
+ $('#foot').innerHTML=`<div class="footgrid"><div><b>Impresos y Publicidad</b> · Medellín · Envíos a toda Colombia<br>WhatsApp <a href="${esc(waLink(S.wa,'¡Hola! Quiero información de impresos'))}" target="_blank" rel="noopener">${esc(S.wa.replace(/^57/,''))}</a> · Instagram <a href="https://instagram.com/${encodeURIComponent(S.ig)}" target="_blank" rel="noopener">@${esc(S.ig)}</a></div>
+  <nav class="footlinks" aria-label="Información legal"><a href="#terminos">Términos y condiciones</a><a href="#privacidad">Política de privacidad</a><a href="#seguimiento">Mi pedido</a></nav></div>
+  <p class="copy">© ${new Date().getFullYear()} Impresos y Publicidad · Medellín, Colombia. Todos los derechos reservados. Las fotos, textos, diseños y el logo de esta página son propiedad de Impresos y Publicidad y no pueden usarse sin autorización.</p>`;
  if(h==='productos')document.getElementById('productos')?.scrollIntoView();
 }
 window.addEventListener('hashchange',()=>{close();render();if(location.hash!=='#productos')scrollTo(0,0)});
