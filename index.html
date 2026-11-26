@@ -164,6 +164,8 @@ a.chip{text-decoration:none;color:var(--ink)}
 .toggle.agil{border:2px solid var(--c2);background:#fff}
 [hidden]{display:none!important}
 /* v3 */
+.npbox{background:var(--c3);margin:8px 0 10px}.npuse{background:#fff;border-radius:12px;padding:10px 12px;margin:12px 0 0}.npuse .warn{color:var(--c1d);font-weight:700}
+.bigcode{font-size:40px;font-weight:800;color:var(--c1d);margin:4px 0 8px;letter-spacing:.02em}
 a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .dlg a:not(.btn):not(.chip){color:var(--c1d)}
 .row3{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr);gap:0 14px;align-items:end}@media(max-width:560px){.row3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.row3>div:first-child{grid-column:1/-1}}
@@ -857,6 +859,122 @@ function showTrack(o){
  ${o.how==='recogida'?pickCard():''}<ol class="steps">${steps.map(s=>{const i=STATUS.findIndex(x=>x.id===s.id);return `<li class="${i<idx?'done':i===idx?'done now':''}">${esc(s.id==='listo'&&o.how==='recogida'?'Listo para recoger':s.id==='listo'&&o.how==='nacional'?'Listo y enviado a la transportadora':s.name)}${hist[s.id]&&i<=idx?`<br><span class="small muted">${df.format(new Date(hist[s.id]))}</span>`:''}</li>`}).join('')}</ol>`;
 }
 
+
+/* ---------- nuevo pedido manual (WhatsApp) ---------- */
+let npItems=[],npSides=1,npHow='recogida';
+const lamOpts=()=>S.mats.filter(m=>m.kind==='laminado'&&m.id!=='sin');
+const papOpts=()=>S.mats.filter(m=>m.kind==='papel');
+function sugPrice(p,lam,q){if(!p||!q)return 0;const v=p.variants.find(v=>v.lams.includes(lam)||(mat(lam)&&mat(lam).group==='holo'&&v.lams.includes('holo')))||p.variants[0];
+ if(v.unit)return v.unit*q;const t=(v.tiers||[]).slice().sort((a,b)=>a[0]-b[0]);if(!t.length)return 0;const ex=t.find(x=>x[0]===q);if(ex)return ex[1];
+ const low=[...t].reverse().find(x=>x[0]<=q)||t[0];return Math.round(low[1]/low[0]*q/100)*100}
+function npNeeds(){const q=+$('#niQty').value||0,per=Math.max(1,+$('#niPer').value||1),h=Math.ceil(q/per);const r={};const add=(id,k)=>{if(!id||id==='sin'||!mat(id))return;r[id]=(r[id]||0)+k};
+ add($('#niLam').value,h);if(npSides===2){const b=$('#niBack').value;add(b==='same'?$('#niLam').value:b,h)}add($('#niPaper').value,h);return{h,r}}
+function npHint(){const pid=$('#niProd').value;const p=prod(pid);$('#niNameBox').hidden=pid!=='otro';$('#niBackBox').hidden=npSides!==2;
+ const{h,r}=npNeeds();const q=+$('#niQty').value||0;
+ $('#niUse').innerHTML=q?`Gasta <b>${h} hoja${h===1?'':'s'}</b>`+(Object.keys(r).length?': '+Object.entries(r).map(([id,k])=>{const m=mat(id);const low=m.stock!=null&&m.stock<k;return `${k} de ${esc(m.short||m.name)}${m.stock!=null?` <span class="${low?'warn':'muted'}">(tienes ${m.stock})</span>`:''}`}).join(' · '):''):'Escribe la cantidad para calcular las hojas.';
+ const sp=p?sugPrice(p,$('#niLam').value,q):0;$('#niSug').innerHTML=sp?`Precio del catálogo para ${q.toLocaleString('es-CO')}: <b>${fmt(sp)}</b> <button class="btn alt sm" type="button" id="niUseSug" data-v="${sp}">Usar este precio</button>`:pid==='otro'?'Producto por fuera del catálogo: escribe tu precio.':''}
+function npTotals(){const sub=npItems.reduce((s,i)=>s+i.price,0);const fee=npHow==='recogida'?0:(+$('#noFee').value||0);const agil=!!$('#noAgil')?.checked;
+ const agilFee=agil?Math.round(npItems.reduce((s,i)=>s+Math.max(0,i.price-(i.designAmt||0)),0)*(S.agilPct||0)/100/100)*100:0;
+ $('#npTot').innerHTML=`<div class="line"><span>Productos</span><b class="price">${fmt(sub)}</b></div>${agil?`<div class="line"><span>Entrega ágil</span><b class="price">${fmt(agilFee)}</b></div>`:''}${npHow!=='recogida'?`<div class="line"><span>${npHow==='domicilio'?'Domicilio':'Envío'}</span><b class="price">${fee?fmt(fee):'Por confirmar'}</b></div>`:''}<div class="total"><span>Total</span><span class="price">${fmt(sub+fee+agilFee)}</span></div>`;
+ return{sub,fee,agil,agilFee,total:sub+fee+agilFee}}
+function npList(){$('#npItems').innerHTML=npItems.length?npItems.map((i,k)=>`<div class="line"><div><b>${i.qtyFinal.toLocaleString('es-CO')} ${esc(i.name)}</b><br><span class="small muted">${esc(itemDesc(i))}</span></div><div style="text-align:right"><b class="price">${fmt(i.price)}</b><br><button class="btn alt sm" type="button" data-nirm="${k}">Quitar</button></div></div>`).join(''):'<p class="small muted" style="margin:6px 0">Aún no has agregado productos.</p>';npTotals()}
+function newOrderDlg(){npItems=[];npSides=1;npHow='recogida';
+ const P=S.products.filter(p=>!p.hidden);
+ open(`<div class="dlghead"><div><h2 style="margin:0">Nuevo pedido</h2><p class="small muted" style="margin:2px 0 0">Registra los pedidos que te hacen por WhatsApp, también los que no están en el catálogo. Te da el número para que la clienta lo rastree.</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+ <form id="npOrder">
+ <div class="ckstep"><span>1</span><h3>Clienta</h3></div>
+ ${(S.custs||[]).length?`<label for="nCust">Clienta registrada (opcional)</label><select id="nCust"><option value="">— No tiene cuenta —</option>${S.custs.map(c=>`<option value="${esc(c.id)}">${esc(c.brand?c.brand+' · '+(c.name||''):c.name||c.email||'')}</option>`).join('')}</select>`:''}
+ <div class="row2"><div><label for="noName">Nombre</label><input id="noName" required></div><div><label for="noWa">WhatsApp</label><input id="noWa" required inputmode="tel" placeholder="300 000 0000"></div></div>
+ <div class="ckstep"><span>2</span><h3>Productos</h3></div>
+ <div class="box npbox">
+  <label for="niProd">Producto</label><select id="niProd">${P.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('')}<option value="otro">Otro producto (no está en el catálogo)</option></select>
+  <div id="niNameBox" hidden><label for="niName">¿Qué producto es?</label><input id="niName" placeholder="Ej.: Stickers redondos, etiquetas para frascos"></div>
+  <div class="row3"><div><label for="niSize">Tamaño</label><input id="niSize" placeholder="Ej.: 9 x 5 cm"></div><div><label for="niQty">Cantidad</label><input id="niQty" type="number" min="1" inputmode="numeric" placeholder="Ej.: 150"></div><div><label for="niPer">Salen por hoja</label><input id="niPer" type="number" min="1" value="8" inputmode="numeric"></div></div>
+  <label>Impresión</label><div class="chips"><button class="chip" type="button" data-nside="1" aria-pressed="true">A 1 cara</button><button class="chip" type="button" data-nside="2" aria-pressed="false">A 2 caras</button></div>
+  <div class="row2"><div><label for="niLam">Laminado${' '}(frente)</label><select id="niLam"><option value="sin">Sin laminado</option>${lamOpts().map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('')}</select></div>
+  <div id="niBackBox" hidden><label for="niBack">Laminado del reverso</label><select id="niBack"><option value="same">Igual al frente</option><option value="sin">Sin laminado</option>${lamOpts().map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('')}</select></div></div>
+  <label for="niPaper">Papel</label><select id="niPaper">${papOpts().map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('')}<option value="sin">Otro papel o material</option></select>
+  <p class="small npuse" id="niUse"></p>
+  <label class="toggle" style="border-style:solid;margin-top:8px"><input type="checkbox" id="niDed" checked><span><b>Descontar del inventario</b><br><span class="small muted">Resta esas hojas de tu inventario al guardar el pedido.</span></span></label>
+  <label class="toggle" style="border-style:solid"><input type="checkbox" id="niDes"><span><b>Lleva diseño</b> <input id="niDesV" type="number" min="0" value="${(S.products.find(p=>!p.hidden)||{}).design||30000}" style="width:120px;display:inline-block;margin-left:6px" aria-label="Valor del diseño"><br><span class="small muted">Se suma al precio del producto.</span></span></label>
+  <label for="niPrice">Precio de los productos (sin diseño)</label><input id="niPrice" type="number" min="0" inputmode="numeric" placeholder="Ej.: 95000">
+  <p class="small muted" id="niSug" style="margin:6px 0 0"></p>
+  <label for="niNotes">Notas (opcional)</label><input id="niNotes" placeholder="Ej.: puntas redondas, logo dorado">
+  <button class="btn" type="button" id="niAdd" style="width:100%;margin-top:14px">+ Agregar este producto</button>
+ </div>
+ <div id="npItems"></div>
+ <div class="ckstep"><span>3</span><h3>Entrega</h3></div>
+ <div class="chips">${Object.keys(HOW).map(k=>`<button class="chip" type="button" data-nhow="${k}" aria-pressed="${k===npHow}">${HOWI[k][0]}</button>`).join('')}</div>
+ <div id="noShip" hidden>
+  <div id="noZoneBox"><label for="noZone">Zona</label><select id="noZone">${S.sched.zones.map((z,i)=>`<option value="${i}">${esc(z.name)} · ${feeTxt(z)}</option>`).join('')}</select></div>
+  ${addrFields('no',null)}
+  <label for="noFee">Valor del envío</label><input id="noFee" type="number" min="0" inputmode="numeric" placeholder="Déjalo vacío si está por confirmar">
+ </div>
+ ${S.agilOn===false?'':`<label class="toggle" style="border-style:solid"><input type="checkbox" id="noAgil"><span><b>Entrega ágil</b> <span class="small muted">(+${S.agilPct}% de los productos)</span></span></label>`}
+ <div class="ckstep"><span>4</span><h3>Estado y pago</h3></div>
+ <div class="row2"><div><label for="noSt">Estado del pedido</label><select id="noSt">${STATUS.map(s=>`<option value="${s.id}"${s.id==='confirmado'?' selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
+ <div><label for="noPay">Abono o pago recibido (opcional)</label><div class="qtyrow"><input id="noPay" type="number" min="0" inputmode="numeric" placeholder="$0" style="flex:1"><select id="noPm" style="max-width:130px"><option>Nequi</option><option>Daviplata</option><option>Bancolombia</option><option>Bre-B</option><option>Efectivo</option></select></div></div></div>
+ <div class="cksum" id="npTot"></div>
+ <button class="btn pri" style="width:100%;margin-top:16px">Guardar pedido y crear número</button>
+ </form>`,true);
+ npHint();npList();zoneFee()}
+function zoneFee(){const z=S.sched.zones[+($('#noZone')?.value||0)];if(z&&npHow==='domicilio')$('#noFee').value=z.price!=null?z.price:'';npTotals()}
+function npAddItem(){const pid=$('#niProd').value,p=prod(pid);const q=+$('#niQty').value||0,price=+$('#niPrice').value;
+ const name=pid==='otro'?$('#niName').value.trim():p.name;
+ if(!name){toast('Escribe qué producto es');$('#niName').focus();return}if(q<1){toast('Escribe la cantidad');$('#niQty').focus();return}if(!(price>=0)||$('#niPrice').value===''){toast('Escribe el precio');$('#niPrice').focus();return}
+ const lam=$('#niLam').value,back=$('#niBack').value,pap=$('#niPaper').value;const nm=id=>id==='sin'?'Sin laminado':(mat(id)?.name||'');
+ const choices={};if($('#niSize').value.trim())choices['Tamaño']=$('#niSize').value.trim();choices['Impresión']=npSides===2?'A 2 caras':'A 1 cara';choices['Laminado']=nm(lam);
+ if(npSides===2)choices['Reverso']=back==='same'?nm(lam):nm(back);
+ const des=$('#niDes').checked,dv=des?Math.max(0,+$('#niDesV').value||0):0;const{r}=npNeeds();const ded=$('#niDed').checked;
+ const req=ded?Object.entries(r).filter(([id])=>mat(id)&&mat(id).stock!=null).map(([m,need])=>({m,need})):[];
+ npItems.push({custom:true,pid:pid==='otro'?null:pid,name,vname:'',unit:p?p.unit:'unidades',qty:q,qtyFinal:q,choices,extras:[],exNames:[],paperName:pap==='sin'?'Otro papel':(mat(pap)?.name||''),design:des,designAmt:dv,designTxt:des?'con diseño':'',notes:$('#niNotes').value.trim(),price:price+dv,req,use:req.map(x=>({m:x.m,need:x.need,got:x.need}))});
+ ['niQty','niPrice','niNotes','niSize','niName'].forEach(id=>$('#'+id).value='');$('#niDes').checked=false;npHint();npList();toast('Producto agregado')}
+async function npSave(){if(!npItems.length){toast('Agrega por lo menos un producto');$('#niQty').focus();return}
+ const name=$('#noName').value.trim(),wa=$('#noWa').value.replace(/\D/g,'');if(wa.length<7){toast('Revisa el WhatsApp');return}
+ const uid=$('#nCust')?.value||'';const z=npHow==='domicilio'?S.sched.zones[+$('#noZone').value]:null;const ad=npHow!=='recogida'?readAddr('no'):null;const addr=addrTxt(ad);
+ const t=npTotals();const st=$('#noSt').value;const pay=+$('#noPay').value||0;const now=new Date().toISOString();
+ const feePending=npHow!=='recogida'&&!t.fee;
+ const base={name,wa,how:npHow,zone:z?z.name:'',fee:t.fee,feePending,addr,ad,sub:t.sub,agil:t.agil,agilFee:t.agilFee,total:t.total,src:'whatsapp'};
+ const btn=$('#npOrder button.pri');btn.disabled=true;btn.textContent='Guardando…';let o;
+ if(LIVE){clearTimeout(syncT);while(syncing)await new Promise(r=>setTimeout(r,100));await syncNow();
+  const{data:code,error}=await sb.rpc('place_order',{p:{...base,items:npItems.map(({use,...i})=>i)}});
+  if(error||!code){btn.disabled=false;btn.textContent='Guardar pedido y crear número';toast('No se pudo guardar. Revisa tu internet.');return}
+  await sb.from('orders').update({user_id:uid||null}).eq('code',code);
+  const{data:row}=await sb.from('orders').select('code,data').eq('code',code).maybeSingle();
+  o={...(row?row.data:{...base,code,items:npItems,date:now}),uid:uid||undefined};
+  const ms=await sb.from('materials').select('id,data');if(!ms.error)ms.data.forEach(x=>{const m=mat(x.id);if(m&&m.stock!==x.data.stock){m.stock=x.data.stock;snap.mats[x.id]=JSON.stringify(m)}});
+ }else{const code='IP-'+(S.seq++);const items=npItems.map(i=>JSON.parse(JSON.stringify(i)));
+  items.forEach(i=>i.use.forEach(u=>{const m=mat(u.m);if(!m||m.stock==null)return;u.got=Math.min(u.need,m.stock);m.stock-=u.got;if(u.got)move(u.m,-u.got,'Pedido '+code)}));
+  o={...base,code,uid:uid||undefined,date:now,items}}
+ o.status=st;o.hist=[{s:'recibido',t:o.date||now}];if(st!=='recibido')o.hist.push({s:st,t:now});
+ if(pay>0)o.pays=[{t:Date.now(),a:Math.min(pay,o.total),m:$('#noPm').value}];
+ S.orders=[o,...S.orders.filter(x=>x.code!==o.code)];save();render();
+ const f=name.split(' ')[0];
+ const msg=`¡Hola ${f}! 💖 Tu pedido quedó registrado con el número *${o.code}*.\n`+o.items.map(i=>`• ${i.qtyFinal} ${i.name}${itemDesc(i)?' ('+itemDesc(i)+')':''}: ${fmt(i.price)}`).join('\n')+`\nTotal: ${fmt(o.total)}${o.feePending?' + envío':''}${pay?`\nAbonado: ${fmt(Math.min(pay,o.total))} · Saldo: ${fmt(dueOf(o))}`:''}\n\nPuedes ver cómo va tu pedido en impresosypublicidad.com/#seguimiento con tu número de pedido y los últimos 4 dígitos de tu WhatsApp.`;
+ open(`<div class="dlghead"><h2>¡Pedido registrado!</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+ <p>El número del pedido de ${esc(name)} es</p><p class="bigcode">${esc(o.code)}</p>
+ <p class="muted small">La clienta lo rastrea en <b>Mi pedido</b> con este número y los últimos 4 dígitos de su WhatsApp (${esc(wa.slice(-4))}).</p>
+ <a class="btn pri" style="width:100%" href="${esc(waLink(wa57(wa),msg))}" target="_blank" rel="noopener">Enviarle el número por WhatsApp</a>
+ <div class="acts" style="margin-top:10px"><button class="btn alt sm" type="button" id="npCopy">Copiar mensaje</button><button class="btn alt sm" type="button" data-open="${esc(o.code)}">Ver el pedido</button></div>`);
+ window.__npMsg=msg}
+document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
+ if(t.id==='newOrder')newOrderDlg();
+ if(t.dataset.nside){npSides=+t.dataset.nside;document.querySelectorAll('[data-nside]').forEach(b=>b.setAttribute('aria-pressed',b===t));npHint()}
+ if(t.id==='niUseSug'){$('#niPrice').value=t.dataset.v}
+ if(t.id==='niAdd')npAddItem();
+ if(t.dataset.nirm!=null){npItems.splice(+t.dataset.nirm,1);npList()}
+ if(t.dataset.nhow){npHow=t.dataset.nhow;document.querySelectorAll('[data-nhow]').forEach(b=>b.setAttribute('aria-pressed',b===t));$('#noShip').hidden=npHow==='recogida';$('#noZoneBox').hidden=npHow!=='domicilio';$('#noaddr').required=npHow!=='recogida';$('#nocity').required=npHow!=='recogida';$('#nocityL').textContent=npHow==='nacional'?'Ciudad o municipio (y departamento)':'Municipio';if(npHow==='nacional')$('#noFee').value='';zoneFee()}
+ if(t.id==='npCopy'){navigator.clipboard.writeText(window.__npMsg||'').then(()=>toast('Mensaje copiado'),()=>toast('No se pudo copiar'))}});
+document.addEventListener('input',e=>{const id=e.target.id||'';if(/^ni(Qty|Per)$/.test(id))npHint();if(id==='noFee')npTotals()});
+document.addEventListener('change',e=>{const id=e.target.id||'';
+ if(id==='niProd'){const p=prod(e.target.value);if(p){const v=p.variants[0];$('#niPer').value=v.per||8;if(p.design!=null)$('#niDesV').value=p.design;if(v.paper&&mat(v.paper))$('#niPaper').value=v.paper;const l=v.lams.find(x=>mat(x));if(l)$('#niLam').value=l}npHint()}
+ if(['niLam','niBack','niPaper'].includes(id))npHint();
+ if(id==='noZone')zoneFee();if(id==='noAgil')npTotals();
+ if(id==='nCust'){const c=(S.custs||[]).find(x=>x.id===e.target.value);if(!c)return;$('#noName').value=c.name||'';$('#noWa').value=c.wa||'';
+  ['city','barrio','addr','ref','unidad','torre','apto'].forEach(k=>{const el=$('#no'+k);if(el)el.value=c[k]||''});$('#nounit').checked=!!c.unit;$('#nounitBox').hidden=!c.unit;
+  const zi=S.sched.zones.findIndex(z=>z.name===c.zone);if(zi>=0)$('#noZone').value=zi;zoneFee()}});
+document.addEventListener('submit',e=>{if(e.target.id!=='npOrder')return;e.preventDefault();npSave()});
+
 /* ---------- soporte ---------- */
 let supKind='';const SUPK=['Tengo un error en la página','Duda sobre un producto','Sobre mi pedido','Pagos','Otra cosa'];
 function supportDlg(done){
@@ -901,7 +1019,7 @@ function ocard(o,showSt){const c=custOf(o);const nx=o.status!=='cancelado'?nextS
  <div class="ohead"><b class="ocode">${esc(o.code)}</b><span class="small muted">${ago(o.date)}</span></div>
  <div class="ctop">${avHtml(c||{name:o.name})}<div><b>${esc(c&&c.brand||o.name)}</b><span class="small muted">${c&&c.brand?esc(o.name)+' · ':''}${esc(o.wa)}</span></div></div>
  <ul class="oitems">${o.items.slice(0,3).map(i=>`<li><b>${Number(i.qtyFinal).toLocaleString('es-CO')}</b> ${esc(i.name)}${i.holoName?' · '+esc(i.holoName.replace(/^Holográfico /,'')):i.vname&&i.vname!=='Estándar'?' · '+esc(i.vname):''}</li>`).join('')}${o.items.length>3?`<li class="muted">+${o.items.length-3} más</li>`:''}</ul>
- <div class="obadges">${showSt?`<span class="pill ${esc(o.status)}">${esc(stName(o))}</span>`:''}<span class="tag">${o.how==='recogida'?'Recoge':o.how==='domicilio'?'Domicilio'+(o.zone?' · '+esc(o.zone):''):'Nacional'}</span>${o.agil?'<span class="tag hot">⚡ Entrega ágil</span>':''}${o.items.some(i=>i.design)?'<span class="tag">Con diseño</span>':''}${lack?'<span class="tag hot">Falta material</span>':''}</div>
+ <div class="obadges">${showSt?`<span class="pill ${esc(o.status)}">${esc(stName(o))}</span>`:''}<span class="tag">${o.how==='recogida'?'Recoge':o.how==='domicilio'?'Domicilio'+(o.zone?' · '+esc(o.zone):''):'Nacional'}</span>${o.src==='whatsapp'?'<span class="tag">Por WhatsApp</span>':''}${o.agil?'<span class="tag hot">⚡ Entrega ágil</span>':''}${o.items.some(i=>i.design)?'<span class="tag">Con diseño</span>':''}${lack?'<span class="tag hot">Falta material</span>':''}</div>
  <div class="ofoot"><b class="price">${fmt(o.total)}${o.feePending?' <span class="small muted">+ envío</span>':''}</b><span class="pill pay-${payState(o)}">${PAYN[payState(o)]}${payState(o)==='abono'?' · debe '+fmt(dueOf(o)):''}</span></div>
  <div class="oacts"><button class="btn alt sm" type="button" data-open="${esc(o.code)}">Ver y gestionar</button>${nx?`<button class="btn sm" type="button" data-adv="${esc(o.code)}">Pasar a ${esc(STSHORT[nx]||nx)} →</button>`:''}</div>
  </article>`}
@@ -912,8 +1030,8 @@ function panelOrders(){
  const oldest=nRec.slice().sort(sortO)[0];
  const head=`<div class="panelgrid"><button class="kpi kbtn" type="button" data-kf="recibido"><span class="small muted">Por confirmar</span><b>${nRec.length}</b></button><button class="kpi kbtn" type="button" data-kf="prod"><span class="small muted">En producción</span><b>${inProd.length}</b></button><button class="kpi kbtn" type="button" data-kf="listo"><span class="small muted">Listos para entregar</span><b>${ready.length}</b></button><button class="kpi kbtn" type="button" data-kf="saldo"><span class="small muted">Te deben</span><b class="price">${fmt(debe)}</b></button></div>
  ${oldest?`<div class="nextup"><span><b>Empieza por aquí:</b> ${esc(oldest.code)} de ${esc(custOf(oldest)?.brand||oldest.name)} está por confirmar desde ${ago(oldest.date)}.</span><button class="btn sm" type="button" data-open="${esc(oldest.code)}">Confirmar</button></div>`:''}
- <div class="otools"><input id="oq" type="search" placeholder="Buscar por número, nombre, marca o WhatsApp" value="${esc(oq)}"><div class="chips seg"><button class="chip" type="button" data-oview="tablero" aria-pressed="${oview==='tablero'&&!qq}">Tablero</button><button class="chip" type="button" data-oview="lista" aria-pressed="${oview==='lista'||!!qq}">Lista</button></div>${LIVE?'<button class="btn alt sm" type="button" id="refreshOrders">Actualizar</button>':''}</div>`;
- if(!S.orders.length)return head+`<div class="box"><p class="muted" style="margin:0">Aún no tienes pedidos. Cuando una clienta envíe su cotización desde el catálogo aparecerá aquí.</p></div>`;
+ <div class="otools"><button class="btn pri" type="button" id="newOrder">+ Nuevo pedido</button><input id="oq" type="search" placeholder="Buscar por número, nombre, marca o WhatsApp" value="${esc(oq)}"><div class="chips seg"><button class="chip" type="button" data-oview="tablero" aria-pressed="${oview==='tablero'&&!qq}">Tablero</button><button class="chip" type="button" data-oview="lista" aria-pressed="${oview==='lista'||!!qq}">Lista</button></div>${LIVE?'<button class="btn alt sm" type="button" id="refreshOrders">Actualizar</button>':''}</div>`;
+ if(!S.orders.length)return head+`<div class="box"><p class="muted" style="margin:0">Aún no tienes pedidos. Cuando una clienta envíe su cotización desde el catálogo aparecerá aquí. Los pedidos que te hacen por WhatsApp los registras con <b>+ Nuevo pedido</b>.</p></div>`;
  if(oview==='tablero'&&!qq){const cols=STATUS.filter(s=>s.id!=='entregado');
   return head+`<p class="small muted" style="margin:-4px 0 10px">Cada columna es una etapa. Los pedidos con entrega ágil van primero y luego los más antiguos. Toca <b>Pasar a…</b> para moverlo de etapa y avisarle a la clienta.</p>
   <div class="board">${cols.map(s=>{const os=S.orders.filter(o=>o.status===s.id).sort(sortO);return `<section class="bcol st-${s.id}"><h3><span>${esc(s.name)}</span><b>${os.length}</b></h3>${os.map(o=>ocard(o)).join('')||'<p class="small muted empty">Sin pedidos</p>'}</section>`}).join('')}</div>
