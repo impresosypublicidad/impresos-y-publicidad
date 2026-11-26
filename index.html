@@ -164,6 +164,7 @@ a.chip{text-decoration:none;color:var(--ink)}
 .toggle.agil{border:2px solid var(--c2);background:#fff}
 [hidden]{display:none!important}
 /* v3 */
+.desbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:-4px 0 10px}
 #nav a.navbtn{border-radius:999px;padding:8px 16px;margin-left:4px;font-weight:700;background:var(--c1);color:#fff;border:2px solid var(--c1)}#nav a.navbtn.alt{background:#fff;color:var(--c1d)}#nav a.navbtn:hover{filter:brightness(.95)}#nav a.navbtn[aria-current]{box-shadow:0 0 0 3px var(--c2)}
 #nav a.navpanel{background:var(--c2);color:var(--ink);border:2px solid var(--c2)}
 #nav a.navpanel{background:var(--c1);color:#fff;border-radius:999px;padding:8px 16px}
@@ -879,7 +880,11 @@ function showTrack(o){
 
 
 /* ---------- nuevo pedido manual (WhatsApp) ---------- */
-let npItems=[],npSides=1,npHow='recogida',npEdit=null;
+let npItems=[],npSides=1,npHow='recogida',npEdit=null,npDesMode='std';
+const npStdDes=()=>{const p=prod($('#niProd')?.value);return p&&typeof p.design==='number'?p.design:30000};
+function npDesUI(){const on=$('#niDes').checked;$('#niDesBox').hidden=!on;$('#niDesStd').textContent=fmt(npStdDes())+' · precio normal';
+ document.querySelectorAll('[data-ndes]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ndes===npDesMode));$('#niDesOtro').hidden=npDesMode!=='otro'}
+const npDesVal=()=>!$('#niDes').checked?0:npDesMode==='otro'?Math.max(0,Math.round(+$('#niDesV').value||0)):npStdDes();
 const lamOpts=()=>S.mats.filter(m=>m.kind==='laminado'&&m.id!=='sin');
 const papOpts=()=>S.mats.filter(m=>m.kind==='papel');
 function sugPrice(p,lam,q){if(!p||!q)return 0;const v=p.variants.find(v=>v.lams.includes(lam)||(mat(lam)&&mat(lam).group==='holo'&&v.lams.includes('holo')))||p.variants[0];
@@ -914,7 +919,9 @@ function newOrderDlg(code){const eo=code?S.orders.find(x=>x.code===code):null;np
   <label for="niPaper">Papel</label><select id="niPaper">${papOpts().map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('')}<option value="sin">Otro papel o material</option></select>
   <p class="small npuse" id="niUse"></p>
   <label class="toggle" style="border-style:solid;margin-top:8px"><input type="checkbox" id="niDed" checked><span><b>Descontar del inventario</b><br><span class="small muted">Resta esas hojas de tu inventario al guardar el pedido.</span></span></label>
-  <label class="toggle" style="border-style:solid"><input type="checkbox" id="niDes"><span><b>Lleva diseño</b> <input id="niDesV" type="number" min="0" value="${(S.products.find(p=>!p.hidden)||{}).design||30000}" style="width:120px;display:inline-block;margin-left:6px" aria-label="Valor del diseño"><br><span class="small muted">Se suma al precio del producto.</span></span></label>
+  <label class="toggle" style="border-style:solid"><input type="checkbox" id="niDes"><span><b>Lleva diseño</b><br><span class="small muted">El valor del diseño se suma al precio del producto.</span></span></label>
+  <div id="niDesBox" class="desbox" hidden><b class="small">Valor del diseño</b><div class="chips" style="margin-top:6px"><button class="chip" type="button" data-ndes="std" aria-pressed="true" id="niDesStd"></button><button class="chip" type="button" data-ndes="otro" aria-pressed="false">Otro valor</button></div>
+  <div id="niDesOtro" hidden><label for="niDesV">Escribe el valor del diseño</label><input id="niDesV" type="number" min="0" step="1000" inputmode="numeric" placeholder="Ej.: 20000"><p class="small muted" style="margin:4px 0 0">Para dar descuento en el diseño de pedidos grandes. Escribe 0 si va gratis.</p></div></div>
   <label for="niPrice">Precio de los productos (sin diseño)</label><input id="niPrice" type="number" min="0" inputmode="numeric" placeholder="Ej.: 95000">
   <p class="small muted" id="niSug" style="margin:6px 0 0"></p>
   <label for="niNotes">Notas (opcional)</label><input id="niNotes" placeholder="Ej.: puntas redondas, logo dorado">
@@ -935,7 +942,7 @@ function newOrderDlg(code){const eo=code?S.orders.find(x=>x.code===code):null;np
  <div class="cksum" id="npTot"></div>
  <button class="btn pri" style="width:100%;margin-top:16px">${eo?'Guardar cambios':'Guardar pedido y crear número'}</button>
  </form>`,true);
- npHint();npList();if(eo){const sh=npHow!=='recogida';$('#noaddr').required=sh;$('#nocity').required=sh;if(npHow==='nacional')$('#nocityL').textContent='Ciudad o municipio (y departamento)';npTotals()}else zoneFee()}
+ npDesUI();npHint();npList();if(eo){const sh=npHow!=='recogida';$('#noaddr').required=sh;$('#nocity').required=sh;if(npHow==='nacional')$('#nocityL').textContent='Ciudad o municipio (y departamento)';npTotals()}else zoneFee()}
 function zoneFee(){const z=S.sched.zones[+($('#noZone')?.value||0)];if(z&&npHow==='domicilio')$('#noFee').value=z.price!=null?z.price:'';npTotals()}
 function npAddItem(){const pid=$('#niProd').value,p=prod(pid);const q=+$('#niQty').value||0,price=+$('#niPrice').value;
  const name=pid==='otro'?$('#niName').value.trim():p.name;
@@ -943,10 +950,11 @@ function npAddItem(){const pid=$('#niProd').value,p=prod(pid);const q=+$('#niQty
  const lam=$('#niLam').value,back=$('#niBack').value,pap=$('#niPaper').value;const nm=id=>id==='sin'?'Sin laminado':(mat(id)?.name||'');
  const choices={};if($('#niSize').value.trim())choices['Tamaño']=$('#niSize').value.trim();choices['Impresión']=npSides===2?'A 2 caras':'A 1 cara';choices['Laminado']=nm(lam);
  if(npSides===2)choices['Reverso']=back==='same'?nm(lam):nm(back);
- const des=$('#niDes').checked,dv=des?Math.max(0,+$('#niDesV').value||0):0;const{r}=npNeeds();const ded=$('#niDed').checked;
+ if($('#niDes').checked&&npDesMode==='otro'&&$('#niDesV').value===''){toast('Escribe el valor del diseño');$('#niDesV').focus();return}
+ const des=$('#niDes').checked,dv=npDesVal();const{r}=npNeeds();const ded=$('#niDed').checked;
  const req=ded?Object.entries(r).filter(([id])=>mat(id)&&mat(id).stock!=null).map(([m,need])=>({m,need})):[];
- npItems.push({custom:true,pid:pid==='otro'?null:pid,name,vname:'',unit:p?p.unit:'unidades',qty:q,qtyFinal:q,choices,extras:[],exNames:[],paperName:pap==='sin'?'Otro papel':(mat(pap)?.name||''),design:des,designAmt:dv,designTxt:des?'con diseño':'',notes:$('#niNotes').value.trim(),price:price+dv,req,use:req.map(x=>({m:x.m,need:x.need,got:x.need}))});
- ['niQty','niPrice','niNotes','niSize','niName'].forEach(id=>$('#'+id).value='');$('#niDes').checked=false;npHint();npList();toast('Producto agregado')}
+ npItems.push({custom:true,pid:pid==='otro'?null:pid,name,vname:'',unit:p?p.unit:'unidades',qty:q,qtyFinal:q,choices,extras:[],exNames:[],paperName:pap==='sin'?'Otro papel':(mat(pap)?.name||''),design:des,designAmt:dv,designTxt:des?(dv===0?'diseño sin costo':dv!==npStdDes()?'con diseño ('+fmt(dv)+')':'con diseño'):'',notes:$('#niNotes').value.trim(),price:price+dv,req,use:req.map(x=>({m:x.m,need:x.need,got:x.need}))});
+ ['niQty','niPrice','niNotes','niSize','niName'].forEach(id=>$('#'+id).value='');$('#niDes').checked=false;npDesMode='std';$('#niDesV').value='';npDesUI();npHint();npList();toast('Producto agregado')}
 function npLoad(k){const i=npItems[k];if(!i)return;npItems.splice(k,1);
  const ch=i.choices||{};const p=i.pid&&prod(i.pid);$('#niProd').value=p?i.pid:'otro';$('#niName').value=p?'':i.name;
  const lamU=(i.use||[]).filter(u=>mat(u.m)&&mat(u.m).kind==='laminado').map(u=>u.m);const papU=(i.use||[]).find(u=>mat(u.m)&&mat(u.m).kind==='papel');
@@ -956,7 +964,7 @@ function npLoad(k){const i=npItems[k];if(!i)return;npItems.splice(k,1);
  const bk=ch['Reverso']?(ch['Reverso']===ch['Laminado']?'same':byName(ch['Reverso'])||'sin'):(lamU.find(x=>x!==lam)||'same');if($('#niBack').querySelector(`option[value="${bk}"]`))$('#niBack').value=bk;
  const pap=i.paper||(papU&&papU.m)||byName(i.paperName);if(pap&&$('#niPaper').querySelector(`option[value="${pap}"]`))$('#niPaper').value=pap;
  const u0=(i.use||[])[0];$('#niPer').value=p&&p.variants.find(v=>v.id===i.vid)?.per||(u0&&u0.need?Math.max(1,Math.round(i.qtyFinal/u0.need*(npSides===2&&lamU.length<2&&u0.m===lam?2:1))):8);
- $('#niQty').value=i.qtyFinal;$('#niSize').value=ch['Tamaño']||'';const dv=i.designAmt||0;$('#niDes').checked=!!i.design&&dv>0;if(dv)$('#niDesV').value=dv;$('#niPrice').value=Math.max(0,i.price-dv);$('#niNotes').value=i.notes||'';
+ $('#niQty').value=i.qtyFinal;$('#niSize').value=ch['Tamaño']||'';const dv=i.designAmt||0;$('#niDes').checked=!!i.design;npDesMode=i.design&&dv!==npStdDes()?'otro':'std';$('#niDesV').value=npDesMode==='otro'?dv:'';npDesUI();$('#niPrice').value=Math.max(0,i.price-dv);$('#niNotes').value=i.notes||'';
  npHint();npList();$('.npbox').scrollIntoView({behavior:'smooth',block:'start'});toast('Cambia lo que necesites y toca "Agregar este producto"')}
 function npSaveEdit(){const o=S.orders.find(x=>x.code===npEdit);if(!o)return;if(!npItems.length){toast('El pedido debe tener al menos un producto');return}
  const name=$('#noName').value.trim(),wa=$('#noWa').value.replace(/\D/g,'');if(name.length<2||wa.length<7){toast('Revisa el nombre y el WhatsApp');return}
@@ -1000,6 +1008,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)r
  if(t.dataset.nside){npSides=+t.dataset.nside;document.querySelectorAll('[data-nside]').forEach(b=>b.setAttribute('aria-pressed',b===t));npHint()}
  if(t.id==='niUseSug'){$('#niPrice').value=t.dataset.v}
  if(t.id==='niAdd')npAddItem();
+ if(t.dataset.ndes){npDesMode=t.dataset.ndes;npDesUI();if(npDesMode==='otro')$('#niDesV').focus()}
  if(t.dataset.nirm!=null){npItems.splice(+t.dataset.nirm,1);npList()}
  if(t.dataset.niedit!=null)npLoad(+t.dataset.niedit);
  if(t.dataset.oedit)newOrderDlg(t.dataset.oedit);
@@ -1007,8 +1016,9 @@ document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)r
  if(t.id==='npCopy'){navigator.clipboard.writeText(window.__npMsg||'').then(()=>toast('Mensaje copiado'),()=>toast('No se pudo copiar'))}});
 document.addEventListener('input',e=>{const id=e.target.id||'';if(/^ni(Qty|Per)$/.test(id))npHint();if(id==='noFee')npTotals()});
 document.addEventListener('change',e=>{const id=e.target.id||'';
- if(id==='niProd'){const p=prod(e.target.value);if(p){const v=p.variants[0];$('#niPer').value=v.per||8;if(p.design!=null)$('#niDesV').value=p.design;if(v.paper&&mat(v.paper))$('#niPaper').value=v.paper;const l=v.lams.find(x=>mat(x));if(l)$('#niLam').value=l}npHint()}
+ if(id==='niProd'){const p=prod(e.target.value);if(p){const v=p.variants[0];$('#niPer').value=v.per||8;if(v.paper&&mat(v.paper))$('#niPaper').value=v.paper;const l=v.lams.find(x=>mat(x));if(l)$('#niLam').value=l}npHint()}
  if(['niLam','niBack','niPaper'].includes(id))npHint();
+ if(id==='niDes'||id==='niProd')npDesUI();
  if(id==='noZone')zoneFee();if(id==='noAgil')npTotals();
  if(id==='nCust'){const c=(S.custs||[]).find(x=>x.id===e.target.value);if(!c)return;$('#noName').value=c.name||'';$('#noWa').value=c.wa||'';
   ['city','barrio','addr','ref','unidad','torre','apto'].forEach(k=>{const el=$('#no'+k);if(el)el.value=c[k]||''});$('#nounit').checked=!!c.unit;$('#nounitBox').hidden=!c.unit;
