@@ -177,10 +177,10 @@ const L=(id,name)=>({id,name});
 const DEF={
  seq:1001,wa:'573054435259',ig:'impresosypublicidadmedellin',pin:'1234',waitDays:10,
  mats:[
-  ...[['corazon','corazón'],['lentejuelas','lentejuelas'],['galaxia','galaxia'],['vidrio','vidrio'],['lluvia','lluvia'],['arcoiris','arcoíris'],['flores','flores'],['mariposas','mariposas'],['estrellas','estrellas'],['polvora','pólvora']].map(([k,n])=>({id:'holo-'+k,name:'Holográfico '+n,short:n[0].toUpperCase()+n.slice(1),group:'holo',kind:'laminado',stock:{corazon:15,lentejuelas:32,galaxia:32,vidrio:14,lluvia:32,arcoiris:13,flores:32,mariposas:32,estrellas:32,polvora:0}[k],min:8,cost:0,sw:'holo',img:'lam/'+k+'.jpg'})),
-  {id:'glitter',name:'Laminado glitter',kind:'laminado',stock:null,min:8,cost:0,sw:'glitter',img:'lam/glitter.jpg'},
-  {id:'brillo',name:'Laminado brillo UV',kind:'laminado',stock:57,min:20,cost:0,sw:'brillo',img:'lam/brillo.jpg'},
-  {id:'mate',name:'Laminado mate transparente',kind:'laminado',stock:5,min:10,cost:0,sw:'mate',img:'lam/mate.jpg'},
+  ...[['corazon','corazón'],['lentejuelas','lentejuelas'],['galaxia','galaxia'],['vidrio','vidrio'],['lluvia','lluvia'],['arcoiris','arcoíris'],['flores','flores'],['mariposas','mariposas'],['estrellas','estrellas'],['polvora','pólvora']].map(([k,n])=>({id:'holo-'+k,name:'Holográfico '+n,short:n[0].toUpperCase()+n.slice(1),group:'holo',kind:'laminado',stock:{corazon:15,lentejuelas:32,galaxia:32,vidrio:14,lluvia:32,arcoiris:13,flores:32,mariposas:32,estrellas:32,polvora:0}[k],min:8,cost:0,sw:'holo',img:k+'.jpg'})),
+  {id:'glitter',name:'Laminado glitter',kind:'laminado',stock:null,min:8,cost:0,sw:'glitter',img:'l-glitter.jpg'},
+  {id:'brillo',name:'Laminado brillo UV',kind:'laminado',stock:57,min:20,cost:0,sw:'brillo',img:'brillo.jpg'},
+  {id:'mate',name:'Laminado mate transparente',kind:'laminado',stock:5,min:10,cost:0,sw:'mate',img:'l-mate.jpg'},
   {id:'foil',name:'Foil',kind:'laminado',stock:null,min:5,cost:0,sw:'foil'},
   {id:'opalina',name:'Opalina 200 g',short:'Opalina 200 g',kind:'papel',stock:100,min:30,cost:0,sw:'papel'},
   {id:'p350',name:'Papel premium 350 g',kind:'papel',stock:null,min:100,cost:0,sw:'papel'},
@@ -198,11 +198,11 @@ const DEF={
    note:'El archivo se envía en PDF desde Canva. No se reciben imágenes hechas con IA. Otro tamaño más grande se cotiza aparte.'},
   {id:'holografico',paperChoice:true,cat:'tarjetas',name:'Tarjeta laminado holográfico',img:'holografico',unit:'tarjetas',desc:'Una cara con laminado holográfico y el reverso a tu elección: brillo UV, mate o también holográfico.',design:30000,
    variants:[{id:'std',name:'Holográfico',lams:['holo'],paper:'opalina',per:8,tiers:[[50,80000],[100,100000],[150,140000],[200,166000]]}],backs:[{id:'brillo',name:'Brillo UV',lam:'brillo'},{id:'mate',name:'Mate',lam:'mate'},{id:'same',name:'Holográfico también',lam:'same',price:35000}]},
-  {id:'glitter',paperChoice:true,cat:'tarjetas',name:'Tarjeta laminado glitter',img:'glitter',unit:'tarjetas',desc:'Una cara con laminado glitter y el reverso a tu elección: brillo UV, mate o también glitter.',design:30000,
+  {id:'glitter',paperChoice:true,cat:'tarjetas',name:'Tarjeta laminado glitter',img:'p-glitter',unit:'tarjetas',desc:'Una cara con laminado glitter y el reverso a tu elección: brillo UV, mate o también glitter.',design:30000,
    variants:[{id:'std',name:'Glitter',lams:['glitter'],paper:'opalina',per:8,tiers:[[20,65000],[50,95000],[90,145000]]}],backs:[{id:'brillo',name:'Brillo UV',lam:'brillo'},{id:'mate',name:'Mate',lam:'mate'},{id:'same',name:'Glitter también',lam:'same',price:35000}]},
   {id:'uv',paperChoice:true,cat:'tarjetas',name:'Tarjetas con brillo UV',img:'uv',unit:'tarjetas',desc:'Impresión por ambos lados con acabado brillo UV. Resistentes al agua y a rayones.',design:30000,
    variants:[{id:'std',name:'Brillo UV',lams:['brillo'],paper:'opalina',per:8,tiers:[[50,65000],[100,95000],[150,125000],[200,150000]]}],backLabel:'Laminado en',backs:[{id:'1',name:'Una cara',lam:null},{id:'2',name:'Ambas caras',lam:'same'}]},
-  {id:'mate',paperChoice:true,cat:'tarjetas',name:'Tarjetas mate',img:'mate',unit:'tarjetas',desc:'Impresión por ambos lados con laminado mate. Resistentes al agua y a rayones.',design:30000,
+  {id:'mate',paperChoice:true,cat:'tarjetas',name:'Tarjetas mate',img:'p-mate',unit:'tarjetas',desc:'Impresión por ambos lados con laminado mate. Resistentes al agua y a rayones.',design:30000,
    variants:[{id:'std',name:'Mate',lams:['mate'],paper:'opalina',per:8,tiers:[[50,85000],[100,115000],[150,145000],[200,175000]]}],backLabel:'Laminado en',backs:[{id:'1',name:'Una cara',lam:null},{id:'2',name:'Ambas caras',lam:'same'}],note:'Envíanos tu diseño en PDF desde Canva.'},
   {id:'presentacion',track:false,paperChoice:true,cat:'tarjetas',name:'Mil tarjetas de presentación',img:'presentacion',unit:'tarjetas',desc:'Impresión y laminado en ambas caras. Incluye diseño si no lo tienes.',design:'incl',varLabel:'Laminado',
    variants:[{id:'uv',name:'Brillo UV',lams:['brillo'],paper:'opalina',per:10,fixed:true,tiers:[[1000,450000]]},{id:'mate',name:'Mate',lams:['mate'],paper:'opalina',per:10,fixed:true,tiers:[[1000,490000]]}],
@@ -264,7 +264,7 @@ let S=null;if(!LIVE){try{S=JSON.parse(localStorage.getItem(KEY))||null}catch(e){
 if(!S)S=JSON.parse(JSON.stringify(DEF));
 if(!S.page)S.page=JSON.parse(JSON.stringify(DEF.page));
 const okImg=u=>typeof u==='string'&&(/^data:image\/(jpeg|png|webp);base64,/.test(u)||/^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/v1\/object\/public\/fotos\/[\w.\-]+$/.test(u));
-const pimg=p=>okImg(p.photo)?p.photo:p.img?`img/${p.img}.jpg`:LOGO;
+const pimg=p=>okImg(p.photo)?p.photo:p.img?`${p.img}.jpg`:LOGO;
 const paidOf=o=>(o.pays||[]).reduce((s,x)=>s+x.a,0);
 const dueOf=o=>Math.max(0,o.total-paidOf(o));
 const payState=o=>{const p=paidOf(o);return p>=o.total&&o.total>0?'pagado':p>0?'abono':'pendiente'};
@@ -318,7 +318,7 @@ const tracked=id=>id&&mat(id)&&mat(id).stock!=null;
 const PAPERS=['opalina','foto280'];
 function needsOf(p,v,h,back,paper,all){const m={};if(p.track===false)return m;const add=id=>{if(all?(id&&mat(id)):tracked(id))m[id]=(m[id]||0)+1};const fr=rl(v,h);fr.forEach(add);
  const bk=(p.backs||[]).find(x=>x.id===back);if(bk){if(bk.lam==='same')add(fr[0]);else if(bk.lam)add(bk.lam)}add(p.paperChoice&&paper?paper:v.paper);return m}
-const swStyle=m=>m&&m.img?`background:url(img/${esc(m.img)}) center/cover`:`background:${SWATCH[m?.sw]||SWATCH.none}`;
+const swStyle=m=>m&&m.img?`background:url(${esc(m.img)}) center/cover`:`background:${SWATCH[m?.sw]||SWATCH.none}`;
 const swHtml=m=>`<span class="sw" style="${swStyle(m)}"></span>`;
 function priceFor(v,q){if(v.unit)return v.unit*q;const t=[...v.tiers].sort((a,b)=>a[0]-b[0]);const ex=t.find(x=>x[0]===q);if(ex)return ex[1];let tier=t[0];for(const x of t)if(x[0]<=q)tier=x;return Math.round(q*tier[1]/tier[0]/100)*100}
 const fromPrice=p=>Math.min(...p.variants.map(v=>v.unit||v.tiers[0][1]));
@@ -388,8 +388,8 @@ function viewCatalog(){
   <p class="muted small" style="margin-top:18px">¿Necesitas otra cantidad, tamaño o estilo? Escríbenos y lo cotizamos.</p>
  </div></section>
  <section class="band"><div class="wrap"><h2>Nuestros laminados</h2><p class="muted">Holográficos para que tu marca brille, y acabados sencillos para un look limpio y elegante.</p>
-  <h3 style="margin-top:18px">Holográficos</h3><div class="lamgrid">${holos().map(m=>`<figure><img src="img/${esc(m.img)}" alt="" loading="lazy"><figcaption>${esc(m.short)}</figcaption></figure>`).join('')}</div>
-  <h3 style="margin-top:22px">Glitter y sencillos</h3><div class="lamgrid">${['glitter','brillo','mate'].map(mat).filter(Boolean).map(m=>`<figure><img src="img/${esc(m.img)}" alt="" loading="lazy"><figcaption>${esc(m.name.replace('Laminado ','').replace(/^./,c=>c.toUpperCase()))}</figcaption></figure>`).join('')}</div>
+  <h3 style="margin-top:18px">Holográficos</h3><div class="lamgrid">${holos().map(m=>`<figure><img src="${esc(m.img)}" alt="" loading="lazy"><figcaption>${esc(m.short)}</figcaption></figure>`).join('')}</div>
+  <h3 style="margin-top:22px">Glitter y sencillos</h3><div class="lamgrid">${['glitter','brillo','mate'].map(mat).filter(Boolean).map(m=>`<figure><img src="${esc(m.img)}" alt="" loading="lazy"><figcaption>${esc(m.name.replace('Laminado ','').replace(/^./,c=>c.toUpperCase()))}</figcaption></figure>`).join('')}</div>
  </div></section>
  <section class="band" style="background:var(--soft)"><div class="wrap row2">
   <div><h3>Recogida</h3><p class="muted">${esc(S.sched.pickup)}<br>${esc(S.sched.hours)}</p></div>
@@ -428,9 +428,9 @@ function renderCfg(){
   :`<div class="chips">${v.tiers.map(([q,pr])=>`<button class="chip" type="button" data-qty="${q}" aria-pressed="${cfg.qty===q}">${q.toLocaleString('es-CO')} <span class="muted small price">${fmt(pr)}</span></button>`).join('')}</div>`;
  open(`<div class="dlghead"><div><h2>${esc(p.name)}</h2><p class="muted small" style="margin:0">${esc(p.desc)}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
   ${p.img?`<button class="btn alt sm" type="button" id="flyer" style="margin-top:10px">${cfg.flyer?'Ocultar ficha':'Ver ficha completa'}</button>`:''}
-  ${cfg.flyer?`<img class="flyerimg" src="img/${esc(p.img)}.jpg" alt="Ficha de ${esc(p.name)}">`:''}
+  ${cfg.flyer?`<img class="flyerimg" src="${esc(p.img)}.jpg" alt="Ficha de ${esc(p.name)}">`:''}
   ${p.variants.length>1?`<label>${esc(p.varLabel||'Opción')}</label><div class="chips">${p.variants.map(x=>`<button class="chip" type="button" data-v="${esc(x.id)}" aria-pressed="${x.id===v.id}">${x.lams.length&&p.varLabel==='Laminado'?swHtml(x.lams[0]==='holo'?holos()[0]:mat(x.lams[0])):''}${esc(x.name)}</button>`).join('')}</div>`:''}
-  ${v.lams.includes('holo')?`<label>Diseño holográfico</label><div class="holopick">${holos().map(m=>`<button type="button" class="hp" data-holo="${esc(m.id)}" aria-pressed="${cfg.holo===m.id}"><img src="img/${esc(m.img)}" alt=""><span>${esc(m.short)}</span></button>`).join('')}</div>`:''}
+  ${v.lams.includes('holo')?`<label>Diseño holográfico</label><div class="holopick">${holos().map(m=>`<button type="button" class="hp" data-holo="${esc(m.id)}" aria-pressed="${cfg.holo===m.id}"><img src="${esc(m.img)}" alt=""><span>${esc(m.short)}</span></button>`).join('')}</div>`:''}
   ${p.paperChoice?`<label>Papel</label><div class="chips">${PAPERS.map(id=>`<button class="chip" type="button" data-pp2="${id}" aria-pressed="${cfg.paper===id}">${esc(mat(id)?.short||id)}</button>`).join('')}</div>`:''}
   ${p.backs?`<label>${esc(p.backLabel||'Reverso')}</label><div class="chips">${p.backs.map(x=>`<button class="chip" type="button" data-bk="${esc(x.id)}" aria-pressed="${cfg.back===x.id}">${x.lam&&x.lam!=='same'?swHtml(mat(x.lam)):''}${esc(x.name)}${x.price?` <span class="muted small">+${fmt(x.price)}</span>`:''}</button>`).join('')}</div>`:''}
   <label>Cantidad${v.fixed?' (solo disponible en esta cantidad)':''}</label>${qtyUI}
