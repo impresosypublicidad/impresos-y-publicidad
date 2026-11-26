@@ -1,3 +1,4 @@
-IMPRESOS Y PUBLICIDAD · Página web
-Sube a GitHub: index.html y la carpeta img (con todo lo que tiene adentro).
-supabase.sql ya se pegó en Supabase; puedes subirlo también como respaldo.
+IMPRESOS Y PUBLICIDAD · Página completa
+1) Sube a GitHub TODOS estos archivos (reemplazan a los anteriores).
+2) En Supabase pega supabase-cuentas.sql (solo una vez).
+supabase.sql ya lo pegaste antes; queda aquí como respaldo.

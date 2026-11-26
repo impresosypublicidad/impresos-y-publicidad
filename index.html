@@ -141,6 +141,11 @@ input,select,textarea{border-color:var(--line)}
 .copy{margin:16px 0 0;font-size:13px;opacity:.85}
 .logo .wordmark{height:84px;width:auto;border:0;border-radius:0;margin:4px 0;display:block}
 @media(max-width:600px){.logo .wordmark{height:62px}}
+.prog{height:8px;background:var(--soft);border-radius:99px;overflow:hidden;margin:12px 0}.prog span{display:block;height:100%;background:var(--c1);border-radius:99px}
+.dlg.wide{width:min(1040px,100%)}
+.cfggrid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:26px;align-items:start}
+.cfgimg{margin:0;position:sticky;top:0}.cfgimg img{display:block;width:100%;max-height:calc(92vh - 44px);object-fit:contain;border-radius:18px;background:var(--soft);border:1px solid var(--line)}
+@media(max-width:760px){.cfggrid{grid-template-columns:minmax(0,1fr);gap:14px}.cfgimg{position:static}.cfgimg img{max-height:46vh}}
 </style>
 <script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -148,7 +153,7 @@ input,select,textarea{border-color:var(--line)}
 <body>
 <header><div class="bar">
   <a class="logo brand" href="#catalogo" aria-label="Impresos y Publicidad, inicio"><img class="wordmark" src="logo-marca.png" alt="Impresos y Publicidad Medellín"></a><img id="logoRound" src="data:image/jpeg;base64,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" alt="" hidden>
-  <nav id="nav"><a href="#catalogo">Catálogo</a><a href="#seguimiento">Mi pedido</a><a href="#panel">Panel</a></nav>
+  <nav id="nav"><a href="#catalogo">Catálogo</a><a href="#seguimiento">Mi pedido</a><a href="#cuenta" id="navCuenta">Mi cuenta</a><a href="#panel">Panel</a></nav>
   <button class="btn sm cartbtn" id="cartBtn" type="button">Carrito <b id="cartN">0</b></button>
 </div></header>
 <main id="app"></main>
@@ -299,16 +304,16 @@ async function loadPublic(){if(!LIVE)return;
  if(admin)return;if(!error&&data&&data.data){const d=data.data;['products','sched','page','wa','ig','waitDays'].forEach(k=>{if(d[k]!=null)S[k]=d[k]});if(Array.isArray(d.mats))S.mats=d.mats}
  render()}
 async function loadAdmin(){
- const[cfg,ms,os,mv]=await Promise.all([sb.from('config').select('data').eq('id',1).maybeSingle(),sb.from('materials').select('id,data'),sb.from('orders').select('code,data').order('created_at',{ascending:false}).limit(500),sb.from('moves').select('t,m,d,r,c').order('t',{ascending:false}).limit(400)]);
+ const[cfg,ms,os,mv]=await Promise.all([sb.from('config').select('data').eq('id',1).maybeSingle(),sb.from('materials').select('id,data'),sb.from('orders').select('code,data,user_id').order('created_at',{ascending:false}).limit(500),sb.from('moves').select('t,m,d,r,c').order('t',{ascending:false}).limit(400)]);
  if(ms.error||os.error)throw ms.error||os.error;
  if(cfg.data&&cfg.data.data){const d=cfg.data.data;['products','sched','page','wa','ig','waitDays'].forEach(k=>{if(d[k]!=null)S[k]=d[k]})}
  if(ms.data.length){const byId=Object.fromEntries(ms.data.map(x=>[x.id,x.data]));const pub=cfg.data?.data?.mats||S.mats;S.mats=pub.map(m=>byId[m.id]?{...m,...byId[m.id]}:m);ms.data.forEach(x=>{if(!S.mats.some(m=>m.id===x.id))S.mats.push(x.data)})}
- S.orders=os.data.map(x=>x.data);S.moves=(mv.data||[]).map(x=>({t:+new Date(x.t),m:x.m,d:x.d,r:x.r,c:x.c||undefined,s:1}));
- snap.cfg=cfg.data?JSON.stringify(cfg.data.data):'';ms.data.forEach(x=>snap.mats[x.id]=JSON.stringify(x.data));os.data.forEach(x=>snap.orders[x.code]=JSON.stringify(x.data));
+ S.orders=os.data.map(x=>({...x.data,uid:x.user_id||undefined}));S.moves=(mv.data||[]).map(x=>({t:+new Date(x.t),m:x.m,d:x.d,r:x.r,c:x.c||undefined,s:1}));
+ snap.cfg=cfg.data?JSON.stringify(cfg.data.data):'';ms.data.forEach(x=>snap.mats[x.id]=JSON.stringify(x.data));S.orders.forEach(o=>snap.orders[o.code]=JSON.stringify(o));
  queueSync()}
-async function enterAdmin(){const{data,error}=await sb.rpc('is_admin');if(error||!data){await sb.auth.signOut();toast('Ese correo no tiene acceso al panel');return false}
+async function enterAdmin(silent){const{data,error}=await sb.rpc('is_admin');if(error||!data){if(!silent){await sb.auth.signOut();cust=null;toast('Ese correo no tiene acceso al panel')}return false}cust=null;
  admin=true;try{await loadAdmin()}catch(err){toast('No se pudieron cargar tus datos');console.log(err)}render();return true}
-async function refreshOrders(){const{data,error}=await sb.from('orders').select('code,data').order('created_at',{ascending:false}).limit(500);if(error)return;
+async function refreshOrders(){const{data:raw,error}=await sb.from('orders').select('code,data,user_id').order('created_at',{ascending:false}).limit(500);if(error)return;const data=raw.map(x=>({code:x.code,data:{...x.data,uid:x.user_id||undefined}}));
  const fresh=data.filter(x=>!S.orders.some(o=>o.code===x.code));if(fresh.length){S.orders=[...fresh.map(x=>x.data),...S.orders];fresh.forEach(x=>snap.orders[x.code]=JSON.stringify(x.data));
   const ms=await sb.from('materials').select('id,data');if(!ms.error)ms.data.forEach(x=>{const m=mat(x.id);if(m&&m.stock!==x.data.stock){m.stock=x.data.stock;snap.mats[x.id]=JSON.stringify(m)}});
   render();toast(fresh.length===1?'¡Llegó un pedido nuevo!':'¡Llegaron '+fresh.length+' pedidos nuevos!')}}
@@ -338,7 +343,7 @@ function freeSheets(mid,skip){const m=mat(mid);if(!m||m.stock==null)return Infin
 function avail(p,v,skip,h,back,paper){let units=Infinity,lim=null;for(const [mid,k] of Object.entries(needsOf(p,v,h,back,paper))){const u=Math.floor(freeSheets(mid,skip)/k)*v.per;if(u<units){units=u;lim=mat(mid)}}return {units,lim}}
 function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2600)}
 let cfg=null;
-function open(html){$('#dlg').innerHTML=html;$('#ov').classList.add('on');document.body.style.overflow='hidden'}
+function open(html,wide){$('#dlg').classList.toggle('wide',!!wide);$('#dlg').innerHTML=html;$('#ov').classList.add('on');document.body.style.overflow='hidden'}
 function close(){$('#ov').classList.remove('on');document.body.style.overflow='';cfg=null}
 $('#ov').addEventListener('click',e=>{if(e.target.id==='ov'||e.target.closest('[data-close]'))close()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
@@ -408,10 +413,11 @@ function viewCatalog(){
  </div></section>`;
 }
 
-function openCfg(pid,editIdx){
- const p=prod(pid);
+function openCfg(pid,editIdx,preset){
+ const p=prod(pid);if(!p){toast('Ese producto ya no está disponible');return}
  if(editIdx!=null){const it=cart[editIdx];cfg={pid,vid:it.vid,holo:it.holo,back:it.back,paper:it.paper,qty:it.qty,choices:{...it.choices},extras:[...it.extras],design:it.design,mode:it.mode,notes:it.notes,edit:editIdx}}
  else{const v=p.variants[0];cfg={pid,vid:v.id,qty:v.unit?1:v.tiers[0][0],choices:Object.fromEntries((p.choices||[]).map(c=>[c.label,c.opts[0]])),extras:[],design:false,mode:'normal',notes:''}}
+ if(preset)applyPreset(p,preset);
  if(!cfg.holo)cfg.holo=holos()[0]?.id;if(p.backs&&!cfg.back)cfg.back=p.backs[0].id;if(p.paperChoice&&!cfg.paper)cfg.paper=p.id==='agradecimiento'?'foto280':'opalina';cfg.flyer=false;renderCfg();
 }
 function designRow(p){
@@ -436,9 +442,7 @@ function renderCfg(){
   ${pq>0?`<button class="chip" type="button" aria-pressed="${cfg.mode==='parcial'}" data-mode="parcial"><span>Me llevo ${pq} de entrega inmediata</span><span class="price">${fmt(priceFor(v,pq))}</span></button>`:''}</div></div>`;
  const qtyUI=v.unit?`<div class="qtyrow"><button class="btn alt sm" type="button" data-q="-1" aria-label="Menos">−</button><input id="qn" type="number" min="1" value="${cfg.qty}" inputmode="numeric" aria-label="Cantidad"><button class="btn alt sm" type="button" data-q="1" aria-label="Más">+</button><span class="muted small">${fmt(v.unit)} c/u</span></div>`
   :`<div class="chips">${v.tiers.map(([q,pr])=>`<button class="chip" type="button" data-qty="${q}" aria-pressed="${cfg.qty===q}">${q.toLocaleString('es-CO')} <span class="muted small price">${fmt(pr)}</span></button>`).join('')}</div>`;
- open(`<div class="dlghead"><div><h2>${esc(p.name)}</h2><p class="muted small" style="margin:0">${esc(p.desc)}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
-  ${p.img?`<button class="btn alt sm" type="button" id="flyer" style="margin-top:10px">${cfg.flyer?'Ocultar ficha':'Ver ficha completa'}</button>`:''}
-  ${cfg.flyer?`<img class="flyerimg" src="${esc(p.img)}.jpg" alt="Ficha de ${esc(p.name)}">`:''}
+ open(`<div class="cfggrid"><figure class="cfgimg"><img src="${esc(pimg(p))}" alt="${esc(p.name)}"></figure><div class="cfgbody"><div class="dlghead"><div><h2>${esc(p.name)}</h2><p class="muted small" style="margin:0">${esc(p.desc)}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
   ${p.variants.length>1?`<label>${esc(p.varLabel||'Opción')}</label><div class="chips">${p.variants.map(x=>`<button class="chip" type="button" data-v="${esc(x.id)}" aria-pressed="${x.id===v.id}">${x.lams.length&&p.varLabel==='Laminado'?swHtml(x.lams[0]==='holo'?holos()[0]:mat(x.lams[0])):''}${esc(x.name)}</button>`).join('')}</div>`:''}
   ${v.lams.includes('holo')?`<label>Diseño holográfico</label><div class="holopick">${holos().map(m=>`<button type="button" class="hp" data-holo="${esc(m.id)}" aria-pressed="${cfg.holo===m.id}"><img src="${esc(m.img)}" alt=""><span>${esc(m.short)}</span></button>`).join('')}</div>`:''}
   ${p.paperChoice?`<label>Papel</label><div class="chips">${PAPERS.map(id=>`<button class="chip" type="button" data-pp2="${id}" aria-pressed="${cfg.paper===id}">${esc(mat(id)?.short||id)}</button>`).join('')}</div>`:''}
@@ -452,7 +456,7 @@ function renderCfg(){
   <label for="nt">Notas para tu pedido</label><textarea id="nt" rows="2" placeholder="Cuéntanos detalles: textos, premios, colores, enlaces…">${esc(cfg.notes)}</textarea>
   <div class="total"><span>Total</span><span class="price">${short&&!cfg.mode?'—':fmt(total)}</span></div>
   <button class="btn pri" type="button" id="addCart" style="width:100%" ${short&&!cfg.mode?'disabled':''}>${cfg.edit!=null?'Guardar cambios':'Agregar al carrito'}</button>
-  ${short&&!cfg.mode?'<p class="muted small" style="text-align:center">Elige una de las opciones de arriba para continuar.</p>':''}`);
+  ${short&&!cfg.mode?'<p class="muted small" style="text-align:center">Elige una de las opciones de arriba para continuar.</p>':''}</div></div>`,true);
  cfg._total=total;cfg._qty=qtyFinal;
 }
 $('#dlg').addEventListener('click',e=>{
@@ -494,11 +498,13 @@ function openCart(){
   <div class="total"><span>Total</span><span class="price" id="totVal">${fmt(sum)}</span></div>
   <p class="muted small" style="margin-top:0">Al enviar tu cotización nos llega a WhatsApp. Te confirmamos el pedido y los datos de pago.</p>
   <form id="ck">
-   <div class="row2"><div><label for="cn">Nombre</label><input id="cn" required autocomplete="name"></div><div><label for="cw">WhatsApp</label><input id="cw" required inputmode="tel" placeholder="300 000 0000"></div></div>
+   <div class="row2"><div><label for="cn">Nombre</label><input id="cn" required autocomplete="name" value="${esc(cust?.name||'')}"></div><div><label for="cw">WhatsApp</label><input id="cw" required inputmode="tel" placeholder="300 000 0000" value="${esc(cust?.wa||'')}"></div></div>
+   ${LIVE&&!cust?'<p class="muted small">¿Tienes cuenta? <a href="#cuenta">Inicia sesión</a> para usar tus datos guardados y ver tus pedidos.</p>':''}
    <label>¿Cómo lo recibes?</label><div class="chips">${Object.entries(HOW).map(([k,n],i)=>`<button class="chip" type="button" data-how="${k}" aria-pressed="${i===0}">${n}</button>`).join('')}</div>
    <p class="muted small" id="pickNote">${esc(S.sched.pickup)} · ${esc(S.sched.hours)}</p>
-   <div id="zoneBox" hidden><label for="cz">Zona de entrega</label><select id="cz">${S.sched.zones.map((z,i)=>`<option value="${i}">${esc(z.name)} · ${feeTxt(z)}</option>`).join('')}</select></div>
-   <div id="addr" hidden><label for="ca" id="caLbl">Dirección y barrio</label><input id="ca" autocomplete="street-address"></div>
+   <div id="zoneBox" hidden><label for="cz">Zona de entrega</label><select id="cz">${S.sched.zones.map((z,i)=>`<option value="${i}"${cust&&cust.zone===z.name?' selected':''}>${esc(z.name)} · ${feeTxt(z)}</option>`).join('')}</select></div>
+   <div id="addr" hidden><label for="ca" id="caLbl">Dirección y barrio</label><input id="ca" autocomplete="street-address" value="${esc(cust?.addr||'')}"></div>
+   ${cust&&custFiles&&custFiles.length?`<label>Adjuntar mis diseños (opcional)</label><div class="chips">${custFiles.map(f=>`<button class="chip" type="button" data-attach="${esc(f.path)}" aria-pressed="${attach.has(f.path)}">${esc(f.label)}</button>`).join('')}</div>`:''}
    <p class="muted small" id="addrNote" hidden></p>
    <label class="toggle" style="border-style:solid"><input type="checkbox" id="cterms" required><span class="small">Acepto los <a href="#terminos" target="_blank">Términos y condiciones</a> y autorizo el tratamiento de mis datos según la <a href="#privacidad" target="_blank">Política de privacidad</a>.</span></label>
    <button class="btn pri" style="width:100%;margin-top:18px">Enviar cotización por WhatsApp</button>
@@ -508,6 +514,7 @@ $('#dlg').addEventListener('click',e=>{
  const t=e.target.closest('button');if(!t||!$('#ck'))return;
  if(t.dataset.del!=null){cart.splice(+t.dataset.del,1);saveCart();openCart()}
  else if(t.dataset.edit!=null)openCfg(cart[+t.dataset.edit].pid,+t.dataset.edit);
+ else if(t.dataset.attach){const k=t.dataset.attach;attach.has(k)?attach.delete(k):attach.add(k);t.setAttribute('aria-pressed',attach.has(k))}
  else if(t.dataset.how){document.querySelectorAll('[data-how]').forEach(b=>b.setAttribute('aria-pressed',b===t));const h=t.dataset.how;
   $('#addr').hidden=h==='recogida';$('#ca').required=h!=='recogida';$('#zoneBox').hidden=h!=='domicilio';$('#pickNote').hidden=h!=='recogida';
   $('#caLbl').textContent=h==='nacional'?'Ciudad, dirección y barrio':'Dirección y barrio';$('#addrNote').hidden=h==='recogida';$('#addrNote').textContent=h==='nacional'?S.sched.national:S.sched.delivery;updFee()}
@@ -525,10 +532,10 @@ $('#dlg').addEventListener('submit',async e=>{
  const sub=cart.reduce((s,i)=>s+i.price,0);const fee=z&&z.price!=null?z.price:0;
  let code;
  if(LIVE){const btn=e.target.querySelector('button.pri');btn.disabled=true;btn.textContent='Enviando…';
-  const payload={name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||!!(z&&z.price==null),addr:how!=='recogida'?$('#ca').value.trim():'',items:cart.map(({use,...i})=>i),sub,total:sub+fee};
+  const payload={name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||!!(z&&z.price==null),addr:how!=='recogida'?$('#ca').value.trim():'',items:cart.map(({use,...i})=>i),files:[...attach],sub,total:sub+fee};
   const{data,error}=await sb.rpc('place_order',{p:payload});
   if(error||!data){btn.disabled=false;btn.textContent='Enviar cotización por WhatsApp';toast('No se pudo enviar. Revisa tu internet e inténtalo de nuevo.');return}
-  code=data}else code='IP-'+(S.seq++);
+  code=data;if(cust){const up={id:cust.id,email:cust.email,name:payload.name,wa:payload.wa};if(payload.addr)up.addr=payload.addr;if(payload.zone)up.zone=payload.zone;Object.assign(cust,up);sb.from('customers').upsert(up);custOrders=null;acTab='pedidos';attach.clear()}}else code='IP-'+(S.seq++);
  const o={code,date:new Date().toISOString(),name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||(z&&z.price==null),addr:how!=='recogida'?$('#ca').value.trim():'',items:cart.map(i=>JSON.parse(JSON.stringify(i))),sub,total:sub+fee,status:'recibido',hist:[{s:'recibido',t:new Date().toISOString()}]};
  if(!LIVE){o.items.forEach(i=>i.use.forEach(u=>{const m=mat(u.m);if(!m)return;u.got=Math.min(u.got,m.stock);m.stock-=u.got;move(u.m,-u.got,'Pedido '+code)}));
  S.orders.unshift(o);save()}cart=[];saveCart();
@@ -540,6 +547,80 @@ $('#dlg').addEventListener('submit',async e=>{
   <p class="muted small">Si no se abre, escríbenos al ${esc(S.wa.replace(/^57/,''))} con tu número de pedido.</p>`);
  render();
 });
+
+let cust=null,custOrders=null,custFiles=null,acTab='pedidos',authMode='login';const attach=new Set();
+function applyPreset(p,ps){const v=p.variants.find(x=>x.id===ps.vid);if(v)cfg.vid=v.id;const vv=variant(p,cfg.vid);
+ if(ps.holo&&mat(ps.holo))cfg.holo=ps.holo;if(ps.back&&(p.backs||[]).some(b=>b.id===ps.back))cfg.back=ps.back;if(ps.paper&&PAPERS.includes(ps.paper))cfg.paper=ps.paper;
+ if(vv.unit)cfg.qty=Math.max(1,ps.qty||1);else if(vv.tiers.some(t=>t[0]===ps.qty))cfg.qty=ps.qty;
+ (p.choices||[]).forEach(c=>{if(ps.choices&&c.opts.includes(ps.choices[c.label]))cfg.choices[c.label]=ps.choices[c.label]});
+ cfg.extras=(ps.extras||[]).filter(id=>(p.extras||[]).some(x=>x.id===id));cfg.design=!!ps.design;cfg.notes=ps.notes||''}
+async function loadCustomer(){if(!LIVE)return;const{data:u}=await sb.auth.getUser();if(!u||!u.user){cust=null;render();return}const uid=u.user.id;
+ const{data:prof}=await sb.from('customers').select('*').eq('id',uid).maybeSingle();
+ cust={id:uid,email:u.user.email,...(prof||{})};
+ if(!prof){const md=u.user.user_metadata||{};cust.name=md.name||'';cust.wa=md.wa||'';await sb.from('customers').upsert({id:uid,email:u.user.email,name:cust.name,wa:cust.wa})}
+ custOrders=null;custFiles=null;loadCustFiles();render()}
+async function loadCustOrders(){const{data}=await sb.rpc('my_orders');custOrders=Array.isArray(data)?data:[];render()}
+async function loadCustFiles(){if(!cust)return;const{data}=await sb.storage.from('disenos').list(cust.id,{limit:100,sortBy:{column:'created_at',order:'desc'}});
+ const files=(data||[]).filter(f=>f.name&&!f.name.startsWith('.')&&f.id!==null);const paths=files.map(f=>cust.id+'/'+f.name);
+ let urls={};if(paths.length){const{data:su}=await sb.storage.from('disenos').createSignedUrls(paths,3600);(su||[]).forEach(x=>{if(x.signedUrl)urls[x.path]=x.signedUrl})}
+ custFiles=files.map(f=>{const path=cust.id+'/'+f.name;return{path,label:f.name.replace(/^\d+-/,''),url:urls[path]||'',date:f.created_at}});if(location.hash==='#cuenta')render()}
+function viewAccount(){
+ if(!LIVE)return `<section class="band"><div class="wrap track"><h1>Mi cuenta</h1><p class="muted">Las cuentas de clientas funcionan en la página publicada, <b>impresosypublicidad.com</b>. Allí puedes registrarte para guardar tus datos, ver tus pedidos, volver a pedir y guardar tus diseños.</p></div></section>`;
+ if(!cust){const reg=authMode==='registro';
+  return `<section class="band"><div class="wrap track"><h1>${reg?'Crea tu cuenta':'Inicia sesión'}</h1>
+  <p class="muted">Es opcional: puedes comprar sin cuenta. Con tu cuenta guardas tus datos, ves todos tus pedidos, vuelves a pedir con un toque y guardas tus diseños.</p>
+  <div class="chips" style="margin:14px 0"><button class="chip" type="button" data-amode="login" aria-pressed="${!reg}">Ya tengo cuenta</button><button class="chip" type="button" data-amode="registro" aria-pressed="${reg}">Crear cuenta</button></div>
+  <form id="authForm" class="box">${reg?`<div class="row2"><div><label for="an">Nombre</label><input id="an" required autocomplete="name"></div><div><label for="aw">WhatsApp</label><input id="aw" required inputmode="tel" autocomplete="tel"></div></div>`:''}
+  <label for="ae">Correo</label><input id="ae" type="email" required autocomplete="email">
+  <label for="ap">Contraseña</label><input id="ap" type="password" required minlength="6" autocomplete="${reg?'new-password':'current-password'}">
+  ${reg?`<label class="toggle" style="border-style:solid"><input type="checkbox" id="aterms" required><span class="small">Acepto los <a href="#terminos" target="_blank">Términos y condiciones</a> y autorizo el tratamiento de mis datos según la <a href="#privacidad" target="_blank">Política de privacidad</a>.</span></label>`:''}
+  <button class="btn pri" style="width:100%;margin-top:14px">${reg?'Crear mi cuenta':'Entrar'}</button>
+  ${reg?'':'<button class="btn alt sm" type="button" id="forgot" style="margin-top:10px">Olvidé mi contraseña</button>'}</form></div></section>`}
+ if(acTab==='pedidos'&&custOrders===null)setTimeout(loadCustOrders,0);
+ const T=[['pedidos','Mis pedidos'],['disenos','Mis diseños'],['datos','Mis datos']];
+ let body='';
+ if(acTab==='pedidos'){body=custOrders===null?'<p class="muted">Cargando tus pedidos…</p>':!custOrders.length?'<div class="box"><p class="muted">Aún no tienes pedidos con tu cuenta. Cuando hagas uno con la sesión iniciada, aparecerá aquí.</p><a class="btn" href="#productos" style="display:inline-block;text-decoration:none">Ver catálogo</a></div>':
+  custOrders.map(o=>{const st=STATUS.find(s=>s.id===o.status);const idx=STATUS.findIndex(s=>s.id===o.status);const df=new Intl.DateTimeFormat('es-CO',{day:'numeric',month:'short',year:'numeric'});
+   return `<div class="box"><div class="dlghead"><div><h3 style="margin:0">Pedido ${esc(o.code)}</h3><span class="small muted">${o.date?df.format(new Date(o.date)):''} · ${esc(HOW[o.how]||'')}${o.zone?' · '+esc(o.zone):''}</span></div><span class="pill ${esc(o.status)}">${esc(st?st.name:'Cancelado')}</span></div>
+   ${o.status!=='cancelado'?`<div class="prog" aria-hidden="true"><span style="width:${Math.max(6,(idx+1)/STATUS.length*100)}%"></span></div>`:''}
+   ${(o.items||[]).map((i,k)=>`<div class="line"><div><b>${Number(i.qtyFinal||0).toLocaleString('es-CO')} ${esc(i.name)}</b><br><span class="small muted">${esc(itemDesc(i))}</span></div><div style="text-align:right"><b class="price">${fmt(i.price||0)}</b><br><button class="btn alt sm" type="button" data-again="${esc(o.code)}|${k}" style="margin-top:6px">Volver a pedir</button></div></div>`).join('')}
+   <div class="total" style="font-size:17px"><span>Total</span><span class="price">${fmt(o.total||0)}${o.feePending?' + envío':''}</span></div></div>`}).join('')}
+ if(acTab==='disenos'){body=`<div class="box"><p class="muted small">Guarda aquí tus archivos listos para imprimir (PDF, PNG o JPG, máximo 10 MB) y adjúntalos a tus próximos pedidos. Solo tú y nosotras podemos verlos.</p>
+  <label class="btn filebtn">Subir diseño<input type="file" id="dsUp" accept="application/pdf,image/png,image/jpeg" hidden></label></div>
+  ${custFiles===null?'<p class="muted">Cargando…</p>':!custFiles.length?'<p class="muted">Aún no has guardado diseños.</p>':custFiles.map(f=>`<div class="line"><span>${esc(f.label)}</span><span class="acts">${f.url&&/^https:\/\//.test(f.url)?`<a class="btn alt sm" href="${esc(f.url)}" target="_blank" rel="noopener">Ver</a>`:''}<button class="btn alt sm" type="button" data-dsdel="${esc(f.path)}">Borrar</button></span></div>`).join('')}`}
+ if(acTab==='datos'){body=`<form id="profForm" class="box"><div class="row2"><div><label for="pn">Nombre</label><input id="pn" value="${esc(cust.name||'')}" required></div><div><label for="pw">WhatsApp</label><input id="pw" value="${esc(cust.wa||'')}" inputmode="tel" required></div></div>
+  <label for="pz">Zona de domicilio (opcional)</label><select id="pz"><option value="">— Sin zona —</option>${S.sched.zones.map(z=>`<option${cust.zone===z.name?' selected':''}>${esc(z.name)}</option>`).join('')}</select>
+  <label for="pa">Dirección y barrio (opcional)</label><input id="pa" value="${esc(cust.addr||'')}" autocomplete="street-address">
+  <p class="small muted">Correo: ${esc(cust.email||'')}</p><button class="btn pri" style="margin-top:8px">Guardar mis datos</button></form>
+  <p class="small muted">¿Quieres eliminar tu cuenta y tus datos? Escríbenos al WhatsApp ${esc(S.wa.replace(/^57/,''))} y lo hacemos.</p>`}
+ return `<section class="band"><div class="wrap track"><div class="dlghead"><h1>Hola${cust.name?', '+esc(cust.name.split(' ')[0]):''} 💖</h1><button class="btn alt sm" type="button" id="custOut">Cerrar sesión</button></div>
+ <div class="tabs">${T.map(([k,n])=>`<button class="chip" type="button" data-actab="${k}" aria-pressed="${acTab===k}">${n}</button>`).join('')}</div>${body}</div></section>`;
+}
+document.addEventListener('click',async e=>{const t=e.target.closest('button');if(!t)return;
+ if(t.dataset.amode){authMode=t.dataset.amode;render()}
+ if(t.dataset.actab){acTab=t.dataset.actab;if(acTab==='pedidos')custOrders=null;if(acTab==='disenos')loadCustFiles();render()}
+ if(t.id==='custOut'){await sb.auth.signOut();cust=null;custOrders=null;custFiles=null;attach.clear();render();toast('Sesión cerrada')}
+ if(t.id==='forgot'){const em=$('#ae').value.trim();if(!em){toast('Escribe tu correo arriba');return}const{error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+location.pathname});toast(error?'No se pudo enviar. Intenta más tarde.':'Te enviamos un correo para cambiar tu contraseña')}
+ if(t.dataset.again){const[code,k]=t.dataset.again.split('|');const o=(custOrders||[]).find(x=>x.code===code);const it=o&&o.items[+k];if(it)openCfg(it.pid,null,it)}
+ if(t.dataset.dsdel){const{error}=await sb.storage.from('disenos').remove([t.dataset.dsdel]);attach.delete(t.dataset.dsdel);toast(error?'No se pudo borrar':'Diseño borrado');loadCustFiles()}
+});
+document.addEventListener('submit',async e=>{const id=e.target.id;
+ if(id==='authForm'){e.preventDefault();const btn=e.target.querySelector('button.pri');btn.disabled=true;const email=$('#ae').value.trim(),password=$('#ap').value;
+  if(authMode==='registro'){const name=$('#an').value.trim(),wa=$('#aw').value.replace(/\D/g,'');
+   const{data,error}=await sb.auth.signUp({email,password,options:{data:{name,wa},emailRedirectTo:location.origin+location.pathname+'#cuenta'}});btn.disabled=false;
+   if(error){toast(/registered|exists/i.test(error.message)?'Ese correo ya tiene cuenta. Inicia sesión.':'No se pudo crear la cuenta. Revisa los datos.');return}
+   if(data.session){await loadCustomer();toast('¡Bienvenida! Tu cuenta quedó creada 💖')}else toast('Te enviamos un correo para confirmar tu cuenta')}
+  else{const{error}=await sb.auth.signInWithPassword({email,password});btn.disabled=false;if(error){toast('Correo o contraseña incorrectos');return}
+   const isA=await enterAdmin(true);if(isA){location.hash='#panel';return}await loadCustomer()}}
+ if(id==='profForm'){e.preventDefault();const up={id:cust.id,email:cust.email,name:$('#pn').value.trim(),wa:$('#pw').value.replace(/\D/g,''),zone:$('#pz').value,addr:$('#pa').value.trim()};
+  const{error}=await sb.from('customers').upsert(up);if(error){toast('No se pudo guardar');return}Object.assign(cust,up);toast('Datos guardados');render()}
+ if(id==='newPass'){e.preventDefault();const{error}=await sb.auth.updateUser({password:$('#np1').value});toast(error?'No se pudo cambiar la contraseña':'Contraseña actualizada');if(!error){close();loadCustomer()}}
+});
+document.addEventListener('change',async e=>{if(e.target.id!=='dsUp'||!e.target.files[0]||!cust)return;const f=e.target.files[0];
+ if(f.size>10485760){toast('El archivo pesa más de 10 MB');return}if(!['application/pdf','image/png','image/jpeg'].includes(f.type)){toast('Solo PDF, PNG o JPG');return}
+ toast('Subiendo diseño…');const safe=f.name.normalize('NFD').replace(/[^\w.\-]+/g,'-').slice(-80);
+ const{error}=await sb.storage.from('disenos').upload(cust.id+'/'+Date.now()+'-'+safe,f,{contentType:f.type,upsert:false});
+ toast(error?'No se pudo subir el diseño':'Diseño guardado 💖');loadCustFiles()});
 
 const LEGAL_DATE='26 de noviembre de 2026';
 function viewLegal(k){
@@ -585,9 +666,9 @@ function viewLegal(k){
  <h2>1. Responsable</h2>
  <p>Impresos y Publicidad · Medellín, Antioquia, Colombia · WhatsApp ${wa} · Correo ${mail}.</p>
  <h2>2. Datos que recogemos</h2>
- <p>Nombre, número de WhatsApp, dirección y barrio de entrega (cuando pides domicilio o envío), los detalles de tu pedido, los archivos que nos envías y los pagos registrados.</p>
+ <p>Nombre, número de WhatsApp, dirección y barrio de entrega (cuando pides domicilio o envío), los detalles de tu pedido, los archivos que nos envías y los pagos registrados. Si creas una cuenta, también tu correo electrónico, tus datos guardados, tu historial de pedidos y los diseños que subas. Puedes pedirnos eliminar tu cuenta y tus datos cuando quieras.</p>
  <h2>3. Para qué los usamos</h2>
- <ul><li>Cotizar, confirmar, producir y entregar tu pedido.</li><li>Contactarte por WhatsApp sobre el estado de tu pedido.</li><li>Coordinar domicilios y envíos con mensajeros o transportadoras.</li><li>Llevar el historial de pedidos, pagos y garantías.</li><li>Enviarte promociones solo si nos das tu autorización.</li></ul>
+ <ul><li>Cotizar, confirmar, producir y entregar tu pedido.</li><li>Contactarte por WhatsApp sobre el estado de tu pedido.</li><li>Coordinar domicilios y envíos con mensajeros o transportadoras.</li><li>Llevar el historial de pedidos, pagos y garantías, y mostrártelo en tu cuenta si te registras.</li><li>Enviarte promociones solo si nos das tu autorización.</li></ul>
  <h2>4. Tus derechos</h2>
  <p>Puedes conocer, actualizar, rectificar y pedir que eliminemos tus datos, solicitar prueba de tu autorización, revocarla, saber cómo los usamos y presentar quejas ante la Superintendencia de Industria y Comercio (SIC).</p>
  <h2>5. Cómo ejercerlos</h2>
@@ -640,6 +721,7 @@ function panelOrders(){
 }
 function orderDlg(code,justChanged){
  const o=S.orders.find(x=>x.code===code);if(!o)return;openOrder=code;
+ if(LIVE&&o.files&&o.files.length)setTimeout(async()=>{const{data}=await sb.storage.from('disenos').createSignedUrls(o.files,3600);const el=$('#ofiles');if(!el)return;el.innerHTML=(data||[]).map(f=>f.signedUrl&&/^https:\/\//.test(f.signedUrl)?`<a href="${esc(f.signedUrl)}" target="_blank" rel="noopener">${esc((f.path||'').split('/').pop().replace(/^\d+-/,''))}</a>`:'').join(' · ')||'No se pudieron cargar.'},50);
  const st=STATUS.find(s=>s.id===o.status);
  const listo=o.how==='recogida'?'tu pedido está listo para recoger':o.how==='nacional'?'tu pedido está listo y lo entregamos a la transportadora':'tu pedido está listo y sale para tu domicilio';
  const msg=o.status==='cancelado'?`Hola ${o.name}, tu pedido ${o.code} fue cancelado. Escríbenos si tienes dudas.`:`Hola ${o.name}, te escribimos de Impresos y Publicidad: ${st.id==='listo'?listo:st.msg}.\nPedido: ${o.code}${st.id==='recibido'||st.id==='confirmado'?`\nTotal: ${fmt(o.total)}${o.feePending?' + envío':''}`:''}${paidOf(o)>0&&o.status!=='cancelado'?`\nAbonado: ${fmt(paidOf(o))}${dueOf(o)?` · Saldo: ${fmt(dueOf(o))}`:' · ¡Pago completo!'}`:''}\nPuedes ver el avance en nuestra página, en "Mi pedido".`;
@@ -653,6 +735,7 @@ function orderDlg(code,justChanged){
   ${dueOf(o)>0?`<div class="row2" style="margin-top:8px"><div><label for="pyv">Valor recibido</label><input id="pyv" type="number" min="1" step="500" inputmode="numeric"></div><div><label for="pym">Medio</label><select id="pym">${['Nequi','Bancolombia','Daviplata','Llave Bre-B','Efectivo','Otro'].map(x=>`<option>${x}</option>`).join('')}</select></div></div>
   <div class="chips" style="margin-top:8px"><button class="chip" type="button" data-pq="half">Abono 50% · ${fmt(Math.round(o.total/2/100)*100)}</button><button class="chip" type="button" data-pq="full">Pago completo · ${fmt(dueOf(o))}</button></div>
   <button class="btn pri" type="button" id="addPay" style="width:100%;margin-top:10px">Registrar pago</button>`:''}</div>
+ ${o.files&&o.files.length?`<div class="box" style="padding:12px;margin:12px 0"><b>Diseños adjuntos de la clienta</b><div id="ofiles" class="small muted">Cargando…</div></div>`:''}${o.uid?'<p class="small muted">Clienta con cuenta registrada.</p>':''}
  <label for="ost">Estado del pedido</label><select id="ost">${STATUS.map(s=>`<option value="${s.id}" ${o.status===s.id?'selected':''}>${s.name}</option>`).join('')}<option value="cancelado" ${o.status==='cancelado'?'selected':''}>Cancelado (devuelve el material)</option></select>
  ${justChanged?`<div class="okmsg">Estado actualizado. El cliente ya lo ve en "Mi pedido". Ahora avísale:</div>`:''}
  <label for="omsg">Mensaje para el cliente</label><textarea id="omsg" rows="4">${esc(msg)}</textarea>
@@ -856,7 +939,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('submit',e=>{
  const id=e.target.id;
- if(id==='gate'){e.preventDefault();if(LIVE){const btn=e.target.querySelector('button');btn.disabled=true;sb.auth.signInWithPassword({email:$('#gem').value.trim(),password:$('#pin').value}).then(async({error})=>{if(error){btn.disabled=false;toast('Correo o contraseña incorrectos');return}await enterAdmin()});return}
+ if(id==='gate'){e.preventDefault();if(LIVE){const btn=e.target.querySelector('button');btn.disabled=true;sb.auth.signInWithPassword({email:$('#gem').value.trim(),password:$('#pin').value}).then(async({error})=>{if(error){btn.disabled=false;toast('Correo o contraseña incorrectos');return}cust=null;await enterAdmin()});return}
   if($('#pin').value===S.pin){admin=true;render()}else toast('Clave incorrecta')}
  if(id==='restock'){e.preventDefault();const m=mat(e.target.dataset.m);const q=Math.max(0,+$('#rq').value||0);if(!q)return;const paid=+$('#rc').value||0;
   m.stock+=q;move(m.id,q,'Compra'+(paid?' · '+fmt(paid):''));if(paid)S.moves[0].c=paid;if(paid)m.cost=Math.round(paid/q);allocate(m.id);save();close();render();toast('¡Inventario completado! '+m.name+': '+m.stock+' '+munit(m))}
@@ -873,8 +956,8 @@ document.addEventListener('submit',e=>{
 $('#cartBtn').addEventListener('click',openCart);
 
 function render(){
- const h=location.hash.slice(1)||'catalogo';const view=['seguimiento','panel','terminos','privacidad'].includes(h)?h:'catalogo';
- $('#app').innerHTML=view==='seguimiento'?viewTrack():view==='panel'?viewPanel():view==='terminos'?viewLegal('terminos'):view==='privacidad'?viewLegal('privacidad'):viewCatalog();
+ const h=location.hash.slice(1)||'catalogo';const view=['seguimiento','panel','terminos','privacidad','cuenta'].includes(h)?h:'catalogo';
+ $('#app').innerHTML=view==='seguimiento'?viewTrack():view==='panel'?viewPanel():view==='cuenta'?viewAccount():view==='terminos'?viewLegal('terminos'):view==='privacidad'?viewLegal('privacidad'):viewCatalog();
  document.querySelectorAll('#nav a').forEach(a=>a.toggleAttribute('aria-current',a.getAttribute('href')==='#'+view));
  $('#foot').innerHTML=`<div class="footgrid"><div><b>Impresos y Publicidad</b> · Medellín · Envíos a toda Colombia<br>WhatsApp <a href="${esc(waLink(S.wa,'¡Hola! Quiero información de impresos'))}" target="_blank" rel="noopener">${esc(S.wa.replace(/^57/,''))}</a> · Instagram <a href="https://instagram.com/${encodeURIComponent(S.ig)}" target="_blank" rel="noopener">@${esc(S.ig)}</a></div>
   <nav class="footlinks" aria-label="Información legal"><a href="#terminos">Términos y condiciones</a><a href="#privacidad">Política de privacidad</a><a href="#seguimiento">Mi pedido</a></nav></div>
@@ -883,7 +966,8 @@ function render(){
 }
 window.addEventListener('hashchange',()=>{close();render();if(location.hash!=='#productos')scrollTo(0,0)});
 saveCart();render();
-if(LIVE){loadPublic().then(()=>sb.auth.getSession()).then(({data})=>{if(data.session)enterAdmin()});setInterval(()=>{if(admin&&!document.hidden)refreshOrders()},60000)}
+if(LIVE){loadPublic().then(()=>sb.auth.getSession()).then(({data})=>{if(data.session)enterAdmin(true).then(ok=>{if(!ok)loadCustomer()})});
+ sb.auth.onAuthStateChange(ev=>{if(ev==='PASSWORD_RECOVERY')setTimeout(()=>open(`<div class="dlghead"><h2>Nueva contraseña</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div><form id="newPass"><label for="np1">Escribe tu nueva contraseña</label><input id="np1" type="password" minlength="6" required autocomplete="new-password"><button class="btn pri" style="width:100%;margin-top:14px">Guardar contraseña</button></form>`),300)});setInterval(()=>{if(admin&&!document.hidden)refreshOrders()},60000)}
 }
 </script>
 </body>
