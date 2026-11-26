@@ -251,6 +251,7 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-conten
 <button class="helpbtn" id="helpBtn" type="button" aria-label="Soporte y ayuda"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.2"/><circle cx="12" cy="16.6" r=".6"/></svg><span>Ayuda</span></button>
 <footer class="foot band"><div class="wrap" id="foot"></div></footer>
 
+<script>if(location.hostname==='www.impresosypublicidad.com')location.replace('https://impresosypublicidad.com/'+location.hash);</script>
 <script>
 {
 /* ====== CONEXIÓN A SUPABASE: pega aquí tus datos (Project Settings → API) ====== */
@@ -448,7 +449,7 @@ function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';cl
 let cfg=null;
 function open(html,wide){$('#dlg').classList.toggle('wide',!!wide);$('#dlg').innerHTML=html;$('#ov').classList.add('on');document.body.style.overflow='hidden'}
 function close(){const was=$('#ov').classList.contains('on')&&cfg&&location.hash==='#p-'+cfg.pid;$('#ov').classList.remove('on');document.body.style.overflow='';cfg=null;if(was){const p=prod(location.hash.slice(3));history.replaceState(null,'',p?'#cat-'+p.cat:'#catalogo')}}
-const SITE=/^https?:$/.test(location.protocol)&&!/claude|usercontent|localhost/.test(location.host)?location.origin+location.pathname:'https://impresosypublicidad.com/';
+const SITE='https://impresosypublicidad.com/'; // siempre sin www para que el enlace abra seguro
 const prodUrl=p=>SITE+'#p-'+p.id;
 const catUrl=k=>SITE+(k==='todos'?'#catalogo':'#cat-'+k);
 const shareTxt=p=>`✨ ${p.name} ✨\n${p.desc||''}\nMira precios, cantidades y laminados y cotiza aquí:\n${prodUrl(p)}`;
@@ -774,14 +775,14 @@ document.addEventListener('click',async e=>{const t=e.target.closest('button');i
  if(t.dataset.amode){authMode=t.dataset.amode;render()}
  if(t.dataset.actab){acTab=t.dataset.actab;if(acTab==='pedidos')custOrders=null;if(acTab==='disenos')loadCustFiles();render()}
  if(t.id==='custOut'){await sb.auth.signOut();cust=null;custOrders=null;custFiles=null;attach.clear();render();toast('Sesión cerrada')}
- if(t.id==='forgot'){const em=$('#ae').value.trim();if(!em){toast('Escribe tu correo arriba');return}const{error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+location.pathname});toast(error?'No se pudo enviar. Intenta más tarde.':'Te enviamos un correo para cambiar tu contraseña')}
+ if(t.id==='forgot'){const em=$('#ae').value.trim();if(!em){toast('Escribe tu correo arriba');return}const{error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:SITE});toast(error?'No se pudo enviar. Intenta más tarde.':'Te enviamos un correo para cambiar tu contraseña')}
  if(t.dataset.again){const[code,k]=t.dataset.again.split('|');const o=(custOrders||[]).find(x=>x.code===code);const it=o&&o.items[+k];if(it)openCfg(it.pid,null,it)}
  if(t.dataset.dsdel){const{error}=await sb.storage.from('disenos').remove([t.dataset.dsdel]);attach.delete(t.dataset.dsdel);toast(error?'No se pudo borrar':'Diseño borrado');loadCustFiles()}
 });
 document.addEventListener('submit',async e=>{const id=e.target.id;
  if(id==='authForm'){e.preventDefault();const btn=e.target.querySelector('button.pri');btn.disabled=true;const email=$('#ae').value.trim(),password=$('#ap').value;
   if(authMode==='registro'){const name=$('#an').value.trim(),wa=$('#aw').value.replace(/\D/g,''),brand=$('#ab').value.trim().slice(0,80),ig=cleanIg($('#ai').value);if(brand.length<2||!ig){toast('Escribe el nombre y el Instagram de tu marca');return}
-   const{data,error}=await sb.auth.signUp({email,password,options:{data:{name,wa,brand,ig},emailRedirectTo:location.origin+location.pathname+'#cuenta'}});btn.disabled=false;
+   const{data,error}=await sb.auth.signUp({email,password,options:{data:{name,wa,brand,ig},emailRedirectTo:SITE+'#cuenta'}});btn.disabled=false;
    if(error){toast(/registered|exists/i.test(error.message)?'Ese correo ya tiene cuenta. Inicia sesión.':'No se pudo crear la cuenta. Revisa los datos.');return}
    if(data.session){await loadCustomer();toast('¡Bienvenida! Tu cuenta quedó creada 💖')}else toast('Te enviamos un correo para confirmar tu cuenta')}
   else{const{error}=await sb.auth.signInWithPassword({email,password});btn.disabled=false;if(error){toast('Correo o contraseña incorrectos');return}
@@ -1097,7 +1098,8 @@ function orderDlg(code,justChanged){
  if(LIVE&&o.files&&o.files.length)setTimeout(async()=>{const{data}=await sb.storage.from('disenos').createSignedUrls(o.files,3600);const el=$('#ofiles');if(!el)return;el.innerHTML=(data||[]).map(f=>f.signedUrl&&/^https:\/\//.test(f.signedUrl)?`<a href="${esc(f.signedUrl)}" target="_blank" rel="noopener">${esc((f.path||'').split('/').pop().replace(/^\d+-/,''))}</a>`:'').join(' · ')||'No se pudieron cargar.'},50);
  const st=STATUS.find(s=>s.id===o.status);
  const listo=o.how==='recogida'?'tu pedido está listo para recoger':o.how==='nacional'?'tu pedido está listo y lo entregamos a la transportadora':'tu pedido está listo y sale para tu domicilio';
- const msg=o.status==='cancelado'?`Hola ${o.name}, tu pedido ${o.code} fue cancelado. Escríbenos si tienes dudas.`:`Hola ${o.name}, te escribimos de Impresos y Publicidad: ${st.id==='listo'?listo:st.msg}.\nPedido: ${o.code}${st.id==='recibido'||st.id==='confirmado'?`\nTotal: ${fmt(o.total)}${o.feePending?' + envío':''}`:''}${paidOf(o)>0&&o.status!=='cancelado'?`\nAbonado: ${fmt(paidOf(o))}${dueOf(o)?` · Saldo: ${fmt(dueOf(o))}`:' · ¡Pago completo!'}`:''}\nPuedes ver el avance en nuestra página, en "Mi pedido".`;
+ const nm=(o.name||'').trim(),fr=o.status==='cancelado'?`tu pedido fue cancelado. Si tienes dudas, escríbenos`:(st.id==='listo'?listo:st.msg);
+ const msg=`Hola *${nm}*, te escribimos de Impresos y Publicidad: ${fr}.🩷\n\nPedido: ${o.code}${o.status==='cancelado'?'':`\nAbonado: ${fmt(paidOf(o))} · Saldo: ${fmt(dueOf(o))}${o.feePending?' + envío':''}`}\n\nPuedes ver el avance en nuestra página, en *"Mi pedido"*\n\nRastréalo aquí\n${SITE}#seguimiento`;
  const c=custOf(o);const mq=o.how==='domicilio'&&o.addr?'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addrTxt(o.ad?{...o.ad,ref:''}:null)||o.addr):'';
  open(`<div class="dlghead"><div class="ctop">${avHtml(c||{name:o.name},'lg')}<div><h2 style="margin:0">${esc(o.code)} · ${esc(c&&c.brand||o.name)}</h2><p class="muted small" style="margin:2px 0 0">${c&&c.brand?esc(o.name)+' · ':''}WhatsApp ${esc(o.wa)}${c&&c.ig?` · <a href="https://instagram.com/${encodeURIComponent(c.ig)}" target="_blank" rel="noopener">@${esc(c.ig)}</a>`:''}</p></div></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
  <div class="delivbox"><b>${esc(o.how==='recogida'?'Recoge en el local':HOW[o.how]+(o.zone?' · '+o.zone:''))}</b>${o.addr?`<span>${esc(o.addr)}</span>`:''}${mq?`<a class="btn alt sm" href="${esc(mq)}" target="_blank" rel="noopener">Ver en el mapa</a>`:''}</div>
