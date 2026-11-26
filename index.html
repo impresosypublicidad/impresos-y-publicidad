@@ -164,6 +164,8 @@ a.chip{text-decoration:none;color:var(--ink)}
 .toggle.agil{border:2px solid var(--c2);background:#fff}
 [hidden]{display:none!important}
 /* v3 */
+.sharerow{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 12px}
+.links summary{cursor:pointer}.linkrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.linkrow>div{display:flex;flex-direction:column;min-width:0}.linkrow .small{overflow-wrap:anywhere}.linkrow .acts{flex:none;display:flex;gap:6px}
 .npbox{background:var(--c3);margin:8px 0 10px}.npuse{background:#fff;border-radius:12px;padding:10px 12px;margin:12px 0 0}.npuse .warn{color:var(--c1d);font-weight:700}
 .bigcode{font-size:40px;font-weight:800;color:var(--c1d);margin:4px 0 8px;letter-spacing:.02em}
 a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
@@ -437,7 +439,14 @@ function avail(p,v,skip,h,back,paper){let units=Infinity,lim=null;for(const [mid
 function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2600)}
 let cfg=null;
 function open(html,wide){$('#dlg').classList.toggle('wide',!!wide);$('#dlg').innerHTML=html;$('#ov').classList.add('on');document.body.style.overflow='hidden'}
-function close(){$('#ov').classList.remove('on');document.body.style.overflow='';cfg=null}
+function close(){$('#ov').classList.remove('on');document.body.style.overflow='';cfg=null;if(/^#p-/.test(location.hash)){const p=prod(location.hash.slice(3));history.replaceState(null,'',p?'#cat-'+p.cat:'#catalogo')}}
+const SITE=/^https?:$/.test(location.protocol)&&!/claude|usercontent|localhost/.test(location.host)?location.origin+location.pathname:'https://impresosypublicidad.com/';
+const prodUrl=p=>SITE+'#p-'+p.id;
+const catUrl=k=>SITE+(k==='todos'?'#catalogo':'#cat-'+k);
+const shareTxt=p=>`✨ ${p.name} ✨\n${p.desc||''}\nMira precios, cantidades y laminados y cotiza aquí:\n${prodUrl(p)}`;
+const shareWa=txt=>'https://wa.me/?text='+encodeURIComponent(txt);
+function copyTxt(t,ok){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast(ok||'Enlace copiado'),()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(ok||'Enlace copiado')}catch(e){toast('No se pudo copiar')}a.remove()})}
+let pOpened='';
 $('#ov').addEventListener('click',e=>{if(e.target.id==='ov'||e.target.closest('[data-close]'))close()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 const waLink=(num,text)=>'https://wa.me/'+String(num).replace(/\D/g,'')+'?text='+encodeURIComponent(text);
@@ -567,7 +576,7 @@ function renderCfg(){
   ${pq>0?`<button class="chip" type="button" aria-pressed="${cfg.mode==='parcial'}" data-mode="parcial"><span>Me llevo ${pq} de entrega inmediata</span><span class="price">${fmt(priceFor(v,pq))}</span></button>`:''}</div></div>`;
  const qtyUI=v.unit?`<div class="qtyrow"><button class="btn alt sm" type="button" data-q="-1" aria-label="Menos">−</button><input id="qn" type="number" min="1" value="${cfg.qty}" inputmode="numeric" aria-label="Cantidad"><button class="btn alt sm" type="button" data-q="1" aria-label="Más">+</button><span class="muted small">${fmt(v.unit)} c/u</span></div>`
   :`<div class="chips">${v.tiers.map(([q,pr])=>`<button class="chip" type="button" data-qty="${q}" aria-pressed="${cfg.qty===q}">${q.toLocaleString('es-CO')} <span class="muted small price">${fmt(pr)}</span></button>`).join('')}</div>`;
- open(`<div class="cfggrid"><figure class="cfgimg"><img src="${esc(pimg(p))}" alt="${esc(p.name)}"></figure><div class="cfgbody"><div class="dlghead"><div><h2>${esc(p.name)}</h2><p class="muted small" style="margin:0">${esc(p.desc)}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+ open(`<div class="cfggrid"><figure class="cfgimg"><img src="${esc(pimg(p))}" alt="${esc(p.name)}"></figure><div class="cfgbody"><div class="dlghead"><div><h2>${esc(p.name)}</h2><p class="muted small" style="margin:0">${esc(p.desc)}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div><div class="sharerow"><button class="btn alt sm" type="button" data-plink="${esc(p.id)}">Copiar enlace</button><a class="btn alt sm" href="${esc(shareWa(shareTxt(p)))}" target="_blank" rel="noopener">Compartir por WhatsApp</a></div>
   ${p.variants.length>1?`<label>${esc(p.varLabel||'Opción')}</label><div class="chips">${p.variants.map(x=>`<button class="chip" type="button" data-v="${esc(x.id)}" aria-pressed="${x.id===v.id}">${x.lams.length&&p.varLabel==='Laminado'?swHtml(x.lams[0]==='holo'?holos()[0]:mat(x.lams[0])):''}${esc(x.name)}</button>`).join('')}</div>`:''}
   ${v.lams.includes('holo')?`<label>Diseño holográfico</label><div class="holopick">${holos().map(m=>`<button type="button" class="hp" data-holo="${esc(m.id)}" aria-pressed="${cfg.holo===m.id}"><img src="${esc(m.img)}" alt=""><span>${esc(m.short)}</span></button>`).join('')}</div>`:''}
   ${p.paperChoice?`<label>Papel</label><div class="chips">${PAPERS.map(id=>`<button class="chip" type="button" data-pp2="${id}" aria-pressed="${cfg.paper===id}">${esc(mat(id)?.short||id)}${id==='foto280'&&S.photoExtra?` <span class="muted small">+${fmt(S.photoExtra)}</span>`:''}</button>`).join('')}</div>`:''}
@@ -1211,9 +1220,15 @@ document.addEventListener('submit',async e=>{if(e.target.id!=='npForm')return;e.
  S.products.push(p);if(!save()){S.products.pop();return}close();render();toast('Producto creado 💖');
 });
 function panelProducts(){
- return `<div class="chips" style="justify-content:space-between;align-items:center;margin-bottom:8px"><span class="muted small">${S.products.length} productos · ${S.products.filter(p=>p.hidden).length} ocultos</span><button class="btn" type="button" id="newProd">+ Nuevo producto</button></div><div class="box"><label for="phx">Recargo por papel fotográfico 280 g en tarjetas (se suma al precio)</label><input id="phx" type="number" min="0" step="1000" value="${S.photoExtra||0}" style="max-width:200px"></div><p class="muted">Edita precios y cuántas unidades salen por hoja. Las tarjetas ya están en 8 por hoja; las demás vienen estimadas: ajústalas a tu realidad para que el inventario cuadre.</p>
+ const vis=S.products.filter(p=>!p.hidden);
+ return `<details class="box links" open><summary><b>Enlaces para enviar por WhatsApp</b> <span class="small muted">· cada uno abre el producto directo</span></summary>
+ <div class="linkrow"><div><b>Todo el catálogo</b><span class="small muted">${esc(catUrl('todos'))}</span></div><span class="acts"><button class="btn alt sm" type="button" data-clink="todos">Copiar</button><a class="btn sm" href="${esc(shareWa('Mira nuestro catálogo de impresos y cotiza aquí 💖\n'+catUrl('todos')))}" target="_blank" rel="noopener">WhatsApp</a></span></div>
+ ${CATS.filter(([k])=>vis.some(p=>p.cat===k)).map(([k,n])=>`<div class="linkrow"><div><b>Categoría: ${esc(n)}</b><span class="small muted">${esc(catUrl(k))}</span></div><span class="acts"><button class="btn alt sm" type="button" data-clink="${esc(k)}">Copiar</button><a class="btn sm" href="${esc(shareWa('Mira nuestras opciones de '+n.toLowerCase()+' y cotiza aquí 💖\n'+catUrl(k)))}" target="_blank" rel="noopener">WhatsApp</a></span></div>`).join('')}
+ ${vis.map(p=>`<div class="linkrow"><div><b>${esc(p.name)}</b><span class="small muted">${esc(prodUrl(p))}</span></div><span class="acts"><button class="btn alt sm" type="button" data-plink="${esc(p.id)}">Copiar</button><a class="btn sm" href="${esc(shareWa(shareTxt(p)))}" target="_blank" rel="noopener">WhatsApp</a></span></div>`).join('')}
+ <p class="small muted" style="margin:8px 0 0">"Copiar" copia solo el enlace. "WhatsApp" abre tu WhatsApp con un mensaje listo para escoger a quién mandarlo.</p></details>
+ <div class="chips" style="justify-content:space-between;align-items:center;margin-bottom:8px"><span class="muted small">${S.products.length} productos · ${S.products.filter(p=>p.hidden).length} ocultos</span><button class="btn" type="button" id="newProd">+ Nuevo producto</button></div><div class="box"><label for="phx">Recargo por papel fotográfico 280 g en tarjetas (se suma al precio)</label><input id="phx" type="number" min="0" step="1000" value="${S.photoExtra||0}" style="max-width:200px"></div><p class="muted">Edita precios y cuántas unidades salen por hoja. Las tarjetas ya están en 8 por hoja; las demás vienen estimadas: ajústalas a tu realidad para que el inventario cuadre.</p>
  ${S.products.map(p=>`<details class="box" style="margin-top:12px"><summary><b>${esc(p.name)}</b> <span class="muted small">· ${(CATS.find(c=>c[0]===p.cat)||['',''])[1]}</span>${p.hidden?' <span class="pill">Oculto</span>':''}</summary>
-  <div class="chips" style="margin-top:10px"><button class="btn alt sm" type="button" data-hide="${esc(p.id)}">${p.hidden?'Mostrar en el catálogo':'Ocultar del catálogo'}</button><button class="btn alt sm" type="button" data-del="${esc(p.id)}">Borrar producto</button></div>
+  <div class="chips" style="margin-top:10px">${p.hidden?'':`<button class="btn alt sm" type="button" data-plink="${esc(p.id)}">Copiar enlace</button>`}<button class="btn alt sm" type="button" data-hide="${esc(p.id)}">${p.hidden?'Mostrar en el catálogo':'Ocultar del catálogo'}</button><button class="btn alt sm" type="button" data-del="${esc(p.id)}">Borrar producto</button></div>
   ${typeof p.design==='number'?`<label>Precio del diseño</label><input type="number" min="0" step="1000" value="${p.design}" data-dp="${esc(p.id)}" style="max-width:200px">`:''}
   ${p.variants.map((v,vi)=>`<h3 style="margin-top:16px">${esc(v.name)}</h3><div class="row2">
    ${v.unit?`<div><label>Precio por ${esc(p.unit.replace(/s$/,''))}</label><input type="number" min="0" step="1000" value="${v.unit}" data-up="${esc(p.id)}" data-vi="${vi}"></div>`:v.tiers.map(([q,pr],k)=>`<div><label>${q.toLocaleString('es-CO')} ${esc(p.unit)}</label><input type="number" min="0" step="1000" value="${pr}" data-tier="${esc(p.id)}" data-vi="${vi}" data-k="${k}"></div>`).join('')}
@@ -1288,6 +1303,8 @@ document.addEventListener('input',e=>{const id=e.target.id;if(id==='oq'||id==='c
 document.addEventListener('click',e=>{
  const t=e.target.closest('button');if(!t)return;
  if(t.dataset.cfg)openCfg(t.dataset.cfg);
+ if(t.dataset.plink){const p=prod(t.dataset.plink);if(p)copyTxt(prodUrl(p),'Enlace de '+p.name+' copiado')}
+ if(t.dataset.clink)copyTxt(catUrl(t.dataset.clink),'Enlace copiado')
  if(t.dataset.cat){cat=t.dataset.cat;render();document.getElementById('productos')?.scrollIntoView()}
  if(t.dataset.tab){tab=t.dataset.tab;render();scrollTo(0,0)}
  if(t.dataset.filt){filt=t.dataset.filt;render()}
@@ -1360,7 +1377,7 @@ document.addEventListener('change',async e=>{const t=e.target;if(!t.dataset||!t.
 
 function render(){
  const h=location.hash.slice(1)||'inicio';let view;
- if(h.startsWith('cat-')&&CATS.some(c=>c[0]===h.slice(4))){cat=h.slice(4);view='catalogo'}else if(h==='catalogo'||h==='productos'){cat='todos';view='catalogo'}else view=['seguimiento','panel','terminos','privacidad','cuenta'].includes(h)?h:'inicio';
+ let pOpen=null;if(h.startsWith('p-')&&prod(h.slice(2))&&!prod(h.slice(2)).hidden){pOpen=prod(h.slice(2));cat=pOpen.cat;view='catalogo'}else if(h.startsWith('cat-')&&CATS.some(c=>c[0]===h.slice(4))){cat=h.slice(4);view='catalogo'}else if(h==='catalogo'||h==='productos'){cat='todos';view='catalogo'}else view=['seguimiento','panel','terminos','privacidad','cuenta'].includes(h)?h:'inicio';
  $('#app').innerHTML=view==='seguimiento'?viewTrack():view==='panel'?viewPanel():view==='cuenta'?viewAccount():view==='terminos'?viewLegal('terminos'):view==='privacidad'?viewLegal('privacidad'):view==='catalogo'?viewCatalog():viewHome();
  document.querySelectorAll('#nav > a').forEach(a=>a.toggleAttribute('aria-current',a.getAttribute('href')==='#'+view));
  $('#ddCats').innerHTML=[['todos','Ver todo'],...CATS].map(([k,n])=>`<a href="#${k==='todos'?'catalogo':'cat-'+k}"${view==='catalogo'&&cat===k?' aria-current="true"':''}>${n}</a>`).join('');
@@ -1369,6 +1386,7 @@ function render(){
   <nav class="footlinks" aria-label="Información legal"><a href="#terminos">Términos y condiciones</a><a href="#privacidad">Política de privacidad</a><a href="#seguimiento">Mi pedido</a></nav></div>
   <p class="copy">© ${new Date().getFullYear()} Impresos y Publicidad · Medellín, Colombia. Todos los derechos reservados. Las fotos, textos, diseños y el logo de esta página son propiedad de Impresos y Publicidad y no pueden usarse sin autorización.</p>`;
  if(h==='productos')document.getElementById('productos')?.scrollIntoView();
+ if(pOpen&&pOpened!==h){pOpened=h;setTimeout(()=>{if(!$('#ov').classList.contains('on'))openCfg(pOpen.id)},0)}else if(!pOpen)pOpened='';
 }
 window.addEventListener('hashchange',()=>{close();$('#navCat').open=false;render();if(location.hash!=='#productos')scrollTo(0,0)});
 saveCart();render();
