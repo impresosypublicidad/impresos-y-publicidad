@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Impresos y Publicidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: cercano, dulce y alegre, como la marca; claro y ordenado en el panel
+   IDEA: satín rosado del logo + un pliego de imprenta con marcas de corte
+   PICTURE: tarjetas holográficas apiladas sobre el pliego, con el logo como sticker
+   COLOUR/TYPE: rosado satín #ffd1e3, gris carbón #333, rosa fuerte para acciones; la letra de la marca solo en el logo, todo lo demás en Montserrat
+   LAYOUT: catálogo con categorías arriba, configurador en ventana, seguimiento y panel interno aparte */
+:root{color-scheme:light;
+--c1:#d6457f;--c1d:#b8336a;--c2:#f3a6c6;--c3:#fff0f5;--satin:#ffd1e3;
+--bg:#fff5f9;--soft:#ffe3ee;--ink:#2b2629;--mut:#6e5a64;--line:#f5cfdf;--card:#fff;
+--ok:#d6457f;--warn:#b8336a;--warnbg:#ffe8f1;--bad:#b8336a}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Montserrat,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3,.brand{font-family:Montserrat,system-ui,sans-serif;font-weight:800;letter-spacing:-.01em}.brand{font-weight:700}
+h1,h2,h3{line-height:1.08;margin:0 0 .4em;text-wrap:balance}
+h1{font-size:clamp(32px,5vw,48px)}h2{font-size:clamp(24px,3vw,32px)}h3{font-size:19px}
+.band{padding:clamp(28px,4vw,56px) max(5vw,16px)}.wrap{max-width:1240px;margin:0 auto}
+button,input,select,textarea{font:inherit;font-size:16px;color:inherit}
+.btn{min-height:44px;padding:10px 18px;border-radius:999px;border:2px solid var(--c1);background:var(--c1);color:#fff;font-weight:600;cursor:pointer;transition:background .15s}.btn:hover{background:var(--c1d);border-color:var(--c1d)}
+.btn.alt{background:#fff;color:var(--c1d);border-color:var(--c2)}.btn.alt:hover{background:var(--soft);border-color:var(--c1)}.btn.pri{background:var(--c1);border-color:var(--c1);color:#fff}
+.btn.sm{min-height:36px;padding:6px 12px;font-size:14px}.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.chip:focus-visible,a:focus-visible{outline:3px solid var(--c1);outline-offset:2px}
+input,select,textarea{width:100%;min-height:44px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card)}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+.muted{color:var(--mut)}.small{font-size:14px}.price{white-space:nowrap;font-variant-numeric:tabular-nums}
+header{position:sticky;top:0;z-index:20;background:#ffe3ee;border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px max(5vw,16px);max-width:1340px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:10px;font-size:23px;text-decoration:none;color:var(--ink);margin-right:auto}
+.logo img{width:44px;height:44px;border-radius:50%;border:1px solid var(--line)}
+nav a{color:var(--ink);text-decoration:none;font-weight:600;padding:8px 10px;border-radius:10px;white-space:nowrap}nav a[aria-current]{background:var(--soft)}
+.cartbtn{position:relative}.cartbtn b{position:absolute;top:-6px;right:-6px;background:#fff;color:var(--c1d)!important;border:2px solid var(--c1);color:#fff;border-radius:99px;font-size:12px;min-width:20px;height:20px;display:grid;place-items:center}
+.hero{background:radial-gradient(120% 80% at 10% 0%,#fff3f8 0,transparent 55%),radial-gradient(90% 70% at 90% 100%,#ffc3da 0,transparent 60%),linear-gradient(160deg,#ffe0ec,#ffd1e3 50%,#ffe7f0);color:#333033}
+:root[data-theme=dark] .hero{color:#333033}
+.heroin{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:32px;align-items:center}
+.hero p{font-size:17px;max-width:50ch;color:#5a4e55}
+.hero .btn{border-color:var(--c1);background:var(--c1);color:#fff}
+.fig{position:relative;min-height:330px}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+@keyframes floaty{50%{transform:translateY(-8px)}}.flo{animation:floaty 5s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.flo{animation:none}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.prod{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+.prod .art{background:linear-gradient(160deg,#ffe6ef,#ffd6e6);height:150px;display:grid;place-items:center}
+.prod .bd{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}.prod .bd .btn{margin-top:auto}
+.lams{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.lamtag{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border:1px solid rgba(51,48,51,.15);border-radius:99px;font-size:14px;background:rgba(255,255,255,.7);color:#333033}
+.sw{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);flex:none}
+.ov{position:fixed;inset:0;background:rgba(30,15,22,.55);z-index:50;display:none;align-items:flex-end;justify-content:center}
+.ov.on{display:flex}
+.dlg{background:var(--bg);width:min(640px,100%);max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:22px}
+@media(min-width:700px){.ov{align-items:center;padding:20px}.dlg{border-radius:22px}}
+.dlghead{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.x{background:var(--soft);border:0;border-radius:50%;font-size:26px;line-height:1;cursor:pointer;min-width:44px;min-height:44px;color:var(--c1d)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:8px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:500}
+.chip[aria-pressed=true]{border-color:var(--c1);box-shadow:inset 0 0 0 1px var(--c1);background:color-mix(in srgb,var(--c1) 9%,var(--card))}
+.notice{border-radius:14px;padding:14px;margin:14px 0;background:var(--warnbg);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent)}
+.notice strong{color:var(--warn)}
+.okmsg{border-radius:14px;padding:10px 14px;margin:14px 0;background:var(--soft);border:1px solid var(--line);font-size:14px}
+.choice{display:grid;gap:8px;margin-top:10px}.choice .chip{justify-content:space-between;text-align:left;width:100%}
+.toggle{display:flex;gap:12px;align-items:center;padding:14px;border:1.5px dashed var(--c2);border-radius:14px;margin-top:14px;cursor:pointer}
+.toggle input{width:22px;height:22px;min-height:0;flex:none;accent-color:var(--c1)}
+.total{display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:700;margin:18px 0 10px}
+.line{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.track{max-width:680px}
+.steps{list-style:none;padding:0;margin:20px 0}
+.steps li{position:relative;padding:0 0 22px 40px;color:var(--mut)}
+.steps li::before{content:"";position:absolute;left:8px;top:4px;width:16px;height:16px;border-radius:50%;border:3px solid var(--line);background:var(--bg)}
+.steps li::after{content:"";position:absolute;left:15px;top:24px;bottom:2px;width:2px;background:var(--line)}
+.steps li:last-child::after{display:none}
+.steps li.done{color:var(--ink)}.steps li.done::before{background:var(--c1);border-color:var(--c1)}
+.steps li.now{font-weight:700}.steps li.now::before{box-shadow:0 0 0 5px color-mix(in srgb,var(--c1) 25%,transparent)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.tabs .chip[aria-pressed=true]{background:var(--c1);color:#fff;border-color:var(--c1);box-shadow:none}
+.tabs .chip b{background:var(--c1d);color:#fff;border-radius:99px;font-size:12px;padding:1px 7px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:13px;color:var(--mut);font-weight:600}
+td.r,th.r{text-align:right}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:13px;font-weight:600;background:var(--soft);white-space:nowrap}
+.pill{color:var(--c1d)}.pill.recibido{background:#ffd1e3}.pill.listo,.pill.entregado,.pill.bien{background:#fde7f0}
+.pill.cancelado,.pill.ya{background:var(--c1);color:#fff}.pill.pronto{background:var(--c2);color:var(--ink)}
+.meter{height:10px;border-radius:99px;background:var(--soft);overflow:hidden;margin-top:6px;position:relative}.meter span{display:block;height:100%;background:var(--c2)}
+.meter span.low{background:var(--c1)}.meter i{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);opacity:.5}
+.panelgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}.kpi b{display:block;font-size:28px;font-variant-numeric:tabular-nums}
+.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:20px}
+.buy{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.mat{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.mat .nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mat .nums input{text-align:right}
+.facts{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--mut);margin-top:8px}.facts b{color:var(--ink);font-variant-numeric:tabular-nums}
+.gate{max-width:380px;margin:40px auto;text-align:center}
+.foot{background:var(--c2);color:var(--ink);font-size:14px}.foot a{color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--c1d);color:#fff;padding:12px 18px;border-radius:12px;z-index:60;display:none;max-width:90vw}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0 14px}
+@media(max-width:760px){.heroin{grid-template-columns:minmax(0,1fr)}.fig{min-height:250px}nav{order:3;width:100%;display:flex;overflow-x:auto}.mat{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){table{font-size:14px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:7em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:6.5em;margin-inline-start:-7em;color:var(--mut);font-size:13px}.stack td:empty{display:none}}
+.prod .art{display:block;width:100%;height:250px;padding:0;border:0;cursor:pointer;background:var(--soft)}
+.prod .art img{width:100%;height:100%;object-fit:cover;object-position:50% 14%;display:block}
+.flyerimg{width:100%;border-radius:14px;margin-top:12px;border:1px solid var(--line)}
+.qtyrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.qtyrow input{width:110px;text-align:right}
+details summary{cursor:pointer;min-height:32px;padding:4px 0}
+.lamgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px}
+.lamgrid figure{margin:0;text-align:center}.lamgrid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:50%;border:3px solid #fff;box-shadow:0 6px 16px rgba(122,42,79,.15)}
+.lamgrid figcaption{font-weight:600;font-size:14px;margin-top:6px}
+.holopick{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.hp{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);min-height:44px}
+.hp img{width:56px;height:56px;border-radius:50%;object-fit:cover}
+.hp[aria-pressed=true]{border-color:var(--c1);background:color-mix(in srgb,var(--c1) 9%,var(--card))}
+.hp:focus-visible{outline:3px solid var(--c1);outline-offset:2px}
+.ov{background:rgba(120,30,70,.45)}
+.prod{box-shadow:0 8px 24px rgba(214,69,127,.08)}
+.chip:hover{border-color:var(--c2)}
+input,select,textarea{border-color:var(--line)}
+.steps li.done::before{background:var(--c1);border-color:var(--c1)}
+.invt td{vertical-align:middle}@media(max-width:600px){.invt td{padding-inline-start:10em}.invt td::before{width:9.5em;margin-inline-start:-10em}}.invt tr.st-ya{background:#ffe8f1}.acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:600px){.acts{justify-content:flex-start}}
+.heroimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:24px;box-shadow:0 14px 34px rgba(214,69,127,.18)}
+.prod .art img.photo{object-position:50% 50%}
+.imgrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.thumb{width:180px;height:110px;border-radius:14px;background:var(--soft);border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;text-align:center;padding:4px}
+.thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px}.thumb.sm{width:64px;height:64px;padding:0}
+.filebtn{display:inline-flex;align-items:center;cursor:pointer}
+.pill.pay-pendiente{background:#fff;border:1px solid var(--c2)}.pill.pay-abono{background:var(--c2);color:var(--ink)}.pill.pay-pagado{background:var(--c1);color:#fff}
+.paybox{margin:14px 0;padding:14px}
+.bars{display:grid;gap:6px}.brow{display:grid;grid-template-columns:76px minmax(0,1fr) 92px;gap:10px;align-items:center;font-size:14px}
+.bl{color:var(--mut)}.bt{height:14px;background:var(--soft);border-radius:99px;overflow:hidden}.bt i{display:block;height:100%;background:var(--c1);border-radius:99px;min-width:2px}.bv{text-align:right}
+.kpi span.small{display:block}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+<header><div class="bar">
+  <a class="logo brand" href="#catalogo"><img src="data:image/jpeg;base64,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" alt=""><span>Impresos y Publicidad</span></a>
+  <nav id="nav"><a href="#catalogo">Catálogo</a><a href="#seguimiento">Mi pedido</a><a href="#panel">Panel</a></nav>
+  <button class="btn sm cartbtn" id="cartBtn" type="button">Carrito <b id="cartN">0</b></button>
+</div></header>
+<main id="app"></main>
+<div class="ov" id="ov" role="dialog" aria-modal="true"><div class="dlg" id="dlg"></div></div>
+<div class="toast" id="toast" role="status"></div>
+<footer class="foot band"><div class="wrap" id="foot"></div></footer>
+
+<script>
+{
+/* ====== CONEXIÓN A SUPABASE: pega aquí tus datos (Project Settings → API) ====== */
+const SUPA_URL='https://mxgjggrkpvnemguhmexf.supabase.co';
+const SUPA_KEY='sb_publishable_Dz2FOMbYZBzicEqCtrOFEQ_ByyPpk2R';
+/* ============================================================================== */
+const KEY='impresos-v12';
+const LIVE=/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(SUPA_URL)&&SUPA_KEY.length>40&&!!window.supabase;
+const sb=LIVE?window.supabase.createClient(SUPA_URL,SUPA_KEY):null;
+const LOGO=document.querySelector('.logo img').src;
+const fmt=n=>'$'+Math.round(n).toLocaleString('es-CO');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=s=>document.querySelector(s);
+const DAY=864e5;
+
+const STATUS=[
+ {id:'recibido',name:'Pedido recibido',msg:'recibimos tu pedido y lo estamos revisando'},
+ {id:'confirmado',name:'Confirmado',msg:'tu pedido está confirmado y ya entra a producción'},
+ {id:'diseno',name:'En diseño',msg:'estamos trabajando en el diseño de tu pedido'},
+ {id:'impresion',name:'En impresión',msg:'tu pedido ya está en proceso de impresión'},
+ {id:'acabados',name:'Laminado y corte',msg:'estamos laminando y cortando tu pedido'},
+ {id:'listo',name:'Listo para entrega',msg:'tu pedido está listo'},
+ {id:'entregado',name:'Entregado',msg:'tu pedido fue entregado. ¡Gracias por confiar en nosotros!'}
+];
+const SWATCH={none:'linear-gradient(135deg,#fff,#eee)',mate:'linear-gradient(135deg,#ddd8d6,#bdb6b3)',brillo:'linear-gradient(135deg,#fff,#d8e9f3 45%,#fff 55%,#bcd3e0)',holo:'conic-gradient(from 30deg,#ff9bd2,#9bd0ff,#b6ffd9,#fff59b,#ff9bd2)',glitter:'radial-gradient(circle at 30% 30%,#ffd0e6 0 12%,transparent 13%),radial-gradient(circle at 70% 60%,#fff 0 9%,transparent 10%),linear-gradient(135deg,#e2569a,#f59bc6)',foil:'linear-gradient(135deg,#b88a2e,#f5dc8a 45%,#c99a3a 60%,#f0d27a)',papel:'linear-gradient(135deg,#fff,#f3efe9)',vinilo:'linear-gradient(135deg,#fff,#e9eef3)',nfc:'linear-gradient(135deg,#fbe3ec,#e7b9cb)',iman:'linear-gradient(135deg,#555,#2b2b2b)'};
+const CATS=[['tarjetas','Tarjetas'],['detalles','Detalles para tus clientes'],['stickers','Stickers y etiquetas'],['papeleria','Papelería'],['publicidad','Publicidad']];
+const L=(id,name)=>({id,name});
+const DEF={
+ seq:1001,wa:'573054435259',ig:'impresosypublicidadmedellin',pin:'1234',waitDays:10,
+ mats:[
+  ...[['corazon','corazón'],['lentejuelas','lentejuelas'],['galaxia','galaxia'],['vidrio','vidrio'],['lluvia','lluvia'],['arcoiris','arcoíris'],['flores','flores'],['mariposas','mariposas'],['estrellas','estrellas'],['polvora','pólvora']].map(([k,n])=>({id:'holo-'+k,name:'Holográfico '+n,short:n[0].toUpperCase()+n.slice(1),group:'holo',kind:'laminado',stock:{corazon:15,lentejuelas:32,galaxia:32,vidrio:14,lluvia:32,arcoiris:13,flores:32,mariposas:32,estrellas:32,polvora:0}[k],min:8,cost:0,sw:'holo',img:'lam/'+k+'.jpg'})),
+  {id:'glitter',name:'Laminado glitter',kind:'laminado',stock:null,min:8,cost:0,sw:'glitter',img:'lam/glitter.jpg'},
+  {id:'brillo',name:'Laminado brillo UV',kind:'laminado',stock:57,min:20,cost:0,sw:'brillo',img:'lam/brillo.jpg'},
+  {id:'mate',name:'Laminado mate transparente',kind:'laminado',stock:5,min:10,cost:0,sw:'mate',img:'lam/mate.jpg'},
+  {id:'foil',name:'Foil',kind:'laminado',stock:null,min:5,cost:0,sw:'foil'},
+  {id:'opalina',name:'Opalina 200 g',short:'Opalina 200 g',kind:'papel',stock:100,min:30,cost:0,sw:'papel'},
+  {id:'p350',name:'Papel premium 350 g',kind:'papel',stock:null,min:100,cost:0,sw:'papel'},
+  {id:'foto280',name:'Papel fotográfico 280 g',short:'Fotográfico 280 g',kind:'papel',stock:40,min:10,cost:0,sw:'papel'},
+  {id:'foto135',name:'Papel fotográfico 135 g',kind:'papel',stock:40,min:10,cost:0,sw:'papel'},
+  {id:'corrugada',name:'Opalina corrugada',kind:'papel',stock:null,min:10,cost:0,sw:'papel'},
+    {id:'adhesivo',name:'Papel adhesivo (stickers)',kind:'papel',stock:null,min:10,cost:0,sw:'vinilo'},
+  {id:'iman',name:'Material imantado',kind:'papel',stock:null,min:100,cost:0,sw:'iman'},
+  {id:'rigido',name:'Material rígido',kind:'papel',stock:null,min:5,cost:0,sw:'papel',unit:'láminas'},
+  {id:'nfc',name:'Tarjetas NFC',kind:'papel',stock:null,min:10,cost:0,sw:'nfc',unit:'unidades'}
+ ],
+ products:[
+  {id:'tarjeticas',paperChoice:true,cat:'detalles',name:'Tarjeticas personalizadas',img:'tarjeticas',unit:'tarjeticas',desc:'Perfectas para agradecer a tus clientes. Impresión y laminado a una cara, tamaño estándar.',design:30000,varLabel:'Laminado',
+   variants:[['glitter','Glitter'],['holo','Holográfico'],['brillo','Brillo UV'],['mate','Mate']].map(([l,n])=>({id:l,name:n,lams:[l],paper:'opalina',per:8,tiers:[[16,55000],[24,63000],[32,71000],[40,78000],[48,87000]]})),
+   note:'El archivo se envía en PDF desde Canva. No se reciben imágenes hechas con IA. Otro tamaño más grande se cotiza aparte.'},
+  {id:'holografico',paperChoice:true,cat:'tarjetas',name:'Tarjeta laminado holográfico',img:'holografico',unit:'tarjetas',desc:'Una cara con laminado holográfico y el reverso a tu elección: brillo UV, mate o también holográfico.',design:30000,
+   variants:[{id:'std',name:'Holográfico',lams:['holo'],paper:'opalina',per:8,tiers:[[50,80000],[100,100000],[150,140000],[200,166000]]}],backs:[{id:'brillo',name:'Brillo UV',lam:'brillo'},{id:'mate',name:'Mate',lam:'mate'},{id:'same',name:'Holográfico también',lam:'same',price:35000}]},
+  {id:'glitter',paperChoice:true,cat:'tarjetas',name:'Tarjeta laminado glitter',img:'glitter',unit:'tarjetas',desc:'Una cara con laminado glitter y el reverso a tu elección: brillo UV, mate o también glitter.',design:30000,
+   variants:[{id:'std',name:'Glitter',lams:['glitter'],paper:'opalina',per:8,tiers:[[20,65000],[50,95000],[90,145000]]}],backs:[{id:'brillo',name:'Brillo UV',lam:'brillo'},{id:'mate',name:'Mate',lam:'mate'},{id:'same',name:'Glitter también',lam:'same',price:35000}]},
+  {id:'uv',paperChoice:true,cat:'tarjetas',name:'Tarjetas con brillo UV',img:'uv',unit:'tarjetas',desc:'Impresión por ambos lados con acabado brillo UV. Resistentes al agua y a rayones.',design:30000,
+   variants:[{id:'std',name:'Brillo UV',lams:['brillo'],paper:'opalina',per:8,tiers:[[50,65000],[100,95000],[150,125000],[200,150000]]}],backLabel:'Laminado en',backs:[{id:'1',name:'Una cara',lam:null},{id:'2',name:'Ambas caras',lam:'same'}]},
+  {id:'mate',paperChoice:true,cat:'tarjetas',name:'Tarjetas mate',img:'mate',unit:'tarjetas',desc:'Impresión por ambos lados con laminado mate. Resistentes al agua y a rayones.',design:30000,
+   variants:[{id:'std',name:'Mate',lams:['mate'],paper:'opalina',per:8,tiers:[[50,85000],[100,115000],[150,145000],[200,175000]]}],backLabel:'Laminado en',backs:[{id:'1',name:'Una cara',lam:null},{id:'2',name:'Ambas caras',lam:'same'}],note:'Envíanos tu diseño en PDF desde Canva.'},
+  {id:'presentacion',track:false,paperChoice:true,cat:'tarjetas',name:'Mil tarjetas de presentación',img:'presentacion',unit:'tarjetas',desc:'Impresión y laminado en ambas caras. Incluye diseño si no lo tienes.',design:'incl',varLabel:'Laminado',
+   variants:[{id:'uv',name:'Brillo UV',lams:['brillo'],paper:'opalina',per:10,fixed:true,tiers:[[1000,450000]]},{id:'mate',name:'Mate',lams:['mate'],paper:'opalina',per:10,fixed:true,tiers:[[1000,490000]]}],
+   note:'Solo en laminado mate o brillo UV. Otro tamaño o estilo se cotiza aparte.'},
+  {id:'foil',track:false,cat:'tarjetas',name:'Tarjetas de lujo laminado foil',img:'foil',unit:'tarjetas',desc:'Papel grueso premium de 350 g con laminado foil a elección. Solo en millar.',design:30000,varLabel:'Acabado',
+   variants:[{id:'mate',name:'Mate con estampado foil',lams:['mate','foil'],paper:'p350',per:10,fixed:true,tiers:[[1000,565000]]},{id:'2c',name:'Laminado a 2 caras',lams:['foil'],paper:'p350',per:10,fixed:true,tiers:[[1000,600000]]}]},
+  {id:'imantadas',track:false,cat:'tarjetas',name:'Tarjetas imantadas',img:'imantadas',unit:'tarjetas',desc:'9 × 5 cm, impresión a una cara en material imantado. Incluye diseño.',design:'incl',
+   variants:[{id:'std',name:'Imantada',lams:[],paper:'iman',per:10,fixed:true,tiers:[[1000,480000]]}]},
+  {id:'plegable',track:false,paperChoice:true,cat:'tarjetas',name:'Tarjeta plegable',img:'plegable',unit:'tarjetas',desc:'Viene sin laminado. Puedes enviarnos tu diseño totalmente personalizado.',design:30000,
+   variants:[{id:'std',name:'Sin laminado',lams:[],paper:'opalina',per:5,tiers:[[20,85000],[30,105000],[40,125000],[50,145000],[1000,670000]]}],note:'Otra cantidad se cotiza bajo pedido.'},
+  {id:'nfc',track:false,cat:'tarjetas',name:'Tarjeta NFC personalizada',img:'nfc',unit:'tarjetas',desc:'Comparte tu información con un solo toque. Laminado brillo UV o mate, impresión a una o dos caras, perforado y despunte. Valor por tarjeta configurada con 1 enlace.',design:30000,varLabel:'Laminado',
+   variants:[{id:'uv',name:'Brillo UV',lams:['brillo'],paper:'nfc',per:1,unit:50000},{id:'mate',name:'Mate',lams:['mate'],paper:'nfc',per:1,unit:50000}],
+   choices:[{label:'Enlace que quieres configurar',opts:['WhatsApp','Instagram','Facebook','TikTok','Página web','Catálogo','Otro enlace']}],
+   note:'Garantía por defectos de fabricación y 24 horas si el enlace falla. Reconfigurar el enlace después de la entrega cuesta $10.000. El envío hacia y desde el taller corre por cuenta del cliente.'},
+  {id:'agradecimiento',paperChoice:true,cat:'detalles',name:'Tarjetas de agradecimiento',img:'agradecimiento',unit:'tarjetas',desc:'Gruesas y resistentes. Para escribir a mano el nombre del cliente, WhatsApp e Instagram.',design:'no',
+   variants:[{id:'std',name:'Papel fotográfico',lams:[],paper:'foto280',per:4,tiers:[[20,30000],[50,45000],[60,55000],[80,72000],[100,92000]]}],
+   choices:[{label:'Color',opts:['Rosado','Azul','Amarillo','Morado','Otro color (cuéntanos en notas)']}]},
+  {id:'raspa',track:false,paperChoice:true,cat:'detalles',name:'Tarjetas raspa y gana',img:'raspa',unit:'tarjetas',desc:'Impresión a color con premios variados, sticker raspable, laminado y corte con despunte.',design:'cotiza',
+   variants:[{id:'std',name:'Raspa y gana',lams:['brillo'],paper:'opalina',per:6,tiers:[[50,95000],[100,150000],[150,210000],[200,260000]]}],note:'Define antes los premios que quieres incluir (escríbelos en las notas).'},
+  {id:'fidelidad',paperChoice:true,cat:'detalles',name:'Tarjeta fidelidad',img:'fidelidad',unit:'tarjetas',desc:'Laminado glitter al frente y reverso brillo UV o mate, sticker raspable y corte con despunte.',design:30000,
+   variants:[{id:'std',name:'Glitter',lams:['glitter'],paper:'opalina',per:8,tiers:[[20,105000],[50,130000],[90,195000]]}],backs:[{id:'brillo',name:'Brillo UV',lam:'brillo'},{id:'mate',name:'Mate',lam:'mate'}],
+   choices:[{label:'Stickers',opts:['Dorado','Plateado']}],extras:[{id:'punta',name:'Con punta redonda',price:40000}]},
+  {id:'bonos',cat:'detalles',name:'Impresión de bonos regalo',img:'bonos',unit:'bonos',desc:'Tú escoges el laminado. Envía el diseño listo para impresión.',design:30000,varLabel:'Laminado',
+   variants:['glitter','holo','brillo','mate'].map(l=>({id:l,name:{glitter:'Glitter',holo:'Holográfico',brillo:'Transparente',mate:'Mate'}[l],lams:[l],paper:'opalina',per:8,tiers:[[50,85000],[60,90000],[100,109000],[150,120000]]}))},
+  {id:'bonos-sobre',cat:'detalles',name:'Bonos regalo con sobre',img:'bonos-sobre',unit:'bonos',desc:'Bono con su sobre. Solo en laminado mate o transparente UV.',design:30000,varLabel:'Laminado',
+   variants:[{id:'mate',name:'Mate',lams:['mate'],paper:'opalina',per:8,tiers:[[40,180000],[60,220000],[70,245000],[100,290000],[200,350000]]},{id:'uv',name:'Transparente UV',lams:['brillo'],paper:'opalina',per:8,tiers:[[40,180000],[60,220000],[70,245000],[100,290000],[200,350000]]}],
+   note:'Otro tamaño o estilo se cotiza aparte.'},
+  {id:'stickers-lam',cat:'stickers',name:'Stickers en pliego laminado',img:'stickers-lam',unit:'pliegos',desc:'Resistentes al agua, aptos para refrigeración y con mayor durabilidad. Precio por pliego.',design:30000,
+   variants:[{id:'std',name:'Laminado',lams:['brillo'],paper:'adhesivo',per:1,unit:95000}],
+   choices:[{label:'Tamaño (stickers por pliego)',opts:['4 cm · 322','5 cm · 198','6 cm · 135','7 cm · 104','8 cm · 77','9 cm · 60','10 cm · 54']}]},
+  {id:'stickers',cat:'stickers',name:'Stickers sin laminado',img:'stickers',unit:'pliegos',desc:'No son resistentes al agua ni a la humedad. Ideales para envíos, empaques y bolsas. Precio por pliego.',design:30000,
+   variants:[{id:'std',name:'Sin laminado',lams:[],paper:'adhesivo',per:1,unit:70000}],
+   choices:[{label:'Tamaño (stickers por pliego)',opts:['2×2 cm · 610','3×3 cm · 300','4×4 cm · 168','5×5 cm · 108','6×6 cm · 72']},{label:'Forma',opts:['Redondos','Cuadrados']}]},
+  {id:'etiquetas',cat:'stickers',name:'Etiquetas para prendas',img:'etiquetas',unit:'etiquetas',desc:'Impresión a una o dos caras, perforado y despunte. Tamaño estándar.',design:30000,varLabel:'Laminado',
+   variants:[{id:'uv',name:'Brillo UV',lams:['brillo'],paper:'opalina',per:8,tiers:[[20,50000],[30,59000],[40,69000],[50,79000],[60,89000],[100,110000]]},{id:'mate',name:'Mate',lams:['mate'],paper:'opalina',per:8,tiers:[[20,55000],[30,64000],[40,74000],[50,84000],[60,94000],[100,115000]]}],backLabel:'Laminado en',backs:[{id:'1',name:'Una cara',lam:null},{id:'2',name:'Ambas caras',lam:'same'}],
+   note:'El archivo se envía en PDF desde Canva. No se reciben imágenes hechas con IA. Otro tamaño o forma se cotiza aparte.'},
+  {id:'rotulos',cat:'papeleria',name:'Rótulos de envío',img:'rotulos',unit:'rótulos',desc:'En papel fotográfico, sin adhesivo. Prácticos y bonitos para tus envíos.',design:30000,
+   variants:[{id:'std',name:'Papel fotográfico',lams:[],paper:'foto280',per:4,tiers:[[20,35000],[30,55000],[50,85000],[60,130000],[100,195000],[200,320000]]}]},
+  {id:'volantes',cat:'publicidad',name:'Volantes',img:'volantes',unit:'volantes',desc:'Escoge el tamaño y la cantidad.',design:30000,varLabel:'Tamaño',
+   variants:[{id:'7x13',name:'7 × 13 cm',lams:[],paper:'foto135',per:6,tiers:[[50,80000],[100,100000],[1000,130000]]},{id:'media',name:'½ carta (12 × 20 cm) 1 lado',lams:[],paper:'foto135',per:2,tiers:[[50,160000],[100,180000],[1000,240000]]},{id:'media2',name:'½ carta 2 lados',lams:[],paper:'foto135',per:2,fixed:true,tiers:[[1000,360000]]},{id:'carta',name:'Carta',lams:[],paper:'foto135',per:1,fixed:true,tiers:[[1000,350000]]},{id:'cuarto',name:'¼ de carta',lams:[],paper:'foto135',per:4,fixed:true,tiers:[[2000,250000]]}]},
+  {id:'pendones',cat:'publicidad',name:'Pendones publicitarios',img:'pendones',unit:'pendones',desc:'Listos para colgar, perfectos para vitrinas, eventos y puntos de venta. Envíos a todo Colombia.',design:30000,varLabel:'Medida',
+   variants:[{id:'70',name:'70 × 50 cm',lams:[],paper:null,per:1,unit:95000},{id:'100',name:'100 × 70 cm',lams:[],paper:null,per:1,unit:110000},{id:'120',name:'120 × 80 cm',lams:[],paper:null,per:1,unit:135000}],
+   choices:[{label:'Acabado',opts:['Con ojales','Con varilla plástica']}]},
+  {id:'tabla',cat:'publicidad',name:'Tabla de precios en material rígido',img:'tabla',unit:'tablas',desc:'Impresión a ambas caras, resistente y durable.',design:30000,
+   variants:[{id:'std',name:'Material rígido',lams:[],paper:'rigido',per:1,unit:70000}],choices:[{label:'Tamaño',opts:['Carta','Oficio']}]},
+  {id:'talonario',cat:'papeleria',name:'Talonario de pagos',img:'talonario',unit:'talonarios',desc:'Tamaño media carta, 100 hojas. Personalízalo con tu logo y colores.',design:50000,
+   variants:[{id:'std',name:'Talonario',lams:[],paper:null,per:1,unit:75000}]},
+  {id:'fichas',track:false,cat:'papeleria',name:'Fichas de consentimiento',img:'fichas',unit:'fichas',desc:'Media carta en opalina. Ideales para lashistas, manicuristas y cosmetólogas.',design:'no',
+   variants:[{id:'std',name:'Opalina',lams:[],paper:'opalina',per:2,unit:10000}],choices:[{label:'Para',opts:['Lashista','Manicurista','Cosmetóloga']}],extras:[{id:'dig',name:'Archivo digital de la ficha',price:45000}]},
+  {id:'certificados',cat:'papeleria',name:'Certificados en opalina corrugada',img:'certificados',unit:'certificados',desc:'Tamaño media carta. El diseño personalizado se cobra aparte.',design:30000,
+   variants:[{id:'std',name:'Opalina corrugada',lams:[],paper:'corrugada',per:2,unit:10000}]}
+ ],
+ sched:{pickup:'Escríbenos para darte la dirección, Medellín',hours:'Lunes a viernes 9:00 a. m. – 6:00 p. m. · Sábados 9:00 a. m. – 1:00 p. m.',delivery:'Escoge tu zona y el valor del domicilio se suma a tu pedido. Solo cubrimos las zonas de la lista. Coordinamos el día de entrega por WhatsApp.',national:'Otros municipios y el resto de Colombia por Interrapidísimo. El valor depende del destino y del peso, y te lo confirmamos por WhatsApp.',
+  zones:[['Envigado',12000],['Sabaneta',15000],['Itagüí',15000],['Medellín',15000],['La Estrella',17000],['San Antonio de Prado',17000],['Bello - Niquía',18000],['Copacabana',22000],['Caldas',22000],['Terminales sur y norte',16000],['Santo Domingo',20000],['San Cristóbal',20000],['Altavista - Aguas Frías',20000],['Sector La Loma San Javier',18000],['Caicedo parte alta',18000],['Llanaditas',18000],['Villatina',18000],['Quintalinda',18000],['Palmas hasta Colegiatura',18000]].map(([name,price])=>({name,price}))},
+ page:{title:'Impresos lindos para que tu marca enamore',sub:'Tarjetas, stickers, etiquetas, bonos, volantes y mucho más. Escoge tu producto, la cantidad y el acabado, y envíanos tu cotización por WhatsApp.',hero:'',btn:'Ver catálogo'},
+ orders:[],moves:[]
+};
+let S=null;if(!LIVE){try{S=JSON.parse(localStorage.getItem(KEY))||null}catch(e){S=null}}
+if(!S)S=JSON.parse(JSON.stringify(DEF));
+if(!S.page)S.page=JSON.parse(JSON.stringify(DEF.page));
+const okImg=u=>typeof u==='string'&&(/^data:image\/(jpeg|png|webp);base64,/.test(u)||/^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/v1\/object\/public\/fotos\/[\w.\-]+$/.test(u));
+const pimg=p=>okImg(p.photo)?p.photo:p.img?`img/${p.img}.jpg`:LOGO;
+const paidOf=o=>(o.pays||[]).reduce((s,x)=>s+x.a,0);
+const dueOf=o=>Math.max(0,o.total-paidOf(o));
+const payState=o=>{const p=paidOf(o);return p>=o.total&&o.total>0?'pagado':p>0?'abono':'pendiente'};
+const PAYN={pendiente:'Sin pagar',abono:'Abono',pagado:'Pagado'};
+const save=()=>{if(LIVE){if(admin)queueSync();return true}try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){toast('No hay espacio para guardar más fotos en este dispositivo');return false}};
+/* ---------- sincronización con Supabase ---------- */
+const pubMat=({stock,min,cost,...m})=>m;
+const cfgData=()=>({products:S.products,sched:S.sched,page:S.page,wa:S.wa,ig:S.ig,waitDays:S.waitDays,mats:S.mats.map(pubMat)});
+const snap={cfg:'',mats:{},orders:{}};let syncT=null,syncing=false;
+function queueSync(){clearTimeout(syncT);syncT=setTimeout(syncNow,500)}
+async function syncNow(){if(!LIVE||!admin)return;if(syncing){queueSync();return}syncing=true;
+ try{const c=JSON.stringify(cfgData());if(c!==snap.cfg){const{error}=await sb.from('config').upsert({id:1,data:JSON.parse(c),updated_at:new Date().toISOString()});if(error)throw error;snap.cfg=c}
+  const ch=S.mats.filter(m=>JSON.stringify(m)!==snap.mats[m.id]);
+  for(const m of ch){const prev=snap.mats[m.id]?JSON.parse(snap.mats[m.id]):null;if(prev&&prev.stock!=null&&m.stock!=null&&prev.stock!==m.stock){const{data:cur}=await sb.from('materials').select('data').eq('id',m.id).maybeSingle();if(cur&&cur.data&&cur.data.stock!=null)m.stock=Math.max(0,cur.data.stock+(m.stock-prev.stock))}}
+  const mm=ch.map(m=>({id:m.id,data:m}));if(mm.length){const{error}=await sb.from('materials').upsert(mm);if(error)throw error;mm.forEach(x=>snap.mats[x.id]=JSON.stringify(x.data))}
+  const oo=S.orders.filter(o=>JSON.stringify(o)!==snap.orders[o.code]).map(o=>({code:o.code,data:o}));if(oo.length){const{error}=await sb.from('orders').upsert(oo);if(error)throw error;oo.forEach(x=>snap.orders[x.code]=JSON.stringify(x.data))}
+  const nm=S.moves.filter(x=>!x.s);if(nm.length){const{error}=await sb.from('moves').insert(nm.map(x=>({t:new Date(x.t).toISOString(),m:x.m,d:x.d,r:x.r,c:x.c||null})));if(error)throw error;nm.forEach(x=>x.s=1)}
+ }catch(err){toast('No se pudo guardar. Revisa tu internet e inténtalo de nuevo.');console.log(err)}
+ syncing=false}
+async function loadPublic(){if(!LIVE)return;
+ const{data,error}=await sb.from('config').select('data').eq('id',1).maybeSingle();
+ if(admin)return;if(!error&&data&&data.data){const d=data.data;['products','sched','page','wa','ig','waitDays'].forEach(k=>{if(d[k]!=null)S[k]=d[k]});if(Array.isArray(d.mats))S.mats=d.mats}
+ render()}
+async function loadAdmin(){
+ const[cfg,ms,os,mv]=await Promise.all([sb.from('config').select('data').eq('id',1).maybeSingle(),sb.from('materials').select('id,data'),sb.from('orders').select('code,data').order('created_at',{ascending:false}).limit(500),sb.from('moves').select('t,m,d,r,c').order('t',{ascending:false}).limit(400)]);
+ if(ms.error||os.error)throw ms.error||os.error;
+ if(cfg.data&&cfg.data.data){const d=cfg.data.data;['products','sched','page','wa','ig','waitDays'].forEach(k=>{if(d[k]!=null)S[k]=d[k]})}
+ if(ms.data.length){const byId=Object.fromEntries(ms.data.map(x=>[x.id,x.data]));const pub=cfg.data?.data?.mats||S.mats;S.mats=pub.map(m=>byId[m.id]?{...m,...byId[m.id]}:m);ms.data.forEach(x=>{if(!S.mats.some(m=>m.id===x.id))S.mats.push(x.data)})}
+ S.orders=os.data.map(x=>x.data);S.moves=(mv.data||[]).map(x=>({t:+new Date(x.t),m:x.m,d:x.d,r:x.r,c:x.c||undefined,s:1}));
+ snap.cfg=cfg.data?JSON.stringify(cfg.data.data):'';ms.data.forEach(x=>snap.mats[x.id]=JSON.stringify(x.data));os.data.forEach(x=>snap.orders[x.code]=JSON.stringify(x.data));
+ queueSync()}
+async function enterAdmin(){const{data,error}=await sb.rpc('is_admin');if(error||!data){await sb.auth.signOut();toast('Ese correo no tiene acceso al panel');return false}
+ admin=true;try{await loadAdmin()}catch(err){toast('No se pudieron cargar tus datos');console.log(err)}render();return true}
+async function refreshOrders(){const{data,error}=await sb.from('orders').select('code,data').order('created_at',{ascending:false}).limit(500);if(error)return;
+ const fresh=data.filter(x=>!S.orders.some(o=>o.code===x.code));if(fresh.length){S.orders=[...fresh.map(x=>x.data),...S.orders];fresh.forEach(x=>snap.orders[x.code]=JSON.stringify(x.data));
+  const ms=await sb.from('materials').select('id,data');if(!ms.error)ms.data.forEach(x=>{const m=mat(x.id);if(m&&m.stock!==x.data.stock){m.stock=x.data.stock;snap.mats[x.id]=JSON.stringify(m)}});
+  render();toast(fresh.length===1?'¡Llegó un pedido nuevo!':'¡Llegaron '+fresh.length+' pedidos nuevos!')}}
+let cart=[];try{cart=JSON.parse(sessionStorage.getItem(KEY+'c'))||[]}catch(e){}
+const saveCart=()=>{try{sessionStorage.setItem(KEY+'c',JSON.stringify(cart))}catch(e){};$('#cartN').textContent=cart.length};
+let admin=false,cat='todos';
+
+const mat=id=>S.mats.find(m=>m.id===id);
+const prod=id=>S.products.find(p=>p.id===id);
+const variant=(p,vid)=>p.variants.find(v=>v.id===vid)||p.variants[0];
+const munit=m=>m.unit||'hojas';
+const lamsOf=()=>S.mats.filter(m=>m.kind==='laminado');
+const move=(m,delta,reason)=>{if(delta)S.moves.unshift({t:Date.now(),m,d:delta,r:reason});S.moves=S.moves.slice(0,400)};
+const holos=()=>S.mats.filter(m=>m.group==='holo');
+const rl=(v,h)=>v.lams.map(l=>l==='holo'?(h||holos()[0]?.id):l);
+const tracked=id=>id&&mat(id)&&mat(id).stock!=null;
+const PAPERS=['opalina','foto280'];
+function needsOf(p,v,h,back,paper,all){const m={};if(p.track===false)return m;const add=id=>{if(all?(id&&mat(id)):tracked(id))m[id]=(m[id]||0)+1};const fr=rl(v,h);fr.forEach(add);
+ const bk=(p.backs||[]).find(x=>x.id===back);if(bk){if(bk.lam==='same')add(fr[0]);else if(bk.lam)add(bk.lam)}add(p.paperChoice&&paper?paper:v.paper);return m}
+const swStyle=m=>m&&m.img?`background:url(img/${esc(m.img)}) center/cover`:`background:${SWATCH[m?.sw]||SWATCH.none}`;
+const swHtml=m=>`<span class="sw" style="${swStyle(m)}"></span>`;
+function priceFor(v,q){if(v.unit)return v.unit*q;const t=[...v.tiers].sort((a,b)=>a[0]-b[0]);const ex=t.find(x=>x[0]===q);if(ex)return ex[1];let tier=t[0];for(const x of t)if(x[0]<=q)tier=x;return Math.round(q*tier[1]/tier[0]/100)*100}
+const fromPrice=p=>Math.min(...p.variants.map(v=>v.unit||v.tiers[0][1]));
+const fromLabel=p=>{const v=p.variants.reduce((a,b)=>(a.unit||a.tiers[0][1])<=(b.unit||b.tiers[0][1])?a:b);return v.unit?`${fmt(v.unit)} c/u`:`${fmt(v.tiers[0][1])} × ${v.tiers[0][0]}`};
+function inCart(mid,skip){return cart.reduce((s,it,i)=>i===skip?s:s+it.use.filter(u=>u.m===mid).reduce((a,u)=>a+u.got,0),0)}
+function freeSheets(mid,skip){const m=mat(mid);if(!m||m.stock==null)return Infinity;return Math.max(0,m.stock-inCart(mid,skip))}
+function avail(p,v,skip,h,back,paper){let units=Infinity,lim=null;for(const [mid,k] of Object.entries(needsOf(p,v,h,back,paper))){const u=Math.floor(freeSheets(mid,skip)/k)*v.per;if(u<units){units=u;lim=mat(mid)}}return {units,lim}}
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2600)}
+let cfg=null;
+function open(html){$('#dlg').innerHTML=html;$('#ov').classList.add('on');document.body.style.overflow='hidden'}
+function close(){$('#ov').classList.remove('on');document.body.style.overflow='';cfg=null}
+$('#ov').addEventListener('click',e=>{if(e.target.id==='ov'||e.target.closest('[data-close]'))close()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+const waLink=(num,text)=>'https://wa.me/'+String(num).replace(/\D/g,'')+'?text='+encodeURIComponent(text);
+const active=o=>!['entregado','cancelado'].includes(o.status);
+const HOW={recogida:'Recojo en el local',domicilio:'Domicilio Medellín y alrededores',nacional:'Otros municipios y envío nacional'};
+const feeTxt=z=>z&&z.price!=null?fmt(z.price):'por confirmar';
+const howLine=o=>HOW[o.how]+(o.zone?' · '+o.zone:'')+(o.addr?': '+o.addr:'');
+
+/* ---------- material ---------- */
+function matStats(m){
+ const since=Date.now()-30*DAY;
+ const used=S.moves.filter(x=>x.m===m.id&&x.d<0&&x.t>=since&&x.r!=='Ajuste').reduce((s,x)=>s-x.d,0);
+ const daily=used/30;let missing=0;
+ S.orders.filter(active).forEach(o=>o.items.forEach(i=>i.use.forEach(u=>{if(u.m===m.id)missing+=u.need-u.got})));
+ const days=daily>0?Math.floor(m.stock/daily):null;
+ const state=(m.stock===0||missing>0)?'ya':(m.stock<=m.min||(days!=null&&days<=7))?'pronto':'bien';
+ const sug=state==='bien'?0:Math.max(0,Math.ceil((m.min*2+missing-m.stock)/5)*5);
+ return {used,missing,days,state,sug};
+}
+const STATE={ya:'Comprar ya',pronto:'Comprar pronto',bien:'Bien'};
+function allocate(mid){const m=mat(mid);
+ S.orders.filter(active).slice().reverse().forEach(o=>o.items.forEach(i=>i.use.forEach(u=>{if(u.m!==mid||u.got>=u.need||m.stock<=0)return;const take=Math.min(u.need-u.got,m.stock);u.got+=take;m.stock-=take;move(mid,-take,'Apartado para '+o.code)})));}
+
+function heroArt(){
+ let marks='';[[60,40],[540,40],[60,380],[540,380]].forEach(([x,y])=>{marks+=`<path d="M${x-22} ${y}h14M${x+8} ${y}h14M${x} ${y-22}v14M${x} ${y+8}v14" stroke="#8a6f7c" stroke-width="1.5"/>`});
+ return `<svg viewBox="0 0 600 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+ <defs><linearGradient id="hh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9bd2"/><stop offset=".3" stop-color="#9bd0ff"/><stop offset=".6" stop-color="#b6ffd9"/><stop offset="1" stop-color="#fff59b"/></linearGradient>
+ <filter id="sh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#7a2a4f" flood-opacity=".2"/></filter>
+ <clipPath id="cl"><circle cx="470" cy="300" r="62"/></clipPath></defs>
+ <rect x="60" y="40" width="480" height="340" fill="#fffafc" opacity=".85"/>${marks}
+ <g filter="url(#sh)"><rect x="110" y="215" width="230" height="130" rx="12" fill="#f3a6c6" transform="rotate(-10 225 280)"/>
+ <rect x="140" y="195" width="230" height="130" rx="12" fill="#e79bbd" transform="rotate(4 255 260)"/></g>
+ <g class="flo" filter="url(#sh)"><rect x="190" y="100" width="250" height="140" rx="14" fill="url(#hh)"/>
+ <path d="M252 190 C218 168 228 136 252 150 C276 136 286 168 252 190Z" fill="#c2457b"/>
+ <rect x="290" y="150" width="110" height="12" rx="5" fill="#333033" opacity=".8"/><rect x="290" y="172" width="74" height="9" rx="4" fill="#333033" opacity=".45"/></g>
+ <circle cx="470" cy="300" r="68" fill="#fff" filter="url(#sh)"/><image href="${LOGO}" x="408" y="238" width="124" height="124" clip-path="url(#cl)"/>
+ </svg>`;
+}
+
+/* ---------- catálogo ---------- */
+function viewCatalog(){
+ const list=S.products.filter(p=>!p.hidden&&(cat==='todos'||p.cat===cat));
+ return `<section class="band hero"><div class="wrap heroin">
+  <div><h1>${esc(S.page.title)}</h1>
+  <p>${esc(S.page.sub)}</p>
+  <a class="btn" href="#productos" style="display:inline-block;text-decoration:none">${esc(S.page.btn||'Ver catálogo')}</a>
+  <div class="lams">${[[holos()[0],'Holográficos · '+holos().length+' diseños'],[mat('glitter'),'Glitter'],[mat('brillo'),'Brillo UV'],[mat('mate'),'Mate'],[mat('foil'),'Foil']].filter(x=>x[0]).map(([m,n])=>`<span class="lamtag">${swHtml(m)}${esc(n)}</span>`).join('')}</div></div>
+  <div class="fig">${okImg(S.page.hero)?`<img class="heroimg" src="${S.page.hero}" alt="">`:heroArt()}</div></div></section>
+ <section class="band" id="productos"><div class="wrap">
+  <h2>Catálogo</h2>
+  <div class="chips cats" style="margin:8px 0 22px">${[['todos','Todo'],...CATS].map(([k,n])=>`<button class="chip" type="button" data-cat="${k}" aria-pressed="${cat===k}">${n}</button>`).join('')}</div>
+  <div class="grid">${list.map(p=>`<article class="prod"><button class="art" type="button" data-cfg="${esc(p.id)}" aria-label="Ver ${esc(p.name)}"><img src="${esc(pimg(p))}" alt="" loading="lazy"${okImg(p.photo)?' class="photo"':''}></button><div class="bd">
+   <h3>${esc(p.name)}</h3><span class="muted small">${esc(p.desc)}</span>
+   <span class="small">Desde <b class="price">${fromLabel(p)}</b></span>
+   <button class="btn" type="button" data-cfg="${esc(p.id)}">Elegir y cotizar</button></div></article>`).join('')}</div>
+  <p class="muted small" style="margin-top:18px">¿Necesitas otra cantidad, tamaño o estilo? Escríbenos y lo cotizamos.</p>
+ </div></section>
+ <section class="band"><div class="wrap"><h2>Nuestros laminados</h2><p class="muted">Holográficos para que tu marca brille, y acabados sencillos para un look limpio y elegante.</p>
+  <h3 style="margin-top:18px">Holográficos</h3><div class="lamgrid">${holos().map(m=>`<figure><img src="img/${esc(m.img)}" alt="" loading="lazy"><figcaption>${esc(m.short)}</figcaption></figure>`).join('')}</div>
+  <h3 style="margin-top:22px">Glitter y sencillos</h3><div class="lamgrid">${['glitter','brillo','mate'].map(mat).filter(Boolean).map(m=>`<figure><img src="img/${esc(m.img)}" alt="" loading="lazy"><figcaption>${esc(m.name.replace('Laminado ','').replace(/^./,c=>c.toUpperCase()))}</figcaption></figure>`).join('')}</div>
+ </div></section>
+ <section class="band" style="background:var(--soft)"><div class="wrap row2">
+  <div><h3>Recogida</h3><p class="muted">${esc(S.sched.pickup)}<br>${esc(S.sched.hours)}</p></div>
+  <div><h3>Domicilios y envíos</h3><p class="muted">${esc(S.sched.delivery)}<br>${esc(S.sched.national)}</p></div>
+  <div><h3>¿Cómo va mi pedido?</h3><p class="muted">Con tu número de pedido puedes ver cada paso en <a href="#seguimiento">Mi pedido</a>.</p></div>
+ </div></section>`;
+}
+
+function openCfg(pid,editIdx){
+ const p=prod(pid);
+ if(editIdx!=null){const it=cart[editIdx];cfg={pid,vid:it.vid,holo:it.holo,back:it.back,paper:it.paper,qty:it.qty,choices:{...it.choices},extras:[...it.extras],design:it.design,mode:it.mode,notes:it.notes,edit:editIdx}}
+ else{const v=p.variants[0];cfg={pid,vid:v.id,qty:v.unit?1:v.tiers[0][0],choices:Object.fromEntries((p.choices||[]).map(c=>[c.label,c.opts[0]])),extras:[],design:false,mode:'normal',notes:''}}
+ if(!cfg.holo)cfg.holo=holos()[0]?.id;if(p.backs&&!cfg.back)cfg.back=p.backs[0].id;if(p.paperChoice&&!cfg.paper)cfg.paper=p.id==='agradecimiento'?'foto280':'opalina';cfg.flyer=false;renderCfg();
+}
+function designRow(p){
+ if(p.design==='incl')return `<div class="okmsg">Incluye diseño si no lo tienes.</div>`;
+ if(p.design==='no')return '';
+ const lbl=p.design==='cotiza'?'Quiero que me ayuden con el diseño · se cotiza':`Agregar servicio de diseño · ${fmt(p.design)}`;
+ return `<label class="toggle"><input type="checkbox" id="dz" ${cfg.design?'checked':''}><span><b>${lbl}</b><br><span class="muted small">Opcional. Si ya tienes tu arte listo para imprimir, no lo necesitas.</span></span></label>`;
+}
+function renderCfg(){
+ const p=prod(cfg.pid);const v=variant(p,cfg.vid);
+ const {units,lim}=avail(p,v,cfg.edit,cfg.holo,cfg.back,cfg.paper);
+ const short=false; // la clienta siempre ve todo disponible; el faltante se controla en el panel
+ const pq=!short?0:v.unit?units:Math.max(0,...v.tiers.map(x=>x[0]).filter(q=>q<=units&&q<cfg.qty));
+ if(!short)cfg.mode='normal';else if(cfg.mode==='normal'||(cfg.mode==='parcial'&&pq<=0))cfg.mode='';
+ const qtyFinal=cfg.mode==='parcial'?pq:cfg.qty;
+ const ex=(p.extras||[]).filter(x=>cfg.extras.includes(x.id)).reduce((s,x)=>s+x.price,0);
+ const dz=cfg.design&&typeof p.design==='number'?p.design:0;const bkp=((p.backs||[]).find(x=>x.id===cfg.back)||{}).price||0;
+ const total=(qtyFinal>0?priceFor(v,qtyFinal):0)+ex+dz+bkp;
+ let notice='';
+ if(short)notice=`<div class="notice">${pq>0?`<strong>¡Podemos entregarte ${pq} ${esc(p.unit)} de inmediato!</strong><br>Para ${cfg.qty} ${esc(p.unit)}, el tiempo de producción es de máximo ${S.waitDays} días hábiles. ¿Qué prefieres?`:`<strong>Este acabado lo producimos especialmente para ti.</strong><br>El tiempo de producción es de máximo ${S.waitDays} días hábiles.`}${p.variants.length>1||p.backs||v.lams.includes('holo')?'<br><span class="small">También puedes escoger otro acabado y revisar su tiempo de entrega.</span>':''}
+  <div class="choice"><button class="chip" type="button" aria-pressed="${cfg.mode==='espera'}" data-mode="espera"><span>${pq>0?`Prefiero esperar y llevar ${cfg.qty}`:`Sí, quiero ${cfg.qty}`}</span><span class="price">${fmt(priceFor(v,cfg.qty))}</span></button>
+  ${pq>0?`<button class="chip" type="button" aria-pressed="${cfg.mode==='parcial'}" data-mode="parcial"><span>Me llevo ${pq} de entrega inmediata</span><span class="price">${fmt(priceFor(v,pq))}</span></button>`:''}</div></div>`;
+ const qtyUI=v.unit?`<div class="qtyrow"><button class="btn alt sm" type="button" data-q="-1" aria-label="Menos">−</button><input id="qn" type="number" min="1" value="${cfg.qty}" inputmode="numeric" aria-label="Cantidad"><button class="btn alt sm" type="button" data-q="1" aria-label="Más">+</button><span class="muted small">${fmt(v.unit)} c/u</span></div>`
+  :`<div class="chips">${v.tiers.map(([q,pr])=>`<button class="chip" type="button" data-qty="${q}" aria-pressed="${cfg.qty===q}">${q.toLocaleString('es-CO')} <span class="muted small price">${fmt(pr)}</span></button>`).join('')}</div>`;
+ open(`<div class="dlghead"><div><h2>${esc(p.name)}</h2><p class="muted small" style="margin:0">${esc(p.desc)}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+  ${p.img?`<button class="btn alt sm" type="button" id="flyer" style="margin-top:10px">${cfg.flyer?'Ocultar ficha':'Ver ficha completa'}</button>`:''}
+  ${cfg.flyer?`<img class="flyerimg" src="img/${esc(p.img)}.jpg" alt="Ficha de ${esc(p.name)}">`:''}
+  ${p.variants.length>1?`<label>${esc(p.varLabel||'Opción')}</label><div class="chips">${p.variants.map(x=>`<button class="chip" type="button" data-v="${esc(x.id)}" aria-pressed="${x.id===v.id}">${x.lams.length&&p.varLabel==='Laminado'?swHtml(x.lams[0]==='holo'?holos()[0]:mat(x.lams[0])):''}${esc(x.name)}</button>`).join('')}</div>`:''}
+  ${v.lams.includes('holo')?`<label>Diseño holográfico</label><div class="holopick">${holos().map(m=>`<button type="button" class="hp" data-holo="${esc(m.id)}" aria-pressed="${cfg.holo===m.id}"><img src="img/${esc(m.img)}" alt=""><span>${esc(m.short)}</span></button>`).join('')}</div>`:''}
+  ${p.paperChoice?`<label>Papel</label><div class="chips">${PAPERS.map(id=>`<button class="chip" type="button" data-pp2="${id}" aria-pressed="${cfg.paper===id}">${esc(mat(id)?.short||id)}</button>`).join('')}</div>`:''}
+  ${p.backs?`<label>${esc(p.backLabel||'Reverso')}</label><div class="chips">${p.backs.map(x=>`<button class="chip" type="button" data-bk="${esc(x.id)}" aria-pressed="${cfg.back===x.id}">${x.lam&&x.lam!=='same'?swHtml(mat(x.lam)):''}${esc(x.name)}${x.price?` <span class="muted small">+${fmt(x.price)}</span>`:''}</button>`).join('')}</div>`:''}
+  <label>Cantidad${v.fixed?' (solo disponible en esta cantidad)':''}</label>${qtyUI}
+  ${(p.choices||[]).map((c,ci)=>`<label>${esc(c.label)}</label><div class="chips">${c.opts.map(o=>`<button class="chip" type="button" data-ch="${ci}" data-o="${esc(o)}" aria-pressed="${cfg.choices[c.label]===o}">${esc(o)}</button>`).join('')}</div>`).join('')}
+  ${(p.extras||[]).map(x=>`<label class="toggle"><input type="checkbox" data-ex="${esc(x.id)}" ${cfg.extras.includes(x.id)?'checked':''}><span><b>${esc(x.name)} · +${fmt(x.price)}</b></span></label>`).join('')}
+  ${notice}
+  ${designRow(p)}
+  ${p.note?`<p class="muted small">${esc(p.note)}</p>`:''}
+  <label for="nt">Notas para tu pedido</label><textarea id="nt" rows="2" placeholder="Cuéntanos detalles: textos, premios, colores, enlaces…">${esc(cfg.notes)}</textarea>
+  <div class="total"><span>Total</span><span class="price">${short&&!cfg.mode?'—':fmt(total)}</span></div>
+  <button class="btn pri" type="button" id="addCart" style="width:100%" ${short&&!cfg.mode?'disabled':''}>${cfg.edit!=null?'Guardar cambios':'Agregar al carrito'}</button>
+  ${short&&!cfg.mode?'<p class="muted small" style="text-align:center">Elige una de las opciones de arriba para continuar.</p>':''}`);
+ cfg._total=total;cfg._qty=qtyFinal;
+}
+$('#dlg').addEventListener('click',e=>{
+ const t=e.target.closest('button,input');if(!t||!cfg||!$('#addCart'))return;
+ const keep=()=>{cfg.notes=$('#nt').value};
+ const p=prod(cfg.pid);
+ if(t.id==='flyer'){keep();cfg.flyer=!cfg.flyer;renderCfg()}
+ else if(t.dataset.pp2){keep();cfg.paper=t.dataset.pp2;cfg.mode='normal';renderCfg()}
+ else if(t.dataset.bk){keep();cfg.back=t.dataset.bk;cfg.mode='normal';renderCfg()}
+ else if(t.dataset.holo){keep();cfg.holo=t.dataset.holo;cfg.mode='normal';renderCfg()}
+ else if(t.dataset.v){keep();cfg.vid=t.dataset.v;const v=variant(p,cfg.vid);if(!v.unit&&!v.tiers.some(x=>x[0]===cfg.qty))cfg.qty=v.tiers[0][0];cfg.mode='normal';renderCfg()}
+ else if(t.dataset.qty){keep();cfg.qty=+t.dataset.qty;cfg.mode='normal';renderCfg()}
+ else if(t.dataset.q){keep();cfg.qty=Math.max(1,cfg.qty+ +t.dataset.q);cfg.mode='normal';renderCfg()}
+ else if(t.dataset.ch!=null){keep();cfg.choices[p.choices[+t.dataset.ch].label]=t.dataset.o;renderCfg()}
+ else if(t.dataset.ex){keep();cfg.extras=t.checked?[...cfg.extras,t.dataset.ex]:cfg.extras.filter(x=>x!==t.dataset.ex);renderCfg()}
+ else if(t.dataset.mode){keep();cfg.mode=t.dataset.mode;renderCfg()}
+ else if(t.id==='dz'){keep();cfg.design=t.checked;renderCfg()}
+ else if(t.id==='addCart'){
+  const v=variant(p,cfg.vid);const need=Math.ceil(cfg._qty/v.per);
+  const hasHolo=v.lams.includes('holo');const use=Object.entries(needsOf(p,v,cfg.holo,cfg.back,cfg.paper)).map(([mid,k])=>({m:mid,need:need*k,got:Math.min(need*k,freeSheets(mid,cfg.edit))}));
+  const bk=(p.backs||[]).find(x=>x.id===cfg.back);const req=Object.entries(needsOf(p,v,cfg.holo,cfg.back,cfg.paper,true)).map(([mid,k])=>({m:mid,need:need*k}));
+  const exNames=(p.extras||[]).filter(x=>cfg.extras.includes(x.id)).map(x=>x.name);
+  const item={pid:p.id,vid:v.id,paper:p.paperChoice?cfg.paper:'',paperName:p.paperChoice?mat(cfg.paper)?.short||'':'',back:cfg.back||'',backName:bk?(p.backLabel||'Reverso')+': '+bk.name:'',holo:hasHolo?cfg.holo:'',holoName:hasHolo?mat(cfg.holo).name:'',name:p.name,vname:p.variants.length>1?v.name:'',unit:p.unit,qty:cfg.qty,qtyFinal:cfg._qty,choices:{...cfg.choices},extras:[...cfg.extras],exNames,design:cfg.design,designTxt:cfg.design?(p.design==='cotiza'?'diseño (se cotiza)':'con diseño'):(p.design==='incl'?'diseño incluido':''),mode:'normal',notes:$('#nt').value.trim(),price:cfg._total,use,req,wait:false};
+  const ed=cfg.edit;if(ed!=null)cart[ed]=item;else cart.push(item);
+  saveCart();close();toast('Agregado al carrito');
+ }
+});
+$('#dlg').addEventListener('change',e=>{if(e.target.id==='qn'&&cfg){cfg.notes=$('#nt').value;cfg.qty=Math.max(1,parseInt(e.target.value)||1);cfg.mode='normal';renderCfg()}});
+const itemDesc=i=>[i.holoName||i.vname,i.backName,i.paperName,...Object.values(i.choices||{}),...(i.exNames||[]),i.designTxt,i.wait?`producción máx. ${S.waitDays} días hábiles`:''].filter(Boolean).join(' · ');
+
+function openCart(){
+ if(!cart.length){open(`<div class="dlghead"><h2>Tu carrito</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div><p class="muted">Aún no tienes productos. Explora el catálogo y escoge lo que necesitas.</p><button class="btn" type="button" data-close>Ver catálogo</button>`);return}
+ const sum=cart.reduce((s,i)=>s+i.price,0);
+ open(`<div class="dlghead"><h2>Tu pedido</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+  ${cart.map((i,k)=>`<div class="line"><div><b>${i.qtyFinal.toLocaleString('es-CO')} ${esc(i.name)}</b><br><span class="muted small">${esc(itemDesc(i))}</span><br>
+   <button class="btn alt sm" type="button" data-edit="${k}">Editar</button> <button class="btn alt sm" type="button" data-del="${k}">Quitar</button></div><b class="price">${fmt(i.price)}</b></div>`).join('')}
+  <div class="line"><span>Productos</span><b class="price">${fmt(sum)}</b></div>
+  <div class="line"><span id="feeLbl">Recojo en el local</span><b class="price" id="feeVal">$0</b></div>
+  <div class="total"><span>Total</span><span class="price" id="totVal">${fmt(sum)}</span></div>
+  <p class="muted small" style="margin-top:0">Al enviar tu cotización nos llega a WhatsApp. Te confirmamos el pedido y los datos de pago.</p>
+  <form id="ck">
+   <div class="row2"><div><label for="cn">Nombre</label><input id="cn" required autocomplete="name"></div><div><label for="cw">WhatsApp</label><input id="cw" required inputmode="tel" placeholder="300 000 0000"></div></div>
+   <label>¿Cómo lo recibes?</label><div class="chips">${Object.entries(HOW).map(([k,n],i)=>`<button class="chip" type="button" data-how="${k}" aria-pressed="${i===0}">${n}</button>`).join('')}</div>
+   <p class="muted small" id="pickNote">${esc(S.sched.pickup)} · ${esc(S.sched.hours)}</p>
+   <div id="zoneBox" hidden><label for="cz">Zona de entrega</label><select id="cz">${S.sched.zones.map((z,i)=>`<option value="${i}">${esc(z.name)} · ${feeTxt(z)}</option>`).join('')}</select></div>
+   <div id="addr" hidden><label for="ca" id="caLbl">Dirección y barrio</label><input id="ca" autocomplete="street-address"></div>
+   <p class="muted small" id="addrNote" hidden></p>
+   <button class="btn pri" style="width:100%;margin-top:18px">Enviar cotización por WhatsApp</button>
+  </form>`);
+}
+$('#dlg').addEventListener('click',e=>{
+ const t=e.target.closest('button');if(!t||!$('#ck'))return;
+ if(t.dataset.del!=null){cart.splice(+t.dataset.del,1);saveCart();openCart()}
+ else if(t.dataset.edit!=null)openCfg(cart[+t.dataset.edit].pid,+t.dataset.edit);
+ else if(t.dataset.how){document.querySelectorAll('[data-how]').forEach(b=>b.setAttribute('aria-pressed',b===t));const h=t.dataset.how;
+  $('#addr').hidden=h==='recogida';$('#ca').required=h!=='recogida';$('#zoneBox').hidden=h!=='domicilio';$('#pickNote').hidden=h!=='recogida';
+  $('#caLbl').textContent=h==='nacional'?'Ciudad, dirección y barrio':'Dirección y barrio';$('#addrNote').hidden=h==='recogida';$('#addrNote').textContent=h==='nacional'?S.sched.national:S.sched.delivery;updFee()}
+});
+function updFee(){if(!$('#ck'))return;const h=document.querySelector('[data-how][aria-pressed=true]').dataset.how;const sum=cart.reduce((s,i)=>s+i.price,0);
+ let lbl='Recojo en el local',val='$0',fee=0;
+ if(h==='domicilio'){const z=S.sched.zones[+$('#cz').value];lbl='Domicilio a '+(z?z.name:'');val=feeTxt(z);fee=z&&z.price!=null?z.price:0}
+ if(h==='nacional'){lbl='Envío nacional';val='se cotiza'}
+ $('#feeLbl').textContent=lbl;$('#feeVal').textContent=val;$('#totVal').textContent=fmt(sum+fee)+(val==='por confirmar'||val==='se cotiza'?' + envío':'')}
+$('#dlg').addEventListener('change',e=>{if(e.target.id==='cz')updFee()});
+$('#dlg').addEventListener('submit',async e=>{
+ if(e.target.id!=='ck')return;e.preventDefault();
+ const how=document.querySelector('[data-how][aria-pressed=true]').dataset.how;
+ const z=how==='domicilio'?S.sched.zones[+$('#cz').value]:null;
+ const sub=cart.reduce((s,i)=>s+i.price,0);const fee=z&&z.price!=null?z.price:0;
+ let code;
+ if(LIVE){const btn=e.target.querySelector('button.pri');btn.disabled=true;btn.textContent='Enviando…';
+  const payload={name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||!!(z&&z.price==null),addr:how!=='recogida'?$('#ca').value.trim():'',items:cart.map(({use,...i})=>i),sub,total:sub+fee};
+  const{data,error}=await sb.rpc('place_order',{p:payload});
+  if(error||!data){btn.disabled=false;btn.textContent='Enviar cotización por WhatsApp';toast('No se pudo enviar. Revisa tu internet e inténtalo de nuevo.');return}
+  code=data}else code='IP-'+(S.seq++);
+ const o={code,date:new Date().toISOString(),name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||(z&&z.price==null),addr:how!=='recogida'?$('#ca').value.trim():'',items:cart.map(i=>JSON.parse(JSON.stringify(i))),sub,total:sub+fee,status:'recibido',hist:[{s:'recibido',t:new Date().toISOString()}]};
+ if(!LIVE){o.items.forEach(i=>i.use.forEach(u=>{const m=mat(u.m);if(!m)return;u.got=Math.min(u.got,m.stock);m.stock-=u.got;move(u.m,-u.got,'Pedido '+code)}));
+ S.orders.unshift(o);save()}cart=[];saveCart();
+ const txt=`¡Hola! Hice el pedido ${o.code} en la página:\n`+o.items.map(i=>`• ${i.qtyFinal} ${i.name}${itemDesc(i)?' ('+itemDesc(i)+')':''}: ${fmt(i.price)}`).join('\n')+`\nProductos: ${fmt(o.sub)}\n${how==='recogida'?'Recojo en el local':how==='domicilio'?`Domicilio a ${o.zone}: ${o.feePending?'por confirmar':fmt(o.fee)}\nDirección: ${o.addr}`:`Envío nacional a: ${o.addr} (valor por cotizar)`}\nTotal: ${fmt(o.total)}${o.feePending?' + envío':''}\nNombre: ${o.name}`;
+ open(`<div class="dlghead"><h2>¡Pedido enviado!</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+  <p>Tu número de pedido es <b style="font-size:22px">${esc(o.code)}</b>. Guárdalo para ver cómo va en <a href="#seguimiento">Mi pedido</a>.</p>
+  <p class="muted"><b>Último paso:</b> envíanos tu cotización por WhatsApp para confirmar tu pedido y darte los datos de pago.</p>
+  <a class="btn pri" style="display:block;text-align:center;text-decoration:none" href="${esc(waLink(S.wa,txt))}" target="_blank" rel="noopener">Enviar cotización por WhatsApp</a>
+  <p class="muted small">Si no se abre, escríbenos al ${esc(S.wa.replace(/^57/,''))} con tu número de pedido.</p>`);
+ render();
+});
+
+function viewTrack(){
+ return `<section class="band"><div class="wrap track"><h1>¿Cómo va mi pedido?</h1>
+ <p class="muted">Escribe tu número de pedido y los últimos 4 dígitos de tu WhatsApp.</p>
+ <form id="tf" class="row2"><div><label for="tc">Número de pedido</label><input id="tc" placeholder="IP-1001" required></div><div><label for="tp">Últimos 4 dígitos</label><input id="tp" inputmode="numeric" maxlength="4" required></div>
+ <div style="align-self:end"><button class="btn pri" style="width:100%;margin-top:12px">Consultar</button></div></form><div id="tr"></div></div></section>`;
+}
+function showTrack(o){
+ const idx=STATUS.findIndex(s=>s.id===o.status);
+ const steps=STATUS.filter(s=>s.id!=='diseno'||o.items.some(i=>i.design||i.designTxt==='diseño incluido'));
+ const hist=Object.fromEntries(o.hist.map(h=>[h.s,h.t]));
+ const df=new Intl.DateTimeFormat('es-CO',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
+ $('#tr').innerHTML=o.status==='cancelado'?`<div class="notice"><strong>Este pedido fue cancelado.</strong> Escríbenos por WhatsApp si tienes dudas.</div>`:
+ `<h2 style="margin-top:28px">Pedido ${esc(o.code)}</h2><p class="muted">${esc(HOW[o.how])}${o.zone?' · '+esc(o.zone):''}</p>
+ <ol class="steps">${steps.map(s=>{const i=STATUS.findIndex(x=>x.id===s.id);return `<li class="${i<idx?'done':i===idx?'done now':''}">${esc(s.id==='listo'&&o.how==='recogida'?'Listo para recoger':s.id==='listo'&&o.how==='nacional'?'Listo y enviado a la transportadora':s.name)}${hist[s.id]&&i<=idx?`<br><span class="small muted">${df.format(new Date(hist[s.id]))}</span>`:''}</li>`}).join('')}</ol>`;
+}
+
+/* ---------- panel ---------- */
+let tab='pedidos',filt='activos',openOrder=null,oq='';
+function viewPanel(){
+ if(!admin)return `<section class="band"><form class="gate" id="gate"><img src="${LOGO}" alt="" width="96" height="96" style="border-radius:50%"><h1>Panel interno</h1><p class="muted">Solo para ti.</p>${LIVE?`<input id="gem" type="email" placeholder="Tu correo" autocomplete="username" required style="margin-bottom:10px">`:''}<input id="pin" type="password" placeholder="${LIVE?'Contraseña':'Clave'}" autocomplete="current-password"><button class="btn pri" style="width:100%;margin-top:12px">Entrar</button>${LIVE?'':'<p class="muted small">Clave de prueba: 1234 (cámbiala en Ajustes).</p>'}</form></section>`;
+ const toBuy=S.mats.filter(m=>m.stock!=null&&matStats(m).state!=='bien').length;
+ const T=[['pedidos','Pedidos',S.orders.filter(o=>o.status==='recibido').length],['ventas','Ventas',0],['material','Inventario',toBuy],['productos','Productos y precios',0],['horario','Entregas',0],['pagina','Página',0],['ajustes','Ajustes',0]];
+ const body={ventas:panelSales,pedidos:panelOrders,material:panelMat,productos:panelProducts,horario:panelSched,ajustes:panelSettings,pagina:panelPage}[tab]();
+ const nYa=S.mats.filter(m=>m.stock!=null&&matStats(m).state==='ya').length;
+ return `<section class="band"><div class="wrap"><h1>Panel de Impresos</h1>${nYa&&tab!=='material'?`<div class="notice"><strong>🔔 ${nYa} material${nYa>1?'es':''} para comprar ya.</strong> <button class="btn sm" type="button" data-tab="material">Ver inventario</button></div>`:''}<div class="tabs">${T.map(([k,n,c])=>`<button class="chip" type="button" data-tab="${k}" aria-pressed="${tab===k}">${n}${c?` <b>${c}</b>`:''}</button>`).join('')}</div>${body}</div></section>`;
+}
+const lacks=i=>i.use.some(u=>u.got<u.need);
+function panelOrders(){
+ const act=S.orders.filter(active);
+ const qq=oq.trim().toLowerCase();
+ const list=S.orders.filter(o=>qq?(o.code.toLowerCase().includes(qq)||o.name.toLowerCase().includes(qq)||o.wa.includes(qq)):filt==='todos'?true:filt==='activos'?active(o):filt==='saldo'?(o.status!=='cancelado'&&dueOf(o)>0):o.status===filt);
+ const toBuy=S.mats.filter(m=>m.stock!=null&&matStats(m).state!=='bien');
+ return `<div class="panelgrid"><div class="kpi"><span class="small muted">Por confirmar</span><b>${S.orders.filter(o=>o.status==='recibido').length}</b></div><div class="kpi"><span class="small muted">En proceso</span><b>${act.length}</b></div><div class="kpi"><span class="small muted">Esperando material</span><b>${act.filter(o=>o.items.some(lacks)).length}</b></div><div class="kpi"><span class="small muted">Te deben</span><b class="price">${fmt(S.orders.filter(o=>o.status!=='cancelado'&&o.status!=='recibido').reduce((s,o)=>s+dueOf(o),0))}</b></div></div>
+ <div class="qtyrow" style="margin-bottom:10px"><input id="oq" type="search" placeholder="Buscar por número de pedido, nombre o WhatsApp" value="${esc(oq)}" style="flex:1;min-width:200px">${LIVE?'<button class="btn alt sm" type="button" id="refreshOrders">Actualizar pedidos</button>':''}</div>
+ <div class="chips" style="margin-bottom:12px">${[['activos','Activos'],['recibido','Por confirmar'],['saldo','Con saldo'],['listo','Listos'],['entregado','Entregados'],['todos','Todos']].map(([k,n])=>`<button class="chip" type="button" data-filt="${k}" aria-pressed="${filt===k}">${n}</button>`).join('')}</div>
+ ${list.length?`<table class="stack"><thead><tr><th>Pedido</th><th>Cliente</th><th>Productos</th><th>Entrega</th><th class="r">Total</th><th>Pago</th><th>Estado</th><th></th></tr></thead><tbody>
+ ${list.map(o=>`<tr><td><b>${esc(o.code)}</b></td><td>${esc(o.name)}<br><span class="small muted">${esc(o.wa)}</span></td><td class="small">${o.items.map(i=>`${i.qtyFinal} ${esc(i.name)}${i.vname?' · '+esc(i.vname.toLowerCase()):''}${i.design?' · diseño':''}${lacks(i)?' · <b>falta material</b>':''}`).join('<br>')}</td><td class="small">${o.how==='recogida'?'Recoge':o.how==='domicilio'?'Domicilio · '+esc(o.zone):'Nacional'}</td><td class="r price">${fmt(o.total)}${o.feePending?'<br><span class="small muted">+ envío</span>':''}</td><td><span class="pill pay-${payState(o)}">${PAYN[payState(o)]}</span>${payState(o)==='abono'?`<br><span class="small muted">Debe ${fmt(dueOf(o))}</span>`:''}</td><td><span class="pill ${esc(o.status)}">${esc((STATUS.find(s=>s.id===o.status)||{name:'Cancelado'}).name)}</span></td><td><button class="btn sm" type="button" data-open="${esc(o.code)}">Gestionar</button></td></tr>`).join('')}</tbody></table>`
+ :`<p class="muted">No hay pedidos en esta vista. Cuando un cliente haga un pedido desde el catálogo aparecerá aquí.</p>`}`;
+}
+function orderDlg(code,justChanged){
+ const o=S.orders.find(x=>x.code===code);if(!o)return;openOrder=code;
+ const st=STATUS.find(s=>s.id===o.status);
+ const listo=o.how==='recogida'?'tu pedido está listo para recoger':o.how==='nacional'?'tu pedido está listo y lo entregamos a la transportadora':'tu pedido está listo y sale para tu domicilio';
+ const msg=o.status==='cancelado'?`Hola ${o.name}, tu pedido ${o.code} fue cancelado. Escríbenos si tienes dudas.`:`Hola ${o.name}, te escribimos de Impresos y Publicidad: ${st.id==='listo'?listo:st.msg}.\nPedido: ${o.code}${st.id==='recibido'||st.id==='confirmado'?`\nTotal: ${fmt(o.total)}${o.feePending?' + envío':''}`:''}${paidOf(o)>0&&o.status!=='cancelado'?`\nAbonado: ${fmt(paidOf(o))}${dueOf(o)?` · Saldo: ${fmt(dueOf(o))}`:' · ¡Pago completo!'}`:''}\nPuedes ver el avance en nuestra página, en "Mi pedido".`;
+ open(`<div class="dlghead"><div><h2>${esc(o.code)} · ${esc(o.name)}</h2><p class="muted small" style="margin:0">WhatsApp ${esc(o.wa)} · ${esc(howLine(o))}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+ ${o.items.map(i=>`<div class="line"><div><b>${i.qtyFinal} ${esc(i.name)}</b><br><span class="small muted">${esc(itemDesc(i))}${i.notes?'<br>Nota: '+esc(i.notes):''}<br>${i.use.map(u=>`${esc(mat(u.m)?.name||u.m)}: ${u.got} de ${u.need} apartados${u.got<u.need?` (faltan ${u.need-u.got})`:''}`).join(' · ')}</span></div><b class="price">${fmt(i.price)}</b></div>`).join('')}
+ ${o.how!=='recogida'?`<div class="line"><span>${o.how==='domicilio'?'Domicilio a '+esc(o.zone):'Envío nacional'}</span><span class="qtyrow"><input type="number" min="0" step="500" id="ofee" value="${o.feePending?'':o.fee}" placeholder="Valor" style="width:130px"><button class="btn alt sm" type="button" id="saveFee">Guardar</button></span></div>`:''}
+ <div class="total"><span>Total</span><span class="price">${fmt(o.total)}${o.feePending?' + envío':''}</span></div>
+ <div class="box paybox"><div class="dlghead"><h3 style="margin:0">Pagos</h3><span class="pill pay-${payState(o)}">${PAYN[payState(o)]}</span></div>
+  <div class="facts" style="font-size:15px"><span>Pagado <b>${fmt(paidOf(o))}</b></span><span>Saldo <b>${fmt(dueOf(o))}</b></span></div>
+  ${(o.pays||[]).map((x,k)=>`<div class="line small"><span>${new Intl.DateTimeFormat('es-CO',{day:'numeric',month:'short'}).format(new Date(x.t))} · ${esc(x.m)}</span><span class="qtyrow"><b class="price">${fmt(x.a)}</b><button class="btn alt sm" type="button" data-rmpay="${k}" aria-label="Quitar pago">Quitar</button></span></div>`).join('')}
+  ${dueOf(o)>0?`<div class="row2" style="margin-top:8px"><div><label for="pyv">Valor recibido</label><input id="pyv" type="number" min="1" step="500" inputmode="numeric"></div><div><label for="pym">Medio</label><select id="pym">${['Nequi','Bancolombia','Daviplata','Llave Bre-B','Efectivo','Otro'].map(x=>`<option>${x}</option>`).join('')}</select></div></div>
+  <div class="chips" style="margin-top:8px"><button class="chip" type="button" data-pq="half">Abono 50% · ${fmt(Math.round(o.total/2/100)*100)}</button><button class="chip" type="button" data-pq="full">Pago completo · ${fmt(dueOf(o))}</button></div>
+  <button class="btn pri" type="button" id="addPay" style="width:100%;margin-top:10px">Registrar pago</button>`:''}</div>
+ <label for="ost">Estado del pedido</label><select id="ost">${STATUS.map(s=>`<option value="${s.id}" ${o.status===s.id?'selected':''}>${s.name}</option>`).join('')}<option value="cancelado" ${o.status==='cancelado'?'selected':''}>Cancelado (devuelve el material)</option></select>
+ ${justChanged?`<div class="okmsg">Estado actualizado. El cliente ya lo ve en "Mi pedido". Ahora avísale:</div>`:''}
+ <label for="omsg">Mensaje para el cliente</label><textarea id="omsg" rows="4">${esc(msg)}</textarea>
+ <a class="btn pri" id="owa" style="display:block;text-align:center;text-decoration:none;margin-top:12px" href="${esc(waLink('57'+o.wa.replace(/^57/,''),msg))}" target="_blank" rel="noopener">Avisar por WhatsApp</a>`);
+}
+const reservedOf=id=>S.orders.filter(active).reduce((s,o)=>s+o.items.reduce((a,i)=>a+i.use.filter(u=>u.m===id).reduce((x,u)=>x+u.got,0),0),0);
+function usedBy(m){const out=[];S.products.forEach(p=>p.track!==false&&p.variants.forEach(v=>{if(v.paper===m.id||(p.paperChoice&&PAPERS.includes(m.id))||v.lams.includes(m.id)||(m.group&&v.lams.includes(m.group))||(p.backs||[]).some(x=>x.lam===m.id))out.push(`${m.stock*v.per} ${p.unit} (${p.name.toLowerCase()}${p.variants.length>1?' '+v.name.toLowerCase():''})`)}));return out}
+let mfilt='todos';
+function panelMat(){
+ const ms=S.mats.filter(m=>m.stock!=null);const st=ms.map(m=>({m,s:matStats(m),r:reservedOf(m.id)}));
+ const ord={ya:0,pronto:1,bien:2};st.sort((a,b)=>ord[a.s.state]-ord[b.s.state]||a.m.name.localeCompare(b.m.name));
+ const cnt=k=>st.filter(x=>x.s.state===k).length;
+ const rows=st.filter(x=>mfilt==='todos'||(mfilt==='comprar'?x.s.state!=='bien':x.m.kind===mfilt));
+ const buy=st.filter(x=>x.s.state!=='bien');const cost=buy.reduce((s,x)=>s+x.s.sug*(x.m.cost||0),0);
+ const df=new Intl.DateTimeFormat('es-CO',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
+ return `${cnt('ya')?`<div class="notice"><strong>Tienes ${cnt('ya')} material${cnt('ya')>1?'es':''} para comprar ya.</strong> Cuando surtas, toca "Ya compré" en la tabla y quedará como inventario completado.</div>`:'<div class="okmsg">Todo tu inventario está al día. 💖</div>'}
+ <div class="panelgrid"><div class="kpi"><span class="small muted">Comprar ya</span><b>${cnt('ya')}</b></div><div class="kpi"><span class="small muted">Comprar pronto</span><b>${cnt('pronto')}</b></div><div class="kpi"><span class="small muted">Inventario bien</span><b>${cnt('bien')}</b></div><div class="kpi"><span class="small muted">Costo aprox. de la compra</span><b class="price" style="font-size:22px">${cost?fmt(cost):'—'}</b></div></div>
+ <div class="chips" style="margin-bottom:12px">${[['todos','Todos'],['comprar','Por comprar'],['laminado','Laminados'],['papel','Papeles']].map(([k,n])=>`<button class="chip" type="button" data-mfilt="${k}" aria-pressed="${mfilt===k}">${n}</button>`).join('')}
+ ${buy.length?`<button class="btn alt sm" type="button" id="copyList" style="margin-left:auto">Copiar lista de compras</button>`:''}</div>
+ <div class="box" style="padding:6px 14px"><table class="stack invt"><thead><tr><th>Material</th><th class="r">Te quedan</th><th class="r">Reservadas</th><th class="r">Faltan para pedidos</th><th class="r">Mínimo</th><th>Estado</th><th class="r">Comprar</th><th></th></tr></thead><tbody>
+ ${rows.map(({m,s,r})=>`<tr class="st-${s.state}"><td><span style="display:inline-flex;gap:10px;align-items:center">${swHtml(m)}<b>${esc(m.name)}</b></span></td>
+  <td class="r price"><b>${m.stock}</b> ${munit(m)}</td><td class="r price">${r||'—'}</td><td class="r price">${s.missing?`<b>${s.missing}</b>`:'—'}</td><td class="r price">${m.min}</td>
+  <td><span class="pill ${s.state}">${STATE[s.state]}</span></td><td class="r price">${s.sug?`<b>${s.sug}</b> ${munit(m)}`:'—'}</td>
+  <td><span class="acts"><button class="btn sm" type="button" data-buy="${esc(m.id)}">Ya compré</button><button class="btn alt sm" type="button" data-adj="${esc(m.id)}">Ajustar</button></span></td></tr>`).join('')||'<tr><td colspan="8" class="muted">No hay materiales en esta vista.</td></tr>'}
+ </tbody></table></div>
+ <p class="muted small">"Comprar ya": se acabó o hay pedidos esperando ese material. "Comprar pronto": está en tu mínimo o por debajo, o te alcanza para 7 días o menos. "Reservadas": hojas ya apartadas para pedidos que aún no se entregan.</p>
+ <div class="box" style="margin-top:20px"><h3>Sin control de inventario</h3><p class="muted small">Siempre disponibles y no descuentan. Si quieres controlarlos, escribe cuántos tienes.</p>
+ ${S.mats.filter(m=>m.stock==null&&m.id!=='sin').map(m=>`<div class="line"><span style="display:flex;gap:10px;align-items:center">${swHtml(m)}${esc(m.name)}</span><input type="number" min="0" placeholder="Cantidad" data-mf="stock" data-m="${esc(m.id)}" style="max-width:130px" aria-label="Cantidad de ${esc(m.name)}"></div>`).join('')||'<p class="muted">Todos tus materiales tienen control.</p>'}</div>
+ <div class="box"><h3>Agregar material</h3><form id="newMat" class="row2"><div><label for="nm">Nombre</label><input id="nm" placeholder="Ej.: Holográfico corazones dorados" required></div><div><label for="nk">Tipo</label><select id="nk"><option value="laminado|holo">Nuevo diseño holográfico</option><option value="laminado|glitter">Laminado glitter</option><option value="laminado|mate">Laminado mate</option><option value="laminado|brillo">Laminado brillo</option><option value="papel|papel">Papel</option><option value="papel|vinilo">Adhesivo</option></select></div><div><label for="ns">Cantidad</label><input id="ns" type="number" min="0" value="10"></div><div><label for="nmin">Mínimo</label><input id="nmin" type="number" min="0" value="8"></div><div style="align-self:end"><button class="btn" style="width:100%;margin-top:12px">Agregar</button></div></form></div>
+ <h3>Movimientos recientes</h3>${S.moves.length?`<div class="box" style="padding:6px 14px"><table class="stack"><thead><tr><th>Fecha</th><th>Material</th><th class="r">Cantidad</th><th>Motivo</th></tr></thead><tbody>${S.moves.slice(0,15).map(x=>`<tr><td class="small">${df.format(new Date(x.t))}</td><td>${esc(mat(x.m)?.name||x.m)}</td><td class="r price">${x.d>0?'+':''}${x.d}</td><td class="small">${esc(x.r)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">Aquí verás cada pedido, compra y ajuste de material.</p>'}`;
+}
+function buyDlg(id){const m=mat(id);const s=matStats(m);
+ open(`<div class="dlghead"><div><h2>Ya compré · ${esc(m.name)}</h2><p class="muted small" style="margin:0">Te quedan ${m.stock} ${munit(m)}${s.missing?` · faltan ${s.missing} para pedidos`:''}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+ <form id="restock" data-m="${esc(m.id)}"><label for="rq">¿Cuántas ${munit(m)} compraste?</label><input id="rq" type="number" min="1" required value="${s.sug||''}" inputmode="numeric">
+ <label for="rc">¿Cuánto pagaste? (opcional)</label><input id="rc" type="number" min="0" step="100" inputmode="numeric">
+ <p class="muted small">Se suma a tu inventario y se aparta solo para los pedidos que estaban esperando este material.</p>
+ <button class="btn pri" style="width:100%;margin-top:8px">Inventario completado</button></form>`);
+ setTimeout(()=>$('#rq')?.focus(),50)}
+function adjDlg(id){const m=mat(id);
+ open(`<div class="dlghead"><div><h2>Ajustar · ${esc(m.name)}</h2><p class="muted small" style="margin:0">Corrige la cantidad si contaste y no coincide.</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+ <form id="adjust" data-m="${esc(m.id)}" class="row2"><div><label for="aq">Te quedan</label><input id="aq" type="number" min="0" value="${m.stock}"></div><div><label for="am">Mínimo (te avisa al llegar aquí)</label><input id="am" type="number" min="0" value="${m.min}"></div><div><label for="ac">Precio por ${munit(m).replace(/s$/,'')}</label><input id="ac" type="number" min="0" step="100" value="${m.cost||0}"></div>
+ <div style="grid-column:1/-1"><button class="btn pri" style="width:100%;margin-top:14px">Guardar</button><button class="btn alt sm" type="button" id="untrack" data-m="${esc(m.id)}" style="margin-top:10px">Dejar de controlar este material</button></div></form>`)}
+let vper='mes';
+function panelSales(){
+ const now=new Date();const d0=new Date(now);d0.setHours(0,0,0,0);
+ const since={hoy:+d0,semana:+d0-6*DAY,mes:+new Date(now.getFullYear(),now.getMonth(),1),todo:0}[vper];
+ const sold=S.orders.filter(o=>o.status!=='cancelado'&&o.status!=='recibido'&&+new Date(o.date)>=since);
+ const pend=S.orders.filter(o=>o.status==='recibido'&&+new Date(o.date)>=since);
+ const vendido=sold.reduce((s,o)=>s+o.total,0);
+ const cobrado=S.orders.filter(o=>o.status!=='cancelado').reduce((s,o)=>s+(o.pays||[]).filter(x=>x.t>=since).reduce((a,x)=>a+x.a,0),0);
+ const gastos=S.moves.filter(x=>x.c&&x.t>=since).reduce((s,x)=>s+x.c,0);
+ const envios=sold.reduce((s,o)=>s+(o.fee||0),0);
+ const days=[];for(let i=13;i>=0;i--){const a=+d0-i*DAY;days.push({a,v:S.orders.filter(o=>o.status!=='cancelado'&&o.status!=='recibido'&&+new Date(o.date)>=a&&+new Date(o.date)<a+DAY).reduce((s,o)=>s+o.total,0)})}
+ const mx=Math.max(1,...days.map(x=>x.v));const df=new Intl.DateTimeFormat('es-CO',{weekday:'short',day:'numeric'});
+ const top={};sold.forEach(o=>o.items.forEach(i=>{const k=i.name;top[k]=top[k]||{u:0,v:0,n:0,unit:i.unit};top[k].u+=i.qtyFinal;top[k].v+=i.price;top[k].n++}));
+ const tops=Object.entries(top).sort((a,b)=>b[1].v-a[1].v).slice(0,8);
+ const PER={hoy:'Hoy',semana:'Últimos 7 días',mes:'Este mes',todo:'Todo'};
+ return `<div class="chips" style="margin-bottom:16px">${Object.entries(PER).map(([k,n])=>`<button class="chip" type="button" data-vper="${k}" aria-pressed="${vper===k}">${n}</button>`).join('')}</div>
+ <div class="panelgrid"><div class="kpi"><span class="small muted">Vendido (pedidos confirmados)</span><b class="price">${fmt(vendido)}</b><span class="small muted">${sold.length} pedido${sold.length===1?'':'s'}${sold.length?' · promedio '+fmt(vendido/sold.length):''}</span></div>
+ <div class="kpi"><span class="small muted">Cobrado (pagos recibidos)</span><b class="price">${fmt(cobrado)}</b></div>
+ <div class="kpi"><span class="small muted">Gastado en material</span><b class="price">${fmt(gastos)}</b></div>
+ <div class="kpi"><span class="small muted">Ganancia aprox.</span><b class="price">${fmt(cobrado-gastos)}</b><span class="small muted">cobrado − material</span></div></div>
+ ${pend.length?`<div class="okmsg">Además tienes <b>${pend.length}</b> pedido${pend.length===1?'':'s'} por confirmar por <b>${fmt(pend.reduce((s,o)=>s+o.total,0))}</b>.</div>`:''}
+ <div class="box"><h3>Ventas de los últimos 14 días</h3><div class="bars">${days.map(x=>`<div class="brow"><span class="bl">${df.format(new Date(x.a))}</span><span class="bt"><i style="width:${x.v/mx*100}%"></i></span><span class="bv price">${x.v?fmt(x.v):'—'}</span></div>`).join('')}</div></div>
+ <div class="box"><h3>Productos más vendidos · ${PER[vper].toLowerCase()}</h3>${tops.length?`<table class="stack"><thead><tr><th>Producto</th><th class="r">Pedidos</th><th class="r">Unidades</th><th class="r">Ventas</th></tr></thead><tbody>${tops.map(([k,x])=>`<tr><td>${esc(k)}</td><td class="r">${x.n}</td><td class="r price">${x.u.toLocaleString('es-CO')}</td><td class="r price"><b>${fmt(x.v)}</b></td></tr>`).join('')}</tbody></table>`:'<p class="muted">Aún no hay ventas confirmadas en este periodo.</p>'}</div>
+ <p class="muted small">"Vendido" cuenta los pedidos desde que los pasas a Confirmado. "Cobrado" suma los pagos y abonos que registras en cada pedido. "Gastado en material" suma las compras donde pusiste cuánto pagaste en "Ya compré". Envíos incluidos en lo vendido: ${fmt(envios)}.</p>`;
+}
+const LN={sin:'Sin laminado',holo:'Holográfico',glitter:'Glitter',brillo:'Brillo UV',mate:'Mate'};
+function npDlg(){
+ open(`<div class="dlghead"><h2>Nuevo producto</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+ <form id="npForm"><label for="npn">Nombre</label><input id="npn" required maxlength="60" placeholder="Ej.: Separadores de libros">
+ <div class="row2"><div><label for="npc">Categoría</label><select id="npc">${CATS.map(([k,n])=>`<option value="${k}">${n}</option>`).join('')}</select></div><div><label for="npu">¿Cómo se llaman las unidades?</label><input id="npu" required maxlength="20" placeholder="Ej.: separadores"></div></div>
+ <label for="npd">Descripción</label><textarea id="npd" rows="2" maxlength="220" placeholder="Tamaño, papel, acabado…"></textarea>
+ <label>Precio</label><div class="chips"><button class="chip" type="button" data-ptype="tiers" aria-pressed="true">Por cantidades</button><button class="chip" type="button" data-ptype="unit" aria-pressed="false">Por unidad</button></div>
+ <div id="npTiers"><label for="npt">Cantidades y precios (una por línea)</label><textarea id="npt" rows="4" placeholder="50 = 80000&#10;100 = 120000&#10;200 = 180000"></textarea></div>
+ <div id="npUnit" hidden><label for="npup">Precio por unidad</label><input id="npup" type="number" min="0" step="500"></div>
+ <label>Laminados que ofreces</label><div class="chips">${Object.entries(LN).map(([k,n])=>`<label class="chip"><input type="checkbox" class="nplam" value="${k}" ${k==='brillo'||k==='mate'?'checked':''} style="width:18px;min-height:0;accent-color:var(--c1)">${n}</label>`).join('')}</div>
+ <div class="row2"><div><label for="npp">Papel</label><select id="npp"><option value="choice">La clienta escoge: opalina o fotográfico 280 g</option><option value="opalina">Opalina 200 g</option><option value="foto280">Fotográfico 280 g</option><option value="foto135">Fotográfico 135 g</option><option value="">Sin control de papel</option></select></div><div><label for="npper">Unidades por hoja</label><input id="npper" type="number" min="1" value="8"></div></div>
+ <div class="row2"><div><label for="npds">Precio del diseño (0 = sin opción de diseño)</label><input id="npds" type="number" min="0" step="1000" value="30000"></div><div><label for="npf">Foto (opcional)</label><input id="npf" type="file" accept="image/*"></div></div>
+ <p class="small" id="npErr" style="color:var(--c1d)"></p>
+ <button class="btn pri" style="width:100%">Crear producto</button></form>`);
+}
+document.addEventListener('submit',async e=>{if(e.target.id!=='npForm')return;e.preventDefault();
+ const err=t=>{$('#npErr').textContent=t};
+ const unitMode=document.querySelector('[data-ptype][aria-pressed=true]').dataset.ptype==='unit';
+ let tiers=null,unit=null;
+ if(unitMode){unit=Math.round(+$('#npup').value||0);if(!unit)return err('Escribe el precio por unidad.')}
+ else{tiers=$('#npt').value.split('\n').map(l=>l.replace(/\$/g,'').match(/^\s*([\d.,]+)\s*[=:\-–]\s*([\d.,]+)\s*$/)).filter(Boolean).map(m=>[parseInt(m[1].replace(/[.,]/g,'')),parseInt(m[2].replace(/[.,]/g,''))]).filter(x=>x[0]>0&&x[1]>0).sort((a,b)=>a[0]-b[0]);
+  if(!tiers.length)return err('Escribe al menos una línea como "50 = 80000".')}
+ let lams=[...document.querySelectorAll('.nplam:checked')].map(x=>x.value);if(!lams.length)lams=['sin'];
+ const pp=$('#npp').value;const per=Math.max(1,+$('#npper').value||1);const ds=Math.round(+$('#npds').value||0);
+ const name=$('#npn').value.trim();if(!name)return err('Escribe el nombre.');
+ const p={id:name.toLowerCase().normalize('NFD').replace(/[^\w]+/g,'-').slice(0,30)+'-'+Date.now().toString(36),cat:$('#npc').value,name,unit:$('#npu').value.trim()||'unidades',desc:$('#npd').value.trim(),design:ds>0?ds:'no',custom:true,
+  ...(pp==='choice'?{paperChoice:true}:{}),...(lams.length>1?{varLabel:'Laminado'}:{}),
+  variants:lams.map(l=>({id:l,name:LN[l],lams:l==='sin'?[]:[l],paper:pp==='choice'?'opalina':(pp||null),per,...(unit?{unit}:{tiers:tiers.map(x=>[...x])})}))};
+ const f=$('#npf').files[0];if(f){try{p.photo=await toUrl(await shrink(f,900),p.id)}catch(x){toast('No se pudo subir la foto')}}
+ S.products.push(p);if(!save()){S.products.pop();return}close();render();toast('Producto creado 💖');
+});
+function panelProducts(){
+ return `<div class="chips" style="justify-content:space-between;align-items:center;margin-bottom:8px"><span class="muted small">${S.products.length} productos · ${S.products.filter(p=>p.hidden).length} ocultos</span><button class="btn" type="button" id="newProd">+ Nuevo producto</button></div><p class="muted">Edita precios y cuántas unidades salen por hoja. Las tarjetas ya están en 8 por hoja; las demás vienen estimadas: ajústalas a tu realidad para que el inventario cuadre.</p>
+ ${S.products.map(p=>`<details class="box" style="margin-top:12px"><summary><b>${esc(p.name)}</b> <span class="muted small">· ${(CATS.find(c=>c[0]===p.cat)||['',''])[1]}</span>${p.hidden?' <span class="pill">Oculto</span>':''}</summary>
+  <div class="chips" style="margin-top:10px"><button class="btn alt sm" type="button" data-hide="${esc(p.id)}">${p.hidden?'Mostrar en el catálogo':'Ocultar del catálogo'}</button><button class="btn alt sm" type="button" data-del="${esc(p.id)}">Borrar producto</button></div>
+  ${typeof p.design==='number'?`<label>Precio del diseño</label><input type="number" min="0" step="1000" value="${p.design}" data-dp="${esc(p.id)}" style="max-width:200px">`:''}
+  ${p.variants.map((v,vi)=>`<h3 style="margin-top:16px">${esc(v.name)}</h3><div class="row2">
+   ${v.unit?`<div><label>Precio por ${esc(p.unit.replace(/s$/,''))}</label><input type="number" min="0" step="1000" value="${v.unit}" data-up="${esc(p.id)}" data-vi="${vi}"></div>`:v.tiers.map(([q,pr],k)=>`<div><label>${q.toLocaleString('es-CO')} ${esc(p.unit)}</label><input type="number" min="0" step="1000" value="${pr}" data-tier="${esc(p.id)}" data-vi="${vi}" data-k="${k}"></div>`).join('')}
+   ${v.paper||v.lams.length?`<div><label>${esc(p.unit)} por ${esc(v.paper?munit(mat(v.paper)).replace(/s$/,''):'hoja')}</label><input type="number" min="1" value="${v.per}" data-ps="${esc(p.id)}" data-vi="${vi}"></div>`:''}</div>
+   <p class="small muted">${p.track===false?'Este producto no descuenta inventario.':'Gasta por hoja: '+esc(v.lams.map(l=>l==='holo'?'Holográfico (el diseño que escoja el cliente)':mat(l)?.name).concat(p.paperChoice?['Opalina 200 g o fotográfico 280 g (el que escoja)']:v.paper&&mat(v.paper)?[mat(v.paper).name]:[]).join(' + ')+(p.backs?' + el reverso que escoja':'')||'sin control de material')}</p>`).join('')}</details>`).join('')}`;
+}
+function panelSched(){
+ return `<div class="box"><h2>Tarifas de domicilio · Medellín y alrededores</h2><p class="muted small">El cliente escoge su municipio y el valor se suma a su cotización. Si dejas un valor vacío, le sale "por confirmar".</p>
+ ${S.sched.zones.map((z,i)=>`<div class="line"><input value="${esc(z.name)}" data-zn="${i}" aria-label="Municipio o zona" style="max-width:260px"><span class="qtyrow"><input type="number" min="0" step="500" value="${z.price??''}" placeholder="Valor" data-zp="${i}" aria-label="Valor del domicilio"><button class="btn alt sm" type="button" data-zd="${i}" aria-label="Quitar">Quitar</button></span></div>`).join('')}
+ <button class="btn alt sm" type="button" id="addZone" style="margin-top:12px">Agregar municipio o zona</button></div>
+ <div class="box"><h2>Recogida y notas</h2>
+ <label for="pk">Dirección para recoger</label><input id="pk" value="${esc(S.sched.pickup)}">
+ <label for="ph">Horario de recogida</label><input id="ph" value="${esc(S.sched.hours)}">
+ <label for="dl">Nota sobre domicilios</label><textarea id="dl" rows="2">${esc(S.sched.delivery)}</textarea>
+ <label for="na">Nota sobre envíos nacionales</label><textarea id="na" rows="2">${esc(S.sched.national)}</textarea>
+ <button class="btn pri" type="button" id="saveSched" style="margin-top:14px">Guardar</button></div>`;
+}
+function panelPage(){
+ return `${LIVE?'':'<div class="notice"><strong>Importante:</strong> en esta vista de prueba lo que cambies se guarda solo en este dispositivo. Cuando la página esté publicada con Supabase, tus clientas verán los cambios al instante.</div>'}
+ <div class="box"><h2>Inicio de la página</h2>
+  <label for="pgt">Título grande</label><input id="pgt" value="${esc(S.page.title)}" maxlength="80">
+  <label for="pgs">Texto debajo del título</label><textarea id="pgs" rows="3" maxlength="260">${esc(S.page.sub)}</textarea>
+  <label for="pgb">Texto del botón</label><input id="pgb" value="${esc(S.page.btn||'Ver catálogo')}" maxlength="30" style="max-width:260px">
+  <label>Imagen principal</label>
+  <div class="imgrow"><div class="thumb">${okImg(S.page.hero)?`<img src="${S.page.hero}" alt="">`:'<span class="muted small">Dibujo de tarjetas (actual)</span>'}</div>
+   <div><label class="btn sm filebtn">Subir imagen<input type="file" accept="image/*" data-up-img="hero" hidden></label> ${okImg(S.page.hero)?'<button class="btn alt sm" type="button" data-rm-img="hero">Volver al dibujo</button>':''}<p class="muted small">Ideal horizontal. Se ajusta sola al espacio.</p></div></div>
+  <button class="btn pri" type="button" id="savePage" style="margin-top:14px">Guardar textos</button></div>
+ <div class="box"><h2>Fotos de los productos</h2><p class="muted small">Sube la foto real de cada producto. La pieza completa (ficha) sigue disponible dentro del producto en "Ver ficha completa".</p>
+  ${S.products.map(p=>`<div class="imgrow line"><div class="thumb sm"><img src="${esc(pimg(p))}" alt=""></div><div style="flex:1"><b>${esc(p.name)}</b><br><span class="muted small">${okImg(p.photo)?'Foto propia':'Mostrando la ficha'}</span></div>
+   <div class="acts"><label class="btn sm filebtn">Subir foto<input type="file" accept="image/*" data-up-img="${esc(p.id)}" hidden></label>${okImg(p.photo)?`<button class="btn alt sm" type="button" data-rm-img="${esc(p.id)}">Quitar</button>`:''}</div></div>`).join('')}</div>`;
+}
+function shrink(file,max){return new Promise((res,rej)=>{const fr=new FileReader();fr.onerror=rej;fr.onload=()=>{const im=new Image();im.onerror=rej;im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82))};im.src=fr.result};fr.readAsDataURL(file)})}
+async function toUrl(dataUrl,name){if(!LIVE)return dataUrl;const blob=await (await fetch(dataUrl)).blob();const path=name.replace(/[^\w-]/g,'')+'-'+Date.now()+'.jpg';
+ const{error}=await sb.storage.from('fotos').upload(path,blob,{contentType:'image/jpeg',upsert:false});if(error)throw error;return sb.storage.from('fotos').getPublicUrl(path).data.publicUrl}
+document.addEventListener('change',async e=>{const t=e.target;if(!t.dataset||!t.dataset.upImg||!t.files[0])return;
+ try{toast('Subiendo imagen…');const url=await toUrl(await shrink(t.files[0],t.dataset.upImg==='hero'?1400:900),t.dataset.upImg);const k=t.dataset.upImg;
+  if(k==='hero'){const old=S.page.hero;S.page.hero=url;if(!save()){S.page.hero=old;return}}else{const p=prod(k);const old=p.photo;p.photo=url;if(!save()){p.photo=old;return}}
+  render();toast('Imagen guardada')}catch(err){toast('No se pudo leer esa imagen')}});
+function panelSettings(){
+ return `<div class="row2"><div><label for="sw2">WhatsApp del negocio (con 57)</label><input id="sw2" value="${esc(S.wa)}" inputmode="tel"></div><div><label for="sig">Instagram</label><input id="sig" value="${esc(S.ig)}"></div>${LIVE?'':`<div><label for="sp">Clave del panel</label><input id="sp" value="${esc(S.pin)}"></div><div><label for="sq">Próximo número de pedido</label><input id="sq" type="number" min="1" value="${S.seq}"></div>`}</div>
+ <p class="muted small">Los números de pedido se crean solos y en orden (IP-1001, IP-1002…).${LIVE?' Para empezar desde otro número, cámbialo una vez en Supabase (ver los pasos).':' Cámbialo solo si quieres que empiecen desde otro número.'}</p>
+ <button class="btn pri" type="button" id="saveSet" style="margin-top:14px">Guardar</button>
+ ${LIVE?'<p style="margin-top:24px"><button class="btn alt" type="button" id="logout">Cerrar sesión</button></p>':'<p class="muted small" style="margin-top:24px">Zona de pruebas</p><button class="btn alt sm" type="button" id="demo">Crear un pedido de prueba</button> <button class="btn alt sm" type="button" id="reset">Borrar todo y volver a los datos iniciales</button>'}`;
+}
+
+document.addEventListener('input',e=>{if(e.target.id==='omsg'){const o=S.orders.find(x=>x.code===openOrder);$('#owa').href=waLink('57'+o.wa.replace(/^57/,''),e.target.value)}});
+document.addEventListener('change',e=>{
+ const t=e.target;
+ if(t.id==='ost'){const o=S.orders.find(x=>x.code===openOrder);const ns=t.value;
+  if(ns==='cancelado'&&o.status!=='cancelado')o.items.forEach(i=>i.use.forEach(u=>{const m=mat(u.m);if(m){m.stock+=u.got;move(u.m,u.got,'Cancelado '+o.code)}u.got=0}));
+  o.status=ns;o.hist=o.hist.filter(h=>h.s!==ns);o.hist.push({s:ns,t:new Date().toISOString()});save();render();orderDlg(o.code,true)}
+ if(t.dataset.mf){const m=mat(t.dataset.m);if(t.dataset.mf==='stock'){if(t.value===''){m.stock=null}else{const v=Math.max(0,+t.value||0);if(m.stock!=null)move(m.id,v-m.stock,'Ajuste');else move(m.id,v,'Inventario inicial');m.stock=v}}else m[t.dataset.mf]=Math.max(0,+t.value||0);save();render()}
+ if(t.dataset.tier){prod(t.dataset.tier).variants[+t.dataset.vi].tiers[+t.dataset.k][1]=+t.value||0;save()}
+ if(t.dataset.up){prod(t.dataset.up).variants[+t.dataset.vi].unit=+t.value||0;save()}
+ if(t.dataset.ps){prod(t.dataset.ps).variants[+t.dataset.vi].per=Math.max(1,+t.value||1);save()}
+ if(t.dataset.dp){prod(t.dataset.dp).design=+t.value||0;save()}
+ if(t.id==='wd'){S.waitDays=Math.max(1,+t.value||10);save()}
+ if(t.dataset.zn!=null){S.sched.zones[+t.dataset.zn].name=t.value.trim()||'Zona';save()}
+ if(t.dataset.zp!=null){S.sched.zones[+t.dataset.zp].price=t.value===''?null:Math.max(0,+t.value);save()}
+});
+document.addEventListener('input',e=>{if(e.target.id==='oq'){oq=e.target.value;const pos=e.target.selectionStart;render();const n=$('#oq');if(n){n.focus();n.setSelectionRange(pos,pos)}}});
+document.addEventListener('click',e=>{
+ const t=e.target.closest('button');if(!t)return;
+ if(t.dataset.cfg)openCfg(t.dataset.cfg);
+ if(t.dataset.cat){cat=t.dataset.cat;render();document.getElementById('productos')?.scrollIntoView()}
+ if(t.dataset.tab){tab=t.dataset.tab;render();scrollTo(0,0)}
+ if(t.dataset.filt){filt=t.dataset.filt;render()}
+ if(t.dataset.open)orderDlg(t.dataset.open);
+ if(t.dataset.mfilt){mfilt=t.dataset.mfilt;render()}
+ if(t.dataset.pq){const o=S.orders.find(x=>x.code===openOrder);$('#pyv').value=t.dataset.pq==='half'?Math.min(dueOf(o),Math.round(o.total/2/100)*100):dueOf(o)}
+ if(t.id==='addPay'){const o=S.orders.find(x=>x.code===openOrder);const a=Math.round(+$('#pyv').value||0);if(a<=0){toast('Escribe el valor recibido');return}
+  (o.pays=o.pays||[]).push({t:Date.now(),a,m:$('#pym').value});save();render();orderDlg(o.code);toast(dueOf(o)?'Abono registrado':'¡Pedido pagado completo!')}
+ if(t.dataset.rmpay!=null){const o=S.orders.find(x=>x.code===openOrder);o.pays.splice(+t.dataset.rmpay,1);save();render();orderDlg(o.code);toast('Pago quitado')}
+ if(t.dataset.vper){vper=t.dataset.vper;render()}
+ if(t.id==='newProd')npDlg();
+ if(t.dataset.hide){const p=prod(t.dataset.hide);p.hidden=!p.hidden;save();render();toast(p.hidden?'Oculto del catálogo':'Visible en el catálogo')}
+ if(t.dataset.del){const p=prod(t.dataset.del);open(`<div class="dlghead"><h2>¿Borrar ${esc(p.name)}?</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div><p class="muted">Se quita del catálogo y de tu panel. Los pedidos que ya lo tienen no se afectan. Si solo quieres dejar de venderlo un tiempo, mejor ocúltalo.</p><div class="chips"><button class="btn" type="button" data-delok="${esc(p.id)}">Sí, borrar</button><button class="btn alt" type="button" data-close>Cancelar</button></div>`)}
+ if(t.dataset.delok){S.products=S.products.filter(p=>p.id!==t.dataset.delok);save();close();render();toast('Producto borrado')}
+ if(t.dataset.ptype){document.querySelectorAll('[data-ptype]').forEach(x=>x.setAttribute('aria-pressed',x===t));$('#npTiers').hidden=t.dataset.ptype!=='tiers';$('#npUnit').hidden=t.dataset.ptype!=='unit'}
+ if(t.dataset.rmImg){const k=t.dataset.rmImg;if(k==='hero')S.page.hero='';else delete prod(k).photo;save();render();toast('Listo')}
+ if(t.id==='savePage'){S.page.title=$('#pgt').value.trim()||DEF.page.title;S.page.sub=$('#pgs').value.trim();S.page.btn=$('#pgb').value.trim()||'Ver catálogo';save();toast('Textos guardados')}
+ if(t.dataset.buy)buyDlg(t.dataset.buy);
+ if(t.dataset.adj)adjDlg(t.dataset.adj);
+ if(t.id==='untrack'){const m=mat(t.dataset.m);m.stock=null;save();close();render();toast(m.name+' ya no se controla')}
+ if(t.dataset.zd!=null){S.sched.zones.splice(+t.dataset.zd,1);save();render()}
+ if(t.id==='addZone'){S.sched.zones.push({name:'Nueva zona',price:null});save();render()}
+ if(t.id==='saveSched'){S.sched.pickup=$('#pk').value;S.sched.hours=$('#ph').value;S.sched.delivery=$('#dl').value;S.sched.national=$('#na').value;save();toast('Guardado')}
+ if(t.id==='saveFee'){const o=S.orders.find(x=>x.code===openOrder);const v=$('#ofee').value;if(v===''){o.fee=0;o.feePending=true}else{o.fee=Math.max(0,+v);o.feePending=false}o.total=(o.sub??o.items.reduce((s,i)=>s+i.price,0))+o.fee;save();render();orderDlg(o.code);toast('Valor del envío guardado')}
+ if(t.id==='saveSet'){S.wa=$('#sw2').value.replace(/\D/g,'');S.ig=$('#sig').value.replace(/^@/,'').trim();if(!LIVE){S.pin=$('#sp').value||'1234';}const nq=LIVE?0:parseInt($('#sq').value);const used=Math.max(0,...S.orders.map(o=>+o.code.slice(3)||0));if(nq>used)S.seq=nq;else if(nq)toast('Ese número ya se usó; debe ser mayor a '+used);save();render();if(!(nq&&nq<=used))toast('Ajustes guardados')}
+ if(t.id==='copyList'){const txt='Lista de compras – Impresos y Publicidad\n'+S.mats.filter(m=>m.stock!=null).map(m=>({m,s:matStats(m)})).filter(x=>x.s.sug).map(x=>`• ${x.m.name}: ${x.s.sug} ${munit(x.m)}`).join('\n');
+  try{navigator.clipboard.writeText(txt).then(()=>toast('Lista copiada'),()=>toast('No se pudo copiar'))}catch(err){toast('No se pudo copiar')}}
+ if(t.id==='demo'){const p=prod('holografico');const v=p.variants[0];const code='IP-'+(S.seq++);const need=Math.ceil(200/v.per);
+  const use=Object.entries(needsOf(p,v,'holo-corazon','mate','opalina')).map(([mid,k])=>{const m=mat(mid);const nd=need*k;const got=Math.min(nd,m.stock);m.stock-=got;move(mid,-got,'Pedido '+code);return {m:mid,need:nd,got}});
+  const it={pid:p.id,vid:v.id,paper:'opalina',paperName:'Opalina 200 g',back:'mate',backName:'Reverso: mate',holo:'holo-corazon',holoName:'Holográfico corazón',name:p.name,vname:'',unit:p.unit,qty:200,qtyFinal:200,choices:{},extras:[],exNames:[],design:true,designTxt:'con diseño',mode:'espera',notes:'Logo al frente, redes atrás',price:166000+30000,use,wait:use.some(u=>u.got<u.need)};
+  const z=S.sched.zones[0]||{name:'Medellín',price:null};S.orders.unshift({code,date:new Date().toISOString(),name:'Laura Gómez',wa:'3001234567',how:'domicilio',zone:z.name,fee:z.price||0,feePending:z.price==null,addr:'Cra 43A # 1-50, El Poblado',items:[it],sub:it.price,total:it.price+(z.price||0),status:'recibido',hist:[{s:'recibido',t:new Date().toISOString()}]});save();render();toast('Pedido de prueba creado')}
+ if(t.id==='logout'){sb.auth.signOut().then(()=>location.reload())}
+ if(t.id==='refreshOrders'){refreshOrders().then(()=>toast('Pedidos actualizados'))}
+ if(t.id==='reset'){S=JSON.parse(JSON.stringify(DEF));save();render();toast('Datos iniciales restaurados')}
+});
+document.addEventListener('submit',e=>{
+ const id=e.target.id;
+ if(id==='gate'){e.preventDefault();if(LIVE){const btn=e.target.querySelector('button');btn.disabled=true;sb.auth.signInWithPassword({email:$('#gem').value.trim(),password:$('#pin').value}).then(async({error})=>{if(error){btn.disabled=false;toast('Correo o contraseña incorrectos');return}await enterAdmin()});return}
+  if($('#pin').value===S.pin){admin=true;render()}else toast('Clave incorrecta')}
+ if(id==='restock'){e.preventDefault();const m=mat(e.target.dataset.m);const q=Math.max(0,+$('#rq').value||0);if(!q)return;const paid=+$('#rc').value||0;
+  m.stock+=q;move(m.id,q,'Compra'+(paid?' · '+fmt(paid):''));if(paid)S.moves[0].c=paid;if(paid)m.cost=Math.round(paid/q);allocate(m.id);save();close();render();toast('¡Inventario completado! '+m.name+': '+m.stock+' '+munit(m))}
+ if(id==='adjust'){e.preventDefault();const m=mat(e.target.dataset.m);const v=Math.max(0,+$('#aq').value||0);move(m.id,v-m.stock,'Ajuste');m.stock=v;m.min=Math.max(0,+$('#am').value||0);m.cost=Math.max(0,+$('#ac').value||0);save();close();render();toast('Guardado')}
+ if(id==='buyForm'){e.preventDefault();const m=mat($('#bm').value);const q=Math.max(0,+$('#bq').value||0);if(!q)return;const paid=+$('#bc').value||0;
+  m.stock+=q;move(m.id,q,'Compra'+(paid?' · '+fmt(paid):''));if(paid)S.moves[0].c=paid;if(paid)m.cost=Math.round(paid/q);allocate(m.id);save();render();toast('Compra registrada')}
+ if(id==='newMat'){e.preventDefault();const n=$('#nm').value.trim();if(!n)return;const [kind,sw]=$('#nk').value.split('|');const nid=n.toLowerCase().normalize('NFD').replace(/[^\w]+/g,'-')+'-'+Date.now().toString(36);
+  S.mats.push({id:nid,name:n,short:n.replace(/^(laminado\s+)?holográfico\s*/i,'')||n,kind,stock:+$('#ns').value||0,min:+$('#nmin').value||0,cost:0,sw,...(sw==='holo'?{group:'holo'}:{})});save();render();toast('Material agregado')}
+ if(id==='tf'){e.preventDefault();const c=$('#tc').value.trim().toUpperCase().replace(/^(\d)/,'IP-$1');const l4=$('#tp').value.trim();
+  if(LIVE){sb.rpc('track_order',{p_code:c,p_last4:l4}).then(({data})=>{if(data)showTrack(data);else $('#tr').innerHTML='<div class="notice"><strong>No encontramos ese pedido.</strong> Revisa el número y los dígitos, o escríbenos por WhatsApp.</div>'});return}
+  const o=S.orders.find(x=>x.code===c&&x.wa.slice(-4)===l4);
+  if(o)showTrack(o);else $('#tr').innerHTML='<div class="notice"><strong>No encontramos ese pedido.</strong> Revisa el número y los dígitos, o escríbenos por WhatsApp.</div>'}
+});
+$('#cartBtn').addEventListener('click',openCart);
+
+function render(){
+ const h=location.hash.slice(1)||'catalogo';const view=h==='seguimiento'?'seguimiento':h==='panel'?'panel':'catalogo';
+ $('#app').innerHTML=view==='seguimiento'?viewTrack():view==='panel'?viewPanel():viewCatalog();
+ document.querySelectorAll('#nav a').forEach(a=>a.toggleAttribute('aria-current',a.getAttribute('href')==='#'+view));
+ $('#foot').innerHTML=`<b>Impresos y Publicidad</b> · Medellín · Envíos a toda Colombia<br>WhatsApp <a href="${esc(waLink(S.wa,'¡Hola! Quiero información de impresos'))}" target="_blank" rel="noopener">${esc(S.wa.replace(/^57/,''))}</a> · Instagram <a href="https://instagram.com/${encodeURIComponent(S.ig)}" target="_blank" rel="noopener">@${esc(S.ig)}</a>`;
+ if(h==='productos')document.getElementById('productos')?.scrollIntoView();
+}
+window.addEventListener('hashchange',()=>{close();render();if(location.hash!=='#productos')scrollTo(0,0)});
+saveCart();render();
+if(LIVE){loadPublic().then(()=>sb.auth.getSession()).then(({data})=>{if(data.session)enterAdmin()});setInterval(()=>{if(admin&&!document.hidden)refreshOrders()},60000)}
+}
+</script>
+</body>
+</html>
