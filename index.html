@@ -272,7 +272,8 @@ const STATUS=[
  {id:'confirmado',name:'Confirmado',msg:'tu pedido está confirmado y ya entra a producción'},
  {id:'diseno',name:'En diseño',msg:'estamos trabajando en el diseño de tu pedido'},
  {id:'impresion',name:'En impresión',msg:'tu pedido ya está en proceso de impresión'},
- {id:'acabados',name:'Laminado y corte',msg:'estamos laminando y cortando tu pedido'},
+ {id:'acabados',name:'Laminado',msg:'estamos laminando tu pedido'},
+ {id:'corte',name:'Corte',msg:'estamos cortando tu pedido'},
  {id:'listo',name:'Listo para entrega',msg:'tu pedido está listo'},
  {id:'entregado',name:'Entregado',msg:'tu pedido fue entregado. ¡Gracias por confiar en nosotros!'}
 ];
@@ -688,7 +689,7 @@ $('#dlg').addEventListener('submit',async e=>{
  const sub=cart.reduce((s,i)=>s+i.price,0);const fee=z&&z.price!=null?z.price:0;const agil=!!($('#cagil')&&$('#cagil').checked);const agilFee=agil?agilFeeOf():0;
  let code;
  if(LIVE){const btn=e.target.querySelector('button.pri');btn.disabled=true;btn.textContent='Enviando…';
-  const payload={name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||!!(z&&z.price==null),addr,ad,items:cart.map(({use,...i})=>i),files:[...attach],sub,agil,agilFee,total:sub+fee+agilFee};
+  const payload={noLam:!cart.some(itemLam),name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||!!(z&&z.price==null),addr,ad,items:cart.map(({use,...i})=>i),files:[...attach],sub,agil,agilFee,total:sub+fee+agilFee};
   const{data,error}=await sb.rpc('place_order',{p:payload});
   if(error||!data){btn.disabled=false;btn.textContent='Enviar cotización por WhatsApp';toast('No se pudo enviar. Revisa tu internet e inténtalo de nuevo.');return}
   code=data;if(cust){const up={id:cust.id,email:cust.email,name:payload.name,wa:payload.wa};if(ad)Object.assign(up,ad);if(payload.zone)up.zone=payload.zone;Object.assign(cust,up);custUpsert(up);custOrders=null;acTab='pedidos';attach.clear()}}else code='IP-'+(S.seq++);
@@ -871,7 +872,7 @@ function viewTrack(){
 }
 function showTrack(o){
  const idx=STATUS.findIndex(s=>s.id===o.status);
- const steps=STATUS.filter(s=>s.id!=='diseno'||o.items.some(i=>i.design||i.designTxt==='diseño incluido'));
+ const steps=STATUS.filter(s=>(s.id!=='diseno'||o.items.some(i=>i.design||i.designTxt==='diseño incluido'))&&(s.id!=='acabados'||o.noLam!==true||o.status==='acabados'||!!(o.hist||[]).find(h=>h.s==='acabados')));
  const hist=Object.fromEntries(o.hist.map(h=>[h.s,h.t]));
  const df=new Intl.DateTimeFormat('es-CO',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
  $('#tr').innerHTML=o.status==='cancelado'?`<div class="notice"><strong>Este pedido fue cancelado.</strong> Escríbenos por WhatsApp si tienes dudas.</div>`:
@@ -973,7 +974,7 @@ function npSaveEdit(){const o=S.orders.find(x=>x.code===npEdit);if(!o)return;if(
  o.items.forEach((it,k)=>{if(kept.has(k))return;(it.use||[]).forEach(u=>{const m=mat(u.m);if(m&&m.stock!=null&&u.got>0){m.stock+=u.got;move(u.m,u.got,'Cambio en pedido '+code)}})});
  const items=npItems.map(i=>{const it={...i};if(!it._old){it.use=(it.req||[]).map(r=>{const m=mat(r.m);if(!m||m.stock==null)return null;const got=Math.min(r.need,Math.max(0,m.stock));m.stock-=got;if(got)move(r.m,-got,'Cambio en pedido '+code);return{m:r.m,need:r.need,got}}).filter(Boolean)}delete it._old;delete it._oi;delete it.req;return it});
  const uid=$('#nCust')?$('#nCust').value:(o.uid||'');const z=npHow==='domicilio'?S.sched.zones[+$('#noZone').value]:null;const ad=npHow!=='recogida'?readAddr('no'):null;const t=npTotals();
- const oldUid=o.uid||'';Object.assign(o,{name,wa,how:npHow,zone:z?z.name:'',fee:t.fee,feePending:npHow!=='recogida'&&!t.fee,addr:addrTxt(ad),ad,items,sub:t.sub,agil:t.agil,agilFee:t.agilFee,total:t.total,uid:uid||undefined,edited:new Date().toISOString()});
+ const oldUid=o.uid||'';Object.assign(o,{noLam:!items.some(itemLam),name,wa,how:npHow,zone:z?z.name:'',fee:t.fee,feePending:npHow!=='recogida'&&!t.fee,addr:addrTxt(ad),ad,items,sub:t.sub,agil:t.agil,agilFee:t.agilFee,total:t.total,uid:uid||undefined,edited:new Date().toISOString()});
  if(LIVE&&uid!==oldUid)sb.from('orders').update({user_id:uid||null}).eq('code',code);
  npEdit=null;save();render();orderDlg(code);toast('Pedido actualizado 💖')}
 async function npSave(){if(npEdit){npSaveEdit();return}if(!npItems.length){toast('Agrega por lo menos un producto');$('#niQty').focus();return}
@@ -981,7 +982,7 @@ async function npSave(){if(npEdit){npSaveEdit();return}if(!npItems.length){toast
  const uid=$('#nCust')?.value||'';const z=npHow==='domicilio'?S.sched.zones[+$('#noZone').value]:null;const ad=npHow!=='recogida'?readAddr('no'):null;const addr=addrTxt(ad);
  const t=npTotals();const st=$('#noSt').value;const pay=+$('#noPay').value||0;const now=new Date().toISOString();
  const feePending=npHow!=='recogida'&&!t.fee;
- const base={name,wa,how:npHow,zone:z?z.name:'',fee:t.fee,feePending,addr,ad,sub:t.sub,agil:t.agil,agilFee:t.agilFee,total:t.total,src:'whatsapp'};
+ const base={noLam:!npItems.some(itemLam),name,wa,how:npHow,zone:z?z.name:'',fee:t.fee,feePending,addr,ad,sub:t.sub,agil:t.agil,agilFee:t.agilFee,total:t.total,src:'whatsapp'};
  const btn=$('#npOrder button.pri');btn.disabled=true;btn.textContent='Guardando…';let o;
  if(LIVE){clearTimeout(syncT);while(syncing)await new Promise(r=>setTimeout(r,100));await syncNow();
   const{data:code,error}=await sb.rpc('place_order',{p:{...base,items:npItems.map(({use,...i})=>i)}});
@@ -1064,8 +1065,12 @@ function viewPanel(){
 const lacks=i=>i.use.some(u=>u.got<u.need);
 let oview='tablero';
 const stName=(o,id=o.status)=>id==='listo'?(o.how==='recogida'?'Listo para recoger':o.how==='nacional'?'Listo para enviar':'Listo para domicilio'):(STATUS.find(s=>s.id===id)||{name:'Cancelado'}).name;
-const STSHORT={confirmado:'Confirmado',diseno:'En diseño',impresion:'Impresión',acabados:'Laminado y corte',listo:'Listo',entregado:'Entregado'};
-function nextSt(o){const ids=STATUS.map(s=>s.id).filter(id=>id!=='diseno'||o.items.some(i=>i.design));const i=ids.indexOf(o.status);return i>=0&&i<ids.length-1?ids[i+1]:null}
+function itemLam(i){const ch=i.choices||{};if(ch['Laminado']!=null)return ch['Laminado']!=='Sin laminado'||(!!ch['Reverso']&&ch['Reverso']!=='Sin laminado');
+ const p=prod(i.pid);if(!p)return true;const v=p.variants.find(x=>x.id===i.vid)||p.variants[0];if(v&&v.lams.some(l=>l&&l!=='sin'))return true;
+ const b=(p.backs||[]).find(x=>x.id===i.back);return !!(b&&b.lam&&b.lam!=='sin')}
+const hasLam=o=>(o.items||[]).some(itemLam);
+const STSHORT={confirmado:'Confirmado',diseno:'En diseño',impresion:'Impresión',acabados:'Laminado',corte:'Corte',listo:'Listo',entregado:'Entregado'};
+function nextSt(o){const ids=STATUS.map(s=>s.id).filter(id=>(id!=='diseno'||o.items.some(i=>i.design))&&(id!=='acabados'||hasLam(o)));const i=ids.indexOf(o.status);return i>=0&&i<ids.length-1?ids[i+1]:null}
 const sortO=(a,b)=>(b.agil?1:0)-(a.agil?1:0)||new Date(a.date)-new Date(b.date);
 function ocard(o,showSt){const c=custOf(o);const nx=o.status!=='cancelado'?nextSt(o):null;const lack=o.items.some(lacks);
  return `<article class="ocard${o.agil?' agil':''}${lack?' lack':''}">
@@ -1078,7 +1083,7 @@ function ocard(o,showSt){const c=custOf(o);const nx=o.status!=='cancelado'?nextS
  </article>`}
 function panelOrders(){
  const act=S.orders.filter(active);const qq=oq.trim().toLowerCase();
- const nRec=S.orders.filter(o=>o.status==='recibido');const inProd=act.filter(o=>['confirmado','diseno','impresion','acabados'].includes(o.status));const ready=S.orders.filter(o=>o.status==='listo');
+ const nRec=S.orders.filter(o=>o.status==='recibido');const inProd=act.filter(o=>['confirmado','diseno','impresion','acabados','corte'].includes(o.status));const ready=S.orders.filter(o=>o.status==='listo');
  const debe=S.orders.filter(o=>o.status!=='cancelado'&&o.status!=='recibido').reduce((s,o)=>s+dueOf(o),0);
  const oldest=nRec.slice().sort(sortO)[0];
  const head=`<div class="panelgrid"><button class="kpi kbtn" type="button" data-kf="recibido"><span class="small muted">Por confirmar</span><b>${nRec.length}</b></button><button class="kpi kbtn" type="button" data-kf="prod"><span class="small muted">En producción</span><b>${inProd.length}</b></button><button class="kpi kbtn" type="button" data-kf="listo"><span class="small muted">Listos para entregar</span><b>${ready.length}</b></button><button class="kpi kbtn" type="button" data-kf="saldo"><span class="small muted">Te deben</span><b class="price">${fmt(debe)}</b></button></div>
@@ -1089,7 +1094,7 @@ function panelOrders(){
   return head+`<p class="small muted" style="margin:-4px 0 10px">Cada columna es una etapa. Los pedidos con entrega ágil van primero y luego los más antiguos. Toca <b>Pasar a…</b> para moverlo de etapa y avisarle a la clienta.</p>
   <div class="board">${cols.map(s=>{const os=S.orders.filter(o=>o.status===s.id).sort(sortO);return `<section class="bcol st-${s.id}"><h3><span>${esc(s.name)}</span><b>${os.length}</b></h3>${os.map(o=>ocard(o)).join('')||'<p class="small muted empty">Sin pedidos</p>'}</section>`}).join('')}</div>
   <p class="small muted">Los entregados y cancelados están en <button class="linkbtn" type="button" data-oview="lista" data-f="entregado">Lista → Entregados</button>.</p>`}
- const list=S.orders.filter(o=>qq?[o.code,o.name,o.wa,custOf(o)?.brand,custOf(o)?.ig].some(x=>String(x||'').toLowerCase().includes(qq)):filt==='todos'?true:filt==='activos'?active(o):filt==='prod'?['confirmado','diseno','impresion','acabados'].includes(o.status):filt==='saldo'?(o.status!=='cancelado'&&dueOf(o)>0):o.status===filt);
+ const list=S.orders.filter(o=>qq?[o.code,o.name,o.wa,custOf(o)?.brand,custOf(o)?.ig].some(x=>String(x||'').toLowerCase().includes(qq)):filt==='todos'?true:filt==='activos'?active(o):filt==='prod'?['confirmado','diseno','impresion','acabados','corte'].includes(o.status):filt==='saldo'?(o.status!=='cancelado'&&dueOf(o)>0):o.status===filt);
  return head+`${qq?'':`<div class="chips" style="margin-bottom:14px">${[['activos','Activos'],['recibido','Por confirmar'],['prod','En producción'],['listo','Listos'],['saldo','Con saldo'],['entregado','Entregados'],['cancelado','Cancelados'],['todos','Todos']].map(([k,n])=>`<button class="chip" type="button" data-filt="${k}" aria-pressed="${filt===k}">${n}</button>`).join('')}</div>`}
  ${list.length?`<div class="ogrid">${list.map(o=>ocard(o,true)).join('')}</div>`:`<p class="muted">No hay pedidos en esta vista.</p>`}`;
 }
