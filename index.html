@@ -879,7 +879,7 @@ function showTrack(o){
 
 
 /* ---------- nuevo pedido manual (WhatsApp) ---------- */
-let npItems=[],npSides=1,npHow='recogida';
+let npItems=[],npSides=1,npHow='recogida',npEdit=null;
 const lamOpts=()=>S.mats.filter(m=>m.kind==='laminado'&&m.id!=='sin');
 const papOpts=()=>S.mats.filter(m=>m.kind==='papel');
 function sugPrice(p,lam,q){if(!p||!q)return 0;const v=p.variants.find(v=>v.lams.includes(lam)||(mat(lam)&&mat(lam).group==='holo'&&v.lams.includes('holo')))||p.variants[0];
@@ -895,14 +895,14 @@ function npTotals(){const sub=npItems.reduce((s,i)=>s+i.price,0);const fee=npHow
  const agilFee=agil?Math.round(npItems.reduce((s,i)=>s+Math.max(0,i.price-(i.designAmt||0)),0)*(S.agilPct||0)/100/100)*100:0;
  $('#npTot').innerHTML=`<div class="line"><span>Productos</span><b class="price">${fmt(sub)}</b></div>${agil?`<div class="line"><span>Entrega ágil</span><b class="price">${fmt(agilFee)}</b></div>`:''}${npHow!=='recogida'?`<div class="line"><span>${npHow==='domicilio'?'Domicilio':'Envío'}</span><b class="price">${fee?fmt(fee):'Por confirmar'}</b></div>`:''}<div class="total"><span>Total</span><span class="price">${fmt(sub+fee+agilFee)}</span></div>`;
  return{sub,fee,agil,agilFee,total:sub+fee+agilFee}}
-function npList(){$('#npItems').innerHTML=npItems.length?npItems.map((i,k)=>`<div class="line"><div><b>${i.qtyFinal.toLocaleString('es-CO')} ${esc(i.name)}</b><br><span class="small muted">${esc(itemDesc(i))}</span></div><div style="text-align:right"><b class="price">${fmt(i.price)}</b><br><button class="btn alt sm" type="button" data-nirm="${k}">Quitar</button></div></div>`).join(''):'<p class="small muted" style="margin:6px 0">Aún no has agregado productos.</p>';npTotals()}
-function newOrderDlg(){npItems=[];npSides=1;npHow='recogida';
+function npList(){$('#npItems').innerHTML=npItems.length?npItems.map((i,k)=>`<div class="line"><div><b>${i.qtyFinal.toLocaleString('es-CO')} ${esc(i.name)}</b><br><span class="small muted">${esc(itemDesc(i))}</span></div><div style="text-align:right"><b class="price">${fmt(i.price)}</b><br><button class="btn alt sm" type="button" data-niedit="${k}">Editar</button> <button class="btn alt sm" type="button" data-nirm="${k}">Quitar</button></div></div>`).join(''):'<p class="small muted" style="margin:6px 0">Aún no has agregado productos.</p>';npTotals()}
+function newOrderDlg(code){const eo=code?S.orders.find(x=>x.code===code):null;npEdit=eo?eo.code:null;npItems=eo?eo.items.map((i,k)=>({...JSON.parse(JSON.stringify(i)),_old:true,_oi:k})):[];npSides=1;npHow=eo?eo.how:'recogida';
  const P=S.products.filter(p=>!p.hidden);
- open(`<div class="dlghead"><div><h2 style="margin:0">Nuevo pedido</h2><p class="small muted" style="margin:2px 0 0">Registra los pedidos que te hacen por WhatsApp, también los que no están en el catálogo. Te da el número para que la clienta lo rastree.</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+ open(`<div class="dlghead"><div><h2 style="margin:0">${eo?'Editar pedido '+esc(eo.code):'Nuevo pedido'}</h2><p class="small muted" style="margin:2px 0 0">${eo?'Cambia los productos, la entrega o los datos de la clienta. El número, el estado y los pagos se mantienen.':'Registra los pedidos que te hacen por WhatsApp, también los que no están en el catálogo. Te da el número para que la clienta lo rastree.'}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
  <form id="npOrder">
  <div class="ckstep"><span>1</span><h3>Clienta</h3></div>
- ${(S.custs||[]).length?`<label for="nCust">Clienta registrada (opcional)</label><select id="nCust"><option value="">— No tiene cuenta —</option>${S.custs.map(c=>`<option value="${esc(c.id)}">${esc(c.brand?c.brand+' · '+(c.name||''):c.name||c.email||'')}</option>`).join('')}</select>`:''}
- <div class="row2"><div><label for="noName">Nombre</label><input id="noName" required></div><div><label for="noWa">WhatsApp</label><input id="noWa" required inputmode="tel" placeholder="300 000 0000"></div></div>
+ ${(S.custs||[]).length?`<label for="nCust">Clienta registrada (opcional)</label><select id="nCust"><option value="">— No tiene cuenta —</option>${S.custs.map(c=>`<option value="${esc(c.id)}"${eo&&eo.uid===c.id?' selected':''}>${esc(c.brand?c.brand+' · '+(c.name||''):c.name||c.email||'')}</option>`).join('')}</select>`:''}
+ <div class="row2"><div><label for="noName">Nombre</label><input id="noName" required value="${esc(eo?eo.name:'')}"></div><div><label for="noWa">WhatsApp</label><input id="noWa" required inputmode="tel" placeholder="300 000 0000" value="${esc(eo?eo.wa:'')}"></div></div>
  <div class="ckstep"><span>2</span><h3>Productos</h3></div>
  <div class="box npbox">
   <label for="niProd">Producto</label><select id="niProd">${P.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('')}<option value="otro">Otro producto (no está en el catálogo)</option></select>
@@ -923,19 +923,19 @@ function newOrderDlg(){npItems=[];npSides=1;npHow='recogida';
  <div id="npItems"></div>
  <div class="ckstep"><span>3</span><h3>Entrega</h3></div>
  <div class="chips">${Object.keys(HOW).map(k=>`<button class="chip" type="button" data-nhow="${k}" aria-pressed="${k===npHow}">${HOWI[k][0]}</button>`).join('')}</div>
- <div id="noShip" hidden>
-  <div id="noZoneBox"><label for="noZone">Zona</label><select id="noZone">${S.sched.zones.map((z,i)=>`<option value="${i}">${esc(z.name)} · ${feeTxt(z)}</option>`).join('')}</select></div>
-  ${addrFields('no',null)}
-  <label for="noFee">Valor del envío</label><input id="noFee" type="number" min="0" inputmode="numeric" placeholder="Déjalo vacío si está por confirmar">
+ <div id="noShip"${npHow==='recogida'?' hidden':''}>
+  <div id="noZoneBox"${npHow==='domicilio'?'':' hidden'}><label for="noZone">Zona</label><select id="noZone">${S.sched.zones.map((z,i)=>`<option value="${i}"${eo&&eo.zone===z.name?' selected':''}>${esc(z.name)} · ${feeTxt(z)}</option>`).join('')}</select></div>
+  ${addrFields('no',eo?(eo.ad||{addr:eo.addr||''}):null)}
+  <label for="noFee">Valor del envío</label><input id="noFee" type="number" min="0" inputmode="numeric" placeholder="Déjalo vacío si está por confirmar" value="${eo&&eo.how!=='recogida'&&eo.fee?eo.fee:''}">
  </div>
- ${S.agilOn===false?'':`<label class="toggle" style="border-style:solid"><input type="checkbox" id="noAgil"><span><b>Entrega ágil</b> <span class="small muted">(+${S.agilPct}% de los productos)</span></span></label>`}
- <div class="ckstep"><span>4</span><h3>Estado y pago</h3></div>
+ ${S.agilOn===false?'':`<label class="toggle" style="border-style:solid"><input type="checkbox" id="noAgil"${eo&&eo.agil?' checked':''}><span><b>Entrega ágil</b> <span class="small muted">(+${S.agilPct}% de los productos)</span></span></label>`}
+ ${eo?'':`<div class="ckstep"><span>4</span><h3>Estado y pago</h3></div>
  <div class="row2"><div><label for="noSt">Estado del pedido</label><select id="noSt">${STATUS.map(s=>`<option value="${s.id}"${s.id==='confirmado'?' selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
- <div><label for="noPay">Abono o pago recibido (opcional)</label><div class="qtyrow"><input id="noPay" type="number" min="0" inputmode="numeric" placeholder="$0" style="flex:1"><select id="noPm" style="max-width:130px"><option>Nequi</option><option>Daviplata</option><option>Bancolombia</option><option>Bre-B</option><option>Efectivo</option></select></div></div></div>
+ <div><label for="noPay">Abono o pago recibido (opcional)</label><div class="qtyrow"><input id="noPay" type="number" min="0" inputmode="numeric" placeholder="$0" style="flex:1"><select id="noPm" style="max-width:130px"><option>Nequi</option><option>Daviplata</option><option>Bancolombia</option><option>Bre-B</option><option>Efectivo</option></select></div></div></div>`}
  <div class="cksum" id="npTot"></div>
- <button class="btn pri" style="width:100%;margin-top:16px">Guardar pedido y crear número</button>
+ <button class="btn pri" style="width:100%;margin-top:16px">${eo?'Guardar cambios':'Guardar pedido y crear número'}</button>
  </form>`,true);
- npHint();npList();zoneFee()}
+ npHint();npList();if(eo){const sh=npHow!=='recogida';$('#noaddr').required=sh;$('#nocity').required=sh;if(npHow==='nacional')$('#nocityL').textContent='Ciudad o municipio (y departamento)';npTotals()}else zoneFee()}
 function zoneFee(){const z=S.sched.zones[+($('#noZone')?.value||0)];if(z&&npHow==='domicilio')$('#noFee').value=z.price!=null?z.price:'';npTotals()}
 function npAddItem(){const pid=$('#niProd').value,p=prod(pid);const q=+$('#niQty').value||0,price=+$('#niPrice').value;
  const name=pid==='otro'?$('#niName').value.trim():p.name;
@@ -947,7 +947,27 @@ function npAddItem(){const pid=$('#niProd').value,p=prod(pid);const q=+$('#niQty
  const req=ded?Object.entries(r).filter(([id])=>mat(id)&&mat(id).stock!=null).map(([m,need])=>({m,need})):[];
  npItems.push({custom:true,pid:pid==='otro'?null:pid,name,vname:'',unit:p?p.unit:'unidades',qty:q,qtyFinal:q,choices,extras:[],exNames:[],paperName:pap==='sin'?'Otro papel':(mat(pap)?.name||''),design:des,designAmt:dv,designTxt:des?'con diseño':'',notes:$('#niNotes').value.trim(),price:price+dv,req,use:req.map(x=>({m:x.m,need:x.need,got:x.need}))});
  ['niQty','niPrice','niNotes','niSize','niName'].forEach(id=>$('#'+id).value='');$('#niDes').checked=false;npHint();npList();toast('Producto agregado')}
-async function npSave(){if(!npItems.length){toast('Agrega por lo menos un producto');$('#niQty').focus();return}
+function npLoad(k){const i=npItems[k];if(!i)return;npItems.splice(k,1);
+ const ch=i.choices||{};const p=i.pid&&prod(i.pid);$('#niProd').value=p?i.pid:'otro';$('#niName').value=p?'':i.name;
+ const lamU=(i.use||[]).filter(u=>mat(u.m)&&mat(u.m).kind==='laminado').map(u=>u.m);const papU=(i.use||[]).find(u=>mat(u.m)&&mat(u.m).kind==='papel');
+ const byName=n=>(S.mats.find(m=>m.name===n)||{}).id;
+ npSides=ch['Impresión']==='A 2 caras'||(!ch['Impresión']&&i.back)?2:1;document.querySelectorAll('[data-nside]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.nside===npSides));
+ const lam=i.holo||byName(ch['Laminado'])||lamU[0]||'sin';$('#niLam').value=mat(lam)?lam:'sin';
+ const bk=ch['Reverso']?(ch['Reverso']===ch['Laminado']?'same':byName(ch['Reverso'])||'sin'):(lamU.find(x=>x!==lam)||'same');if($('#niBack').querySelector(`option[value="${bk}"]`))$('#niBack').value=bk;
+ const pap=i.paper||(papU&&papU.m)||byName(i.paperName);if(pap&&$('#niPaper').querySelector(`option[value="${pap}"]`))$('#niPaper').value=pap;
+ const u0=(i.use||[])[0];$('#niPer').value=p&&p.variants.find(v=>v.id===i.vid)?.per||(u0&&u0.need?Math.max(1,Math.round(i.qtyFinal/u0.need*(npSides===2&&lamU.length<2&&u0.m===lam?2:1))):8);
+ $('#niQty').value=i.qtyFinal;$('#niSize').value=ch['Tamaño']||'';const dv=i.designAmt||0;$('#niDes').checked=!!i.design&&dv>0;if(dv)$('#niDesV').value=dv;$('#niPrice').value=Math.max(0,i.price-dv);$('#niNotes').value=i.notes||'';
+ npHint();npList();$('.npbox').scrollIntoView({behavior:'smooth',block:'start'});toast('Cambia lo que necesites y toca "Agregar este producto"')}
+function npSaveEdit(){const o=S.orders.find(x=>x.code===npEdit);if(!o)return;if(!npItems.length){toast('El pedido debe tener al menos un producto');return}
+ const name=$('#noName').value.trim(),wa=$('#noWa').value.replace(/\D/g,'');if(name.length<2||wa.length<7){toast('Revisa el nombre y el WhatsApp');return}
+ const code=o.code;const kept=new Set(npItems.filter(i=>i._old).map(i=>i._oi));
+ o.items.forEach((it,k)=>{if(kept.has(k))return;(it.use||[]).forEach(u=>{const m=mat(u.m);if(m&&m.stock!=null&&u.got>0){m.stock+=u.got;move(u.m,u.got,'Cambio en pedido '+code)}})});
+ const items=npItems.map(i=>{const it={...i};if(!it._old){it.use=(it.req||[]).map(r=>{const m=mat(r.m);if(!m||m.stock==null)return null;const got=Math.min(r.need,Math.max(0,m.stock));m.stock-=got;if(got)move(r.m,-got,'Cambio en pedido '+code);return{m:r.m,need:r.need,got}}).filter(Boolean)}delete it._old;delete it._oi;delete it.req;return it});
+ const uid=$('#nCust')?$('#nCust').value:(o.uid||'');const z=npHow==='domicilio'?S.sched.zones[+$('#noZone').value]:null;const ad=npHow!=='recogida'?readAddr('no'):null;const t=npTotals();
+ const oldUid=o.uid||'';Object.assign(o,{name,wa,how:npHow,zone:z?z.name:'',fee:t.fee,feePending:npHow!=='recogida'&&!t.fee,addr:addrTxt(ad),ad,items,sub:t.sub,agil:t.agil,agilFee:t.agilFee,total:t.total,uid:uid||undefined,edited:new Date().toISOString()});
+ if(LIVE&&uid!==oldUid)sb.from('orders').update({user_id:uid||null}).eq('code',code);
+ npEdit=null;save();render();orderDlg(code);toast('Pedido actualizado 💖')}
+async function npSave(){if(npEdit){npSaveEdit();return}if(!npItems.length){toast('Agrega por lo menos un producto');$('#niQty').focus();return}
  const name=$('#noName').value.trim(),wa=$('#noWa').value.replace(/\D/g,'');if(wa.length<7){toast('Revisa el WhatsApp');return}
  const uid=$('#nCust')?.value||'';const z=npHow==='domicilio'?S.sched.zones[+$('#noZone').value]:null;const ad=npHow!=='recogida'?readAddr('no'):null;const addr=addrTxt(ad);
  const t=npTotals();const st=$('#noSt').value;const pay=+$('#noPay').value||0;const now=new Date().toISOString();
@@ -981,6 +1001,8 @@ document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)r
  if(t.id==='niUseSug'){$('#niPrice').value=t.dataset.v}
  if(t.id==='niAdd')npAddItem();
  if(t.dataset.nirm!=null){npItems.splice(+t.dataset.nirm,1);npList()}
+ if(t.dataset.niedit!=null)npLoad(+t.dataset.niedit);
+ if(t.dataset.oedit)newOrderDlg(t.dataset.oedit);
  if(t.dataset.nhow){npHow=t.dataset.nhow;document.querySelectorAll('[data-nhow]').forEach(b=>b.setAttribute('aria-pressed',b===t));$('#noShip').hidden=npHow==='recogida';$('#noZoneBox').hidden=npHow!=='domicilio';$('#noaddr').required=npHow!=='recogida';$('#nocity').required=npHow!=='recogida';$('#nocityL').textContent=npHow==='nacional'?'Ciudad o municipio (y departamento)':'Municipio';if(npHow==='nacional')$('#noFee').value='';zoneFee()}
  if(t.id==='npCopy'){navigator.clipboard.writeText(window.__npMsg||'').then(()=>toast('Mensaje copiado'),()=>toast('No se pudo copiar'))}});
 document.addEventListener('input',e=>{const id=e.target.id||'';if(/^ni(Qty|Per)$/.test(id))npHint();if(id==='noFee')npTotals()});
@@ -1069,6 +1091,7 @@ function orderDlg(code,justChanged){
  const c=custOf(o);const mq=o.how==='domicilio'&&o.addr?'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addrTxt(o.ad?{...o.ad,ref:''}:null)||o.addr):'';
  open(`<div class="dlghead"><div class="ctop">${avHtml(c||{name:o.name},'lg')}<div><h2 style="margin:0">${esc(o.code)} · ${esc(c&&c.brand||o.name)}</h2><p class="muted small" style="margin:2px 0 0">${c&&c.brand?esc(o.name)+' · ':''}WhatsApp ${esc(o.wa)}${c&&c.ig?` · <a href="https://instagram.com/${encodeURIComponent(c.ig)}" target="_blank" rel="noopener">@${esc(c.ig)}</a>`:''}</p></div></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
  <div class="delivbox"><b>${esc(o.how==='recogida'?'Recoge en el local':HOW[o.how]+(o.zone?' · '+o.zone:''))}</b>${o.addr?`<span>${esc(o.addr)}</span>`:''}${mq?`<a class="btn alt sm" href="${esc(mq)}" target="_blank" rel="noopener">Ver en el mapa</a>`:''}</div>
+ <div class="acts" style="justify-content:flex-start;margin:-4px 0 12px"><button class="btn sm" type="button" data-oedit="${esc(o.code)}">Editar pedido</button><span class="small muted">Productos, cantidades, precio, entrega o datos${o.edited?' · editado '+ago(o.edited):''}</span></div>
  ${o.items.map(i=>`<div class="line"><div><b>${i.qtyFinal} ${esc(i.name)}</b><br><span class="small muted">${esc(itemDesc(i))}${i.notes?'<br>Nota: '+esc(i.notes):''}<br>${i.use.map(u=>`${esc(mat(u.m)?.name||u.m)}: ${u.got} de ${u.need} apartados${u.got<u.need?` (faltan ${u.need-u.got})`:''}`).join(' · ')}</span></div><b class="price">${fmt(i.price)}</b></div>`).join('')}
  ${o.agil?`<div class="line"><span><b>Entrega ágil</b> (${S.agilPct}% de los productos)</span><b class="price">+${fmt(o.agilFee||0)}</b></div>`:''}
  ${o.how!=='recogida'?`<div class="line"><span>${o.how==='domicilio'?'Domicilio a '+esc(o.zone):'Envío nacional'}</span><span class="qtyrow"><input type="number" min="0" step="500" id="ofee" value="${o.feePending?'':o.fee}" placeholder="Valor" style="width:130px"><button class="btn alt sm" type="button" id="saveFee">Guardar</button></span></div>`:''}
