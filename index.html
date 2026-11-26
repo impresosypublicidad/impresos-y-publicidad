@@ -146,14 +146,30 @@ input,select,textarea{border-color:var(--line)}
 .cfggrid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:26px;align-items:start}
 .cfgimg{margin:0;position:sticky;top:0}.cfgimg img{display:block;width:100%;max-height:calc(92vh - 44px);object-fit:contain;border-radius:18px;background:var(--soft);border:1px solid var(--line)}
 @media(max-width:760px){.cfggrid{grid-template-columns:minmax(0,1fr);gap:14px}.cfgimg{position:static}.cfgimg img{max-height:46vh}}
+.navdd{position:relative}.navdd summary{list-style:none;cursor:pointer;font-weight:600;padding:8px 10px;border-radius:10px;white-space:nowrap;color:var(--ink)}
+.navdd summary::-webkit-details-marker{display:none}.navdd summary::after{content:"";display:inline-block;width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin:0 0 3px 8px}
+.navdd.on summary,.navdd[open] summary{background:var(--soft)}
+.ddmenu{position:absolute;top:calc(100% + 6px);left:0;z-index:30;min-width:240px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 40px rgba(150,30,80,.18);padding:8px;display:grid}
+.ddmenu a{padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--ink);font-weight:600}.ddmenu a:hover,.ddmenu a[aria-current]{background:var(--soft);color:var(--c1d)}
+a.chip{text-decoration:none;color:var(--ink)}
+.steps3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:10px}.step{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px}.step b{font-size:22px;color:var(--c1d)}.step p{margin:6px 0 0}
+.catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:10px}
+.cattile{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;text-decoration:none;color:var(--ink);transition:transform .15s,box-shadow .15s}
+.cattile:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(214,69,127,.15)}.cattile b{font-size:19px}
+.cattile i{width:46px;height:46px;border-radius:14px;background:var(--soft);display:grid;place-items:center}.cattile svg{width:26px;height:26px;fill:none;stroke:var(--c1d);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:760px){nav{flex-wrap:wrap;overflow:visible!important}}
+#nav{display:flex;align-items:center;gap:2px}
+.hero .btn.alt{background:#fff;color:var(--c1d);border-color:var(--c2)}
+.band a:not(.btn):not(.chip):not(.cattile){color:var(--c1d)}
+.toggle.agil{border:2px solid var(--c2);background:#fff}
 </style>
 <script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 <header><div class="bar">
-  <a class="logo brand" href="#catalogo" aria-label="Impresos y Publicidad, inicio"><img class="wordmark" src="logo-marca.png" alt="Impresos y Publicidad Medellín"></a><img id="logoRound" src="data:image/jpeg;base64,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" alt="" hidden>
-  <nav id="nav"><a href="#catalogo">Catálogo</a><a href="#seguimiento">Mi pedido</a><a href="#cuenta" id="navCuenta">Mi cuenta</a><a href="#panel">Panel</a></nav>
+  <a class="logo brand" href="#inicio" aria-label="Impresos y Publicidad, inicio"><img class="wordmark" src="logo-marca.png" alt="Impresos y Publicidad Medellín"></a><img id="logoRound" src="data:image/jpeg;base64,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" alt="" hidden>
+  <nav id="nav"><a href="#inicio">Inicio</a><details class="navdd" id="navCat"><summary>Catálogo</summary><div class="ddmenu" id="ddCats"></div></details><a href="#seguimiento">Mi pedido</a><a href="#cuenta" id="navCuenta">Iniciar sesión / Crear cuenta</a></nav>
   <button class="btn sm cartbtn" id="cartBtn" type="button">Carrito <b id="cartN">0</b></button>
 </div></header>
 <main id="app"></main>
@@ -189,7 +205,7 @@ const SWATCH={none:'linear-gradient(135deg,#fff,#eee)',mate:'linear-gradient(135
 const CATS=[['tarjetas','Tarjetas'],['detalles','Detalles para tus clientes'],['stickers','Stickers y etiquetas'],['papeleria','Papelería'],['publicidad','Publicidad']];
 const L=(id,name)=>({id,name});
 const DEF={
- seq:1001,wa:'573054435259',ig:'impresosypublicidadmedellin',pin:'1234',waitDays:10,
+ seq:1001,photoExtra:15000,agilPct:50,agilOn:true,wa:'573054435259',ig:'impresosypublicidadmedellin',pin:'1234',waitDays:10,
  mats:[
   ...[['corazon','corazón'],['lentejuelas','lentejuelas'],['galaxia','galaxia'],['vidrio','vidrio'],['lluvia','lluvia'],['arcoiris','arcoíris'],['flores','flores'],['mariposas','mariposas'],['estrellas','estrellas'],['polvora','pólvora']].map(([k,n])=>({id:'holo-'+k,name:'Holográfico '+n,short:n[0].toUpperCase()+n.slice(1),group:'holo',kind:'laminado',stock:{corazon:15,lentejuelas:32,galaxia:32,vidrio:14,lluvia:32,arcoiris:13,flores:32,mariposas:32,estrellas:32,polvora:0}[k],min:8,cost:0,sw:'holo',img:k+'.jpg'})),
   {id:'glitter',name:'Laminado glitter',kind:'laminado',stock:null,min:8,cost:0,sw:'glitter',img:'l-glitter.jpg'},
@@ -199,6 +215,7 @@ const DEF={
   {id:'opalina',name:'Opalina 200 g',short:'Opalina 200 g',kind:'papel',stock:100,min:30,cost:0,sw:'papel'},
   {id:'p350',name:'Papel premium 350 g',kind:'papel',stock:null,min:100,cost:0,sw:'papel'},
   {id:'foto280',name:'Papel fotográfico 280 g',short:'Fotográfico 280 g',kind:'papel',stock:40,min:10,cost:0,sw:'papel'},
+  {id:'foto120',name:'Papel fotográfico 120 g',short:'Fotográfico 120 g',kind:'papel',stock:null,min:10,cost:0,sw:'papel'},
   {id:'foto135',name:'Papel fotográfico 135 g',kind:'papel',stock:40,min:10,cost:0,sw:'papel'},
   {id:'corrugada',name:'Opalina corrugada',kind:'papel',stock:null,min:10,cost:0,sw:'papel'},
     {id:'adhesivo',name:'Papel adhesivo (stickers)',kind:'papel',stock:null,min:10,cost:0,sw:'vinilo'},
@@ -231,8 +248,8 @@ const DEF={
    variants:[{id:'uv',name:'Brillo UV',lams:['brillo'],paper:'nfc',per:1,unit:50000},{id:'mate',name:'Mate',lams:['mate'],paper:'nfc',per:1,unit:50000}],
    choices:[{label:'Enlace que quieres configurar',opts:['WhatsApp','Instagram','Facebook','TikTok','Página web','Catálogo','Otro enlace']}],
    note:'Garantía por defectos de fabricación y 24 horas si el enlace falla. Reconfigurar el enlace después de la entrega cuesta $10.000. El envío hacia y desde el taller corre por cuenta del cliente.'},
-  {id:'agradecimiento',paperChoice:true,cat:'detalles',name:'Tarjetas de agradecimiento',img:'agradecimiento',unit:'tarjetas',desc:'Gruesas y resistentes. Para escribir a mano el nombre del cliente, WhatsApp e Instagram.',design:'no',
-   variants:[{id:'std',name:'Papel fotográfico',lams:[],paper:'foto280',per:4,tiers:[[20,30000],[50,45000],[60,55000],[80,72000],[100,92000]]}],
+  {id:'agradecimiento',cat:'detalles',name:'Tarjetas de agradecimiento',img:'agradecimiento',unit:'tarjetas',desc:'En papel fotográfico de 120 g. Para escribir a mano el nombre del cliente, WhatsApp e Instagram.',design:'no',
+   variants:[{id:'std',name:'Papel fotográfico',lams:[],paper:'foto120',per:4,tiers:[[20,30000],[50,45000],[60,55000],[80,72000],[100,92000]]}],
    choices:[{label:'Color',opts:['Rosado','Azul','Amarillo','Morado','Otro color (cuéntanos en notas)']}]},
   {id:'raspa',track:false,paperChoice:true,cat:'detalles',name:'Tarjetas raspa y gana',img:'raspa',unit:'tarjetas',desc:'Impresión a color con premios variados, sticker raspable, laminado y corte con despunte.',design:'cotiza',
    variants:[{id:'std',name:'Raspa y gana',lams:['brillo'],paper:'opalina',per:6,tiers:[[50,95000],[100,150000],[150,210000],[200,260000]]}],note:'Define antes los premios que quieres incluir (escríbelos en las notas).'},
@@ -277,6 +294,7 @@ const DEF={
 let S=null;if(!LIVE){try{S=JSON.parse(localStorage.getItem(KEY))||null}catch(e){S=null}}
 if(!S)S=JSON.parse(JSON.stringify(DEF));
 if(!S.page)S.page=JSON.parse(JSON.stringify(DEF.page));
+setTimeout(()=>{if(!LIVE){migrate();render()}},0);
 const HERO_DEF='banner-impresos.jpg';
 const okImg=u=>typeof u==='string'&&(u===HERO_DEF||/^data:image\/(jpeg|png|webp);base64,/.test(u)||/^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/v1\/object\/public\/fotos\/[\w.\-]+$/.test(u));
 const pimg=p=>okImg(p.photo)?p.photo:p.img?`${p.img}.jpg`:LOGO;
@@ -284,10 +302,15 @@ const paidOf=o=>(o.pays||[]).reduce((s,x)=>s+x.a,0);
 const dueOf=o=>Math.max(0,o.total-paidOf(o));
 const payState=o=>{const p=paidOf(o);return p>=o.total&&o.total>0?'pagado':p>0?'abono':'pendiente'};
 const PAYN={pendiente:'Sin pagar',abono:'Abono',pagado:'Pagado'};
+function migrate(){
+ if(S.photoExtra==null)S.photoExtra=15000;if(S.agilPct==null)S.agilPct=50;if(S.agilOn==null)S.agilOn=true;
+ if(!S.mats.some(m=>m.id==='foto120')){const i=S.mats.findIndex(m=>m.id==='foto135');const m={id:'foto120',name:'Papel fotográfico 120 g',short:'Fotográfico 120 g',kind:'papel',min:10,cost:0,sw:'papel'};if(admin||!LIVE)m.stock=null;S.mats.splice(i<0?S.mats.length:i,0,m)}
+ const a=S.products.find(p=>p.id==='agradecimiento');if(a&&(a.paperChoice||a.variants.some(v=>v.paper!=='foto120'))){delete a.paperChoice;a.variants.forEach(v=>v.paper='foto120');if(/^(Gruesas|En papel fotográfico, grueso)/.test(a.desc||''))a.desc='En papel fotográfico de 120 g. Para escribir a mano el nombre del cliente, WhatsApp e Instagram.'}
+}
 const save=()=>{if(LIVE){if(admin)queueSync();return true}try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){toast('No hay espacio para guardar más fotos en este dispositivo');return false}};
 /* ---------- sincronización con Supabase ---------- */
 const pubMat=({stock,min,cost,...m})=>m;
-const cfgData=()=>({products:S.products,sched:S.sched,page:S.page,wa:S.wa,ig:S.ig,waitDays:S.waitDays,mats:S.mats.map(pubMat)});
+const cfgData=()=>({products:S.products,sched:S.sched,page:S.page,wa:S.wa,ig:S.ig,waitDays:S.waitDays,photoExtra:S.photoExtra,agilPct:S.agilPct,agilOn:S.agilOn,mats:S.mats.map(pubMat)});
 const snap={cfg:'',mats:{},orders:{}};let syncT=null,syncing=false;
 function queueSync(){clearTimeout(syncT);syncT=setTimeout(syncNow,500)}
 async function syncNow(){if(!LIVE||!admin)return;if(syncing){queueSync();return}syncing=true;
@@ -301,16 +324,16 @@ async function syncNow(){if(!LIVE||!admin)return;if(syncing){queueSync();return}
  syncing=false}
 async function loadPublic(){if(!LIVE)return;
  const{data,error}=await sb.from('config').select('data').eq('id',1).maybeSingle();
- if(admin)return;if(!error&&data&&data.data){const d=data.data;['products','sched','page','wa','ig','waitDays'].forEach(k=>{if(d[k]!=null)S[k]=d[k]});if(Array.isArray(d.mats))S.mats=d.mats}
+ if(admin)return;if(!error&&data&&data.data){const d=data.data;['products','sched','page','wa','ig','waitDays','photoExtra','agilPct','agilOn'].forEach(k=>{if(d[k]!=null)S[k]=d[k]});if(Array.isArray(d.mats))S.mats=d.mats}migrate();
  render()}
 async function loadAdmin(){
  const[cfg,ms,os,mv]=await Promise.all([sb.from('config').select('data').eq('id',1).maybeSingle(),sb.from('materials').select('id,data'),sb.from('orders').select('code,data,user_id').order('created_at',{ascending:false}).limit(500),sb.from('moves').select('t,m,d,r,c').order('t',{ascending:false}).limit(400)]);
  if(ms.error||os.error)throw ms.error||os.error;
- if(cfg.data&&cfg.data.data){const d=cfg.data.data;['products','sched','page','wa','ig','waitDays'].forEach(k=>{if(d[k]!=null)S[k]=d[k]})}
+ if(cfg.data&&cfg.data.data){const d=cfg.data.data;['products','sched','page','wa','ig','waitDays','photoExtra','agilPct','agilOn'].forEach(k=>{if(d[k]!=null)S[k]=d[k]})}
  if(ms.data.length){const byId=Object.fromEntries(ms.data.map(x=>[x.id,x.data]));const pub=cfg.data?.data?.mats||S.mats;S.mats=pub.map(m=>byId[m.id]?{...m,...byId[m.id]}:m);ms.data.forEach(x=>{if(!S.mats.some(m=>m.id===x.id))S.mats.push(x.data)})}
  S.orders=os.data.map(x=>({...x.data,uid:x.user_id||undefined}));S.moves=(mv.data||[]).map(x=>({t:+new Date(x.t),m:x.m,d:x.d,r:x.r,c:x.c||undefined,s:1}));
  snap.cfg=cfg.data?JSON.stringify(cfg.data.data):'';ms.data.forEach(x=>snap.mats[x.id]=JSON.stringify(x.data));S.orders.forEach(o=>snap.orders[o.code]=JSON.stringify(o));
- queueSync()}
+ migrate();queueSync()}
 async function enterAdmin(silent){const{data,error}=await sb.rpc('is_admin');if(error||!data){if(!silent){await sb.auth.signOut();cust=null;toast('Ese correo no tiene acceso al panel')}return false}cust=null;
  admin=true;try{await loadAdmin()}catch(err){toast('No se pudieron cargar tus datos');console.log(err)}render();return true}
 async function refreshOrders(){const{data:raw,error}=await sb.from('orders').select('code,data,user_id').order('created_at',{ascending:false}).limit(500);if(error)return;const data=raw.map(x=>({code:x.code,data:{...x.data,uid:x.user_id||undefined}}));
@@ -385,17 +408,33 @@ function heroArt(){
 }
 
 /* ---------- catálogo ---------- */
-function viewCatalog(){
- const list=S.products.filter(p=>!p.hidden&&(cat==='todos'||p.cat===cat));
+function viewHome(){
+ const ICON={'tarjetas': '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h6M7 14h4"/>', 'detalles': '<path d="M12 20s-7-4.4-9-8.6C1.6 8.2 3.6 5 6.8 5c2 0 3.4 1.1 4.2 2.4C11.8 6.1 13.2 5 15.2 5 18.4 5 20.4 8.2 19 11.4 17 15.6 12 20 12 20z"/>', 'stickers': '<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 8 8"/>', 'papeleria': '<path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7"/>', 'publicidad': '<path d="M3 11v3l10 4V7L3 11z"/><path d="M13 9h3a3 3 0 0 1 0 6h-3"/>'};const DESC={'tarjetas': 'Tarjetas de presentación, holográficas, glitter, mate, NFC y más.', 'detalles': 'Tarjeticas, agradecimientos, raspa y gana, fidelidad y bonos regalo.', 'stickers': 'Stickers en pliego y etiquetas para tus prendas.', 'papeleria': 'Rótulos, talonarios, fichas y certificados.', 'publicidad': 'Volantes, pendones y tablas de precios.'};
  return `<section class="band hero"><div class="wrap heroin">
   <div><h1>${esc(S.page.title)}</h1>
   <p>${esc(S.page.sub)}</p>
-  <a class="btn" href="#productos" style="display:inline-block;text-decoration:none">${esc(S.page.btn||'Ver catálogo')}</a>
-  <div class="lams">${[[holos()[0],'Holográficos · '+holos().length+' diseños'],[mat('glitter'),'Glitter'],[mat('brillo'),'Brillo UV'],[mat('mate'),'Mate'],[mat('foil'),'Foil']].filter(x=>x[0]).map(([m,n])=>`<span class="lamtag">${swHtml(m)}${esc(n)}</span>`).join('')}</div></div>
+  <div class="chips"><a class="btn" href="#catalogo" style="display:inline-block;text-decoration:none">${esc(S.page.btn||'Ver catálogo')}</a><a class="btn alt" href="${esc(waLink(S.wa,'¡Hola! Quiero información de impresos'))}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Escríbenos por WhatsApp</a></div></div>
   <div class="fig">${`<img class="heroimg" src="${okImg(S.page.hero)?S.page.hero:HERO_DEF}" alt="Tarjetas con laminado holográfico de Impresos y Publicidad">`}</div></div></section>
- <section class="band" id="productos"><div class="wrap">
-  <h2>Catálogo</h2>
-  <div class="chips cats" style="margin:8px 0 22px">${[['todos','Todo'],...CATS].map(([k,n])=>`<button class="chip" type="button" data-cat="${k}" aria-pressed="${cat===k}">${n}</button>`).join('')}</div>
+ <section class="band"><div class="wrap"><h2>Así de fácil es pedir</h2>
+  <div class="steps3"><div class="step"><b>Escoge</b><p class="muted">Entra al catálogo, elige tu producto, la cantidad y el acabado que más te guste.</p></div>
+  <div class="step"><b>Cotiza</b><p class="muted">Envíanos tu cotización por WhatsApp. Te confirmamos los detalles y los datos de pago.</p></div>
+  <div class="step"><b>Recibe</b><p class="muted">Sigue tu pedido en línea y recíbelo a domicilio, recógelo o te lo enviamos a toda Colombia.</p></div></div>
+ </div></section>
+ <section class="band" style="padding-top:0"><div class="wrap"><h2>¿Qué necesitas hoy?</h2>
+  <div class="catgrid">${CATS.map(([k,n])=>`<a class="cattile" href="#cat-${k}"><i><svg viewBox="0 0 24 24">${ICON[k]}</svg></i><b>${n}</b><span class="muted small">${DESC[k]||''}</span></a>`).join('')}</div>
+  <p style="margin-top:20px"><a class="btn" href="#catalogo" style="display:inline-block;text-decoration:none">Ver todo el catálogo</a></p>
+ </div></section>
+ <section class="band" style="background:var(--soft)"><div class="wrap row2">
+  <div><h3>Recogida</h3><p class="muted">${esc(S.sched.pickup)}<br>${esc(S.sched.hours)}</p></div>
+  <div><h3>Domicilios y envíos</h3><p class="muted">${esc(S.sched.delivery)}<br>${esc(S.sched.national)}</p></div>
+  <div><h3>¿Cómo va mi pedido?</h3><p class="muted">Con tu número de pedido puedes ver cada paso en <a href="#seguimiento">Mi pedido</a>.</p></div>
+ </div></section>`;
+}
+function viewCatalog(){
+ const list=S.products.filter(p=>!p.hidden&&(cat==='todos'||p.cat===cat));
+ return `<section class="band" id="productos"><div class="wrap">
+  <h1>${cat==='todos'?'Catálogo':esc((CATS.find(c=>c[0]===cat)||['','Catálogo'])[1])}</h1><p class="muted">Escoge tu producto, la cantidad y el acabado, y envíanos tu cotización por WhatsApp.</p>
+  <nav class="chips cats" aria-label="Categorías" style="margin:14px 0 22px">${[['todos','Todo'],...CATS].map(([k,n])=>`<a class="chip" href="#${k==='todos'?'catalogo':'cat-'+k}" aria-pressed="${cat===k}">${n}</a>`).join('')}</nav>
   <div class="grid">${list.map(p=>`<article class="prod"><button class="art" type="button" data-cfg="${esc(p.id)}" aria-label="Ver ${esc(p.name)}"><img src="${esc(pimg(p))}" alt="" loading="lazy"${okImg(p.photo)?' class="photo"':''}></button><div class="bd">
    <h3>${esc(p.name)}</h3><span class="muted small">${esc(p.desc)}</span>
    <span class="small">Desde <b class="price">${fromLabel(p)}</b></span>
@@ -406,19 +445,14 @@ function viewCatalog(){
   <h3 style="margin-top:18px">Holográficos</h3><div class="lamgrid">${holos().map(m=>`<figure><img src="${esc(m.img)}" alt="" loading="lazy"><figcaption>${esc(m.short)}</figcaption></figure>`).join('')}</div>
   <h3 style="margin-top:22px">Glitter y sencillos</h3><div class="lamgrid">${['glitter','brillo','mate'].map(mat).filter(Boolean).map(m=>`<figure><img src="${esc(m.img)}" alt="" loading="lazy"><figcaption>${esc(m.name.replace('Laminado ','').replace(/^./,c=>c.toUpperCase()))}</figcaption></figure>`).join('')}</div>
  </div></section>
- <section class="band" style="background:var(--soft)"><div class="wrap row2">
-  <div><h3>Recogida</h3><p class="muted">${esc(S.sched.pickup)}<br>${esc(S.sched.hours)}</p></div>
-  <div><h3>Domicilios y envíos</h3><p class="muted">${esc(S.sched.delivery)}<br>${esc(S.sched.national)}</p></div>
-  <div><h3>¿Cómo va mi pedido?</h3><p class="muted">Con tu número de pedido puedes ver cada paso en <a href="#seguimiento">Mi pedido</a>.</p></div>
- </div></section>`;
+ `;
 }
-
 function openCfg(pid,editIdx,preset){
  const p=prod(pid);if(!p){toast('Ese producto ya no está disponible');return}
  if(editIdx!=null){const it=cart[editIdx];cfg={pid,vid:it.vid,holo:it.holo,back:it.back,paper:it.paper,qty:it.qty,choices:{...it.choices},extras:[...it.extras],design:it.design,mode:it.mode,notes:it.notes,edit:editIdx}}
  else{const v=p.variants[0];cfg={pid,vid:v.id,qty:v.unit?1:v.tiers[0][0],choices:Object.fromEntries((p.choices||[]).map(c=>[c.label,c.opts[0]])),extras:[],design:false,mode:'normal',notes:''}}
  if(preset)applyPreset(p,preset);
- if(!cfg.holo)cfg.holo=holos()[0]?.id;if(p.backs&&!cfg.back)cfg.back=p.backs[0].id;if(p.paperChoice&&!cfg.paper)cfg.paper=p.id==='agradecimiento'?'foto280':'opalina';cfg.flyer=false;renderCfg();
+ if(!cfg.holo)cfg.holo=holos()[0]?.id;if(p.backs&&!cfg.back)cfg.back=p.backs[0].id;if(p.paperChoice&&!cfg.paper)cfg.paper='opalina';cfg.flyer=false;renderCfg();
 }
 function designRow(p){
  if(p.design==='incl')return `<div class="okmsg">Incluye diseño si no lo tienes.</div>`;
@@ -434,8 +468,8 @@ function renderCfg(){
  if(!short)cfg.mode='normal';else if(cfg.mode==='normal'||(cfg.mode==='parcial'&&pq<=0))cfg.mode='';
  const qtyFinal=cfg.mode==='parcial'?pq:cfg.qty;
  const ex=(p.extras||[]).filter(x=>cfg.extras.includes(x.id)).reduce((s,x)=>s+x.price,0);
- const dz=cfg.design&&typeof p.design==='number'?p.design:0;const bkp=((p.backs||[]).find(x=>x.id===cfg.back)||{}).price||0;
- const total=(qtyFinal>0?priceFor(v,qtyFinal):0)+ex+dz+bkp;
+ const dz=cfg.design&&typeof p.design==='number'?p.design:0;const ppx=p.paperChoice&&cfg.paper==='foto280'?(S.photoExtra||0):0;const bkp=((p.backs||[]).find(x=>x.id===cfg.back)||{}).price||0;
+ const total=(qtyFinal>0?priceFor(v,qtyFinal):0)+ex+dz+bkp+ppx;
  let notice='';
  if(short)notice=`<div class="notice">${pq>0?`<strong>¡Podemos entregarte ${pq} ${esc(p.unit)} de inmediato!</strong><br>Para ${cfg.qty} ${esc(p.unit)}, el tiempo de producción es de máximo ${S.waitDays} días hábiles. ¿Qué prefieres?`:`<strong>Este acabado lo producimos especialmente para ti.</strong><br>El tiempo de producción es de máximo ${S.waitDays} días hábiles.`}${p.variants.length>1||p.backs||v.lams.includes('holo')?'<br><span class="small">También puedes escoger otro acabado y revisar su tiempo de entrega.</span>':''}
   <div class="choice"><button class="chip" type="button" aria-pressed="${cfg.mode==='espera'}" data-mode="espera"><span>${pq>0?`Prefiero esperar y llevar ${cfg.qty}`:`Sí, quiero ${cfg.qty}`}</span><span class="price">${fmt(priceFor(v,cfg.qty))}</span></button>
@@ -445,7 +479,7 @@ function renderCfg(){
  open(`<div class="cfggrid"><figure class="cfgimg"><img src="${esc(pimg(p))}" alt="${esc(p.name)}"></figure><div class="cfgbody"><div class="dlghead"><div><h2>${esc(p.name)}</h2><p class="muted small" style="margin:0">${esc(p.desc)}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
   ${p.variants.length>1?`<label>${esc(p.varLabel||'Opción')}</label><div class="chips">${p.variants.map(x=>`<button class="chip" type="button" data-v="${esc(x.id)}" aria-pressed="${x.id===v.id}">${x.lams.length&&p.varLabel==='Laminado'?swHtml(x.lams[0]==='holo'?holos()[0]:mat(x.lams[0])):''}${esc(x.name)}</button>`).join('')}</div>`:''}
   ${v.lams.includes('holo')?`<label>Diseño holográfico</label><div class="holopick">${holos().map(m=>`<button type="button" class="hp" data-holo="${esc(m.id)}" aria-pressed="${cfg.holo===m.id}"><img src="${esc(m.img)}" alt=""><span>${esc(m.short)}</span></button>`).join('')}</div>`:''}
-  ${p.paperChoice?`<label>Papel</label><div class="chips">${PAPERS.map(id=>`<button class="chip" type="button" data-pp2="${id}" aria-pressed="${cfg.paper===id}">${esc(mat(id)?.short||id)}</button>`).join('')}</div>`:''}
+  ${p.paperChoice?`<label>Papel</label><div class="chips">${PAPERS.map(id=>`<button class="chip" type="button" data-pp2="${id}" aria-pressed="${cfg.paper===id}">${esc(mat(id)?.short||id)}${id==='foto280'&&S.photoExtra?` <span class="muted small">+${fmt(S.photoExtra)}</span>`:''}</button>`).join('')}</div>`:''}
   ${p.backs?`<label>${esc(p.backLabel||'Reverso')}</label><div class="chips">${p.backs.map(x=>`<button class="chip" type="button" data-bk="${esc(x.id)}" aria-pressed="${cfg.back===x.id}">${x.lam&&x.lam!=='same'?swHtml(mat(x.lam)):''}${esc(x.name)}${x.price?` <span class="muted small">+${fmt(x.price)}</span>`:''}</button>`).join('')}</div>`:''}
   <label>Cantidad${v.fixed?' (solo disponible en esta cantidad)':''}</label>${qtyUI}
   ${(p.choices||[]).map((c,ci)=>`<label>${esc(c.label)}</label><div class="chips">${c.opts.map(o=>`<button class="chip" type="button" data-ch="${ci}" data-o="${esc(o)}" aria-pressed="${cfg.choices[c.label]===o}">${esc(o)}</button>`).join('')}</div>`).join('')}
@@ -479,7 +513,7 @@ $('#dlg').addEventListener('click',e=>{
   const hasHolo=v.lams.includes('holo');const use=Object.entries(needsOf(p,v,cfg.holo,cfg.back,cfg.paper)).map(([mid,k])=>({m:mid,need:need*k,got:Math.min(need*k,freeSheets(mid,cfg.edit))}));
   const bk=(p.backs||[]).find(x=>x.id===cfg.back);const req=Object.entries(needsOf(p,v,cfg.holo,cfg.back,cfg.paper,true)).map(([mid,k])=>({m:mid,need:need*k}));
   const exNames=(p.extras||[]).filter(x=>cfg.extras.includes(x.id)).map(x=>x.name);
-  const item={pid:p.id,vid:v.id,paper:p.paperChoice?cfg.paper:'',paperName:p.paperChoice?mat(cfg.paper)?.short||'':'',back:cfg.back||'',backName:bk?(p.backLabel||'Reverso')+': '+bk.name:'',holo:hasHolo?cfg.holo:'',holoName:hasHolo?mat(cfg.holo).name:'',name:p.name,vname:p.variants.length>1?v.name:'',unit:p.unit,qty:cfg.qty,qtyFinal:cfg._qty,choices:{...cfg.choices},extras:[...cfg.extras],exNames,design:cfg.design,designTxt:cfg.design?(p.design==='cotiza'?'diseño (se cotiza)':'con diseño'):(p.design==='incl'?'diseño incluido':''),mode:'normal',notes:$('#nt').value.trim(),price:cfg._total,use,req,wait:false};
+  const item={designAmt:cfg.design&&typeof p.design==='number'?p.design:0,pid:p.id,vid:v.id,paper:p.paperChoice?cfg.paper:'',paperName:p.paperChoice?mat(cfg.paper)?.short||'':'',back:cfg.back||'',backName:bk?(p.backLabel||'Reverso')+': '+bk.name:'',holo:hasHolo?cfg.holo:'',holoName:hasHolo?mat(cfg.holo).name:'',name:p.name,vname:p.variants.length>1?v.name:'',unit:p.unit,qty:cfg.qty,qtyFinal:cfg._qty,choices:{...cfg.choices},extras:[...cfg.extras],exNames,design:cfg.design,designTxt:cfg.design?(p.design==='cotiza'?'diseño (se cotiza)':'con diseño'):(p.design==='incl'?'diseño incluido':''),mode:'normal',notes:$('#nt').value.trim(),price:cfg._total,use,req,wait:false};
   const ed=cfg.edit;if(ed!=null)cart[ed]=item;else cart.push(item);
   saveCart();close();toast('Agregado al carrito');
  }
@@ -494,6 +528,7 @@ function openCart(){
   ${cart.map((i,k)=>`<div class="line"><div><b>${i.qtyFinal.toLocaleString('es-CO')} ${esc(i.name)}</b><br><span class="muted small">${esc(itemDesc(i))}</span><br>
    <button class="btn alt sm" type="button" data-edit="${k}">Editar</button> <button class="btn alt sm" type="button" data-del="${k}">Quitar</button></div><b class="price">${fmt(i.price)}</b></div>`).join('')}
   <div class="line"><span>Productos</span><b class="price">${fmt(sum)}</b></div>
+  <div class="line" id="agilLine" hidden><span>Entrega ágil</span><b class="price" id="agilVal"></b></div>
   <div class="line"><span id="feeLbl">Recojo en el local</span><b class="price" id="feeVal">$0</b></div>
   <div class="total"><span>Total</span><span class="price" id="totVal">${fmt(sum)}</span></div>
   <p class="muted small" style="margin-top:0">Al enviar tu cotización nos llega a WhatsApp. Te confirmamos el pedido y los datos de pago.</p>
@@ -506,6 +541,7 @@ function openCart(){
    <div id="addr" hidden><label for="ca" id="caLbl">Dirección y barrio</label><input id="ca" autocomplete="street-address" value="${esc(cust?.addr||'')}"></div>
    ${cust&&custFiles&&custFiles.length?`<label>Adjuntar mis diseños (opcional)</label><div class="chips">${custFiles.map(f=>`<button class="chip" type="button" data-attach="${esc(f.path)}" aria-pressed="${attach.has(f.path)}">${esc(f.label)}</button>`).join('')}</div>`:''}
    <p class="muted small" id="addrNote" hidden></p>
+   ${S.agilOn===false?'':`<label class="toggle agil"><input type="checkbox" id="cagil"><span><b>Entrega ágil · +${fmt(agilFeeOf())}</b><br><span class="muted small">Priorizamos tu pedido para entregártelo más rápido. Tiene un adicional del ${S.agilPct}% del valor de los productos (no incluye diseño ni envío).</span></span></label>`}
    <label class="toggle" style="border-style:solid"><input type="checkbox" id="cterms" required><span class="small">Acepto los <a href="#terminos" target="_blank">Términos y condiciones</a> y autorizo el tratamiento de mis datos según la <a href="#privacidad" target="_blank">Política de privacidad</a>.</span></label>
    <button class="btn pri" style="width:100%;margin-top:18px">Enviar cotización por WhatsApp</button>
   </form>`);
@@ -519,27 +555,29 @@ $('#dlg').addEventListener('click',e=>{
   $('#addr').hidden=h==='recogida';$('#ca').required=h!=='recogida';$('#zoneBox').hidden=h!=='domicilio';$('#pickNote').hidden=h!=='recogida';
   $('#caLbl').textContent=h==='nacional'?'Ciudad, dirección y barrio':'Dirección y barrio';$('#addrNote').hidden=h==='recogida';$('#addrNote').textContent=h==='nacional'?S.sched.national:S.sched.delivery;updFee()}
 });
+const agilFeeOf=()=>S.agilOn===false?0:Math.round(cart.reduce((s,i)=>s+Math.max(0,i.price-(i.designAmt||0)),0)*(S.agilPct||0)/100/100)*100;
 function updFee(){if(!$('#ck'))return;const h=document.querySelector('[data-how][aria-pressed=true]').dataset.how;const sum=cart.reduce((s,i)=>s+i.price,0);
  let lbl='Recojo en el local',val='$0',fee=0;
  if(h==='domicilio'){const z=S.sched.zones[+$('#cz').value];lbl='Domicilio a '+(z?z.name:'');val=feeTxt(z);fee=z&&z.price!=null?z.price:0}
  if(h==='nacional'){lbl='Envío nacional';val='se cotiza'}
- $('#feeLbl').textContent=lbl;$('#feeVal').textContent=val;$('#totVal').textContent=fmt(sum+fee)+(val==='por confirmar'||val==='se cotiza'?' + envío':'')}
-$('#dlg').addEventListener('change',e=>{if(e.target.id==='cz')updFee()});
+ const ag=$('#cagil')&&$('#cagil').checked?agilFeeOf():0;if($('#agilLine')){$('#agilLine').hidden=!ag;$('#agilVal').textContent='+'+fmt(ag)}
+ $('#feeLbl').textContent=lbl;$('#feeVal').textContent=val;$('#totVal').textContent=fmt(sum+fee+ag)+(val==='por confirmar'||val==='se cotiza'?' + envío':'')}
+$('#dlg').addEventListener('change',e=>{if(e.target.id==='cz'||e.target.id==='cagil')updFee()});
 $('#dlg').addEventListener('submit',async e=>{
  if(e.target.id!=='ck')return;e.preventDefault();
  const how=document.querySelector('[data-how][aria-pressed=true]').dataset.how;
  const z=how==='domicilio'?S.sched.zones[+$('#cz').value]:null;
- const sub=cart.reduce((s,i)=>s+i.price,0);const fee=z&&z.price!=null?z.price:0;
+ const sub=cart.reduce((s,i)=>s+i.price,0);const fee=z&&z.price!=null?z.price:0;const agil=!!($('#cagil')&&$('#cagil').checked);const agilFee=agil?agilFeeOf():0;
  let code;
  if(LIVE){const btn=e.target.querySelector('button.pri');btn.disabled=true;btn.textContent='Enviando…';
-  const payload={name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||!!(z&&z.price==null),addr:how!=='recogida'?$('#ca').value.trim():'',items:cart.map(({use,...i})=>i),files:[...attach],sub,total:sub+fee};
+  const payload={name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||!!(z&&z.price==null),addr:how!=='recogida'?$('#ca').value.trim():'',items:cart.map(({use,...i})=>i),files:[...attach],sub,agil,agilFee,total:sub+fee+agilFee};
   const{data,error}=await sb.rpc('place_order',{p:payload});
   if(error||!data){btn.disabled=false;btn.textContent='Enviar cotización por WhatsApp';toast('No se pudo enviar. Revisa tu internet e inténtalo de nuevo.');return}
   code=data;if(cust){const up={id:cust.id,email:cust.email,name:payload.name,wa:payload.wa};if(payload.addr)up.addr=payload.addr;if(payload.zone)up.zone=payload.zone;Object.assign(cust,up);sb.from('customers').upsert(up);custOrders=null;acTab='pedidos';attach.clear()}}else code='IP-'+(S.seq++);
- const o={code,date:new Date().toISOString(),name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||(z&&z.price==null),addr:how!=='recogida'?$('#ca').value.trim():'',items:cart.map(i=>JSON.parse(JSON.stringify(i))),sub,total:sub+fee,status:'recibido',hist:[{s:'recibido',t:new Date().toISOString()}]};
+ const o={code,date:new Date().toISOString(),name:$('#cn').value.trim(),wa:$('#cw').value.replace(/\D/g,''),how,zone:z?z.name:'',fee,feePending:how==='nacional'||(z&&z.price==null),addr:how!=='recogida'?$('#ca').value.trim():'',items:cart.map(i=>JSON.parse(JSON.stringify(i))),sub,agil,agilFee,total:sub+fee+agilFee,status:'recibido',hist:[{s:'recibido',t:new Date().toISOString()}]};
  if(!LIVE){o.items.forEach(i=>i.use.forEach(u=>{const m=mat(u.m);if(!m)return;u.got=Math.min(u.got,m.stock);m.stock-=u.got;move(u.m,-u.got,'Pedido '+code)}));
  S.orders.unshift(o);save()}cart=[];saveCart();
- const txt=`¡Hola! Hice el pedido ${o.code} en la página:\n`+o.items.map(i=>`• ${i.qtyFinal} ${i.name}${itemDesc(i)?' ('+itemDesc(i)+')':''}: ${fmt(i.price)}`).join('\n')+`\nProductos: ${fmt(o.sub)}\n${how==='recogida'?'Recojo en el local':how==='domicilio'?`Domicilio a ${o.zone}: ${o.feePending?'por confirmar':fmt(o.fee)}\nDirección: ${o.addr}`:`Envío nacional a: ${o.addr} (valor por cotizar)`}\nTotal: ${fmt(o.total)}${o.feePending?' + envío':''}\nNombre: ${o.name}`;
+ const txt=`¡Hola! Hice el pedido ${o.code} en la página:\n`+o.items.map(i=>`• ${i.qtyFinal} ${i.name}${itemDesc(i)?' ('+itemDesc(i)+')':''}: ${fmt(i.price)}`).join('\n')+`\nProductos: ${fmt(o.sub)}${o.agil?`\nEntrega ágil: +${fmt(o.agilFee)}`:''}\n${how==='recogida'?'Recojo en el local':how==='domicilio'?`Domicilio a ${o.zone}: ${o.feePending?'por confirmar':fmt(o.fee)}\nDirección: ${o.addr}`:`Envío nacional a: ${o.addr} (valor por cotizar)`}\nTotal: ${fmt(o.total)}${o.feePending?' + envío':''}\nNombre: ${o.name}`;
  open(`<div class="dlghead"><h2>¡Pedido enviado!</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
   <p>Tu número de pedido es <b style="font-size:22px">${esc(o.code)}</b>. Guárdalo para ver cómo va en <a href="#seguimiento">Mi pedido</a>.</p>
   <p class="muted"><b>Último paso:</b> envíanos tu cotización por WhatsApp para confirmar tu pedido y darte los datos de pago.</p>
@@ -579,7 +617,7 @@ function viewAccount(){
  if(acTab==='pedidos'&&custOrders===null)setTimeout(loadCustOrders,0);
  const T=[['pedidos','Mis pedidos'],['disenos','Mis diseños'],['datos','Mis datos']];
  let body='';
- if(acTab==='pedidos'){body=custOrders===null?'<p class="muted">Cargando tus pedidos…</p>':!custOrders.length?'<div class="box"><p class="muted">Aún no tienes pedidos con tu cuenta. Cuando hagas uno con la sesión iniciada, aparecerá aquí.</p><a class="btn" href="#productos" style="display:inline-block;text-decoration:none">Ver catálogo</a></div>':
+ if(acTab==='pedidos'){body=custOrders===null?'<p class="muted">Cargando tus pedidos…</p>':!custOrders.length?'<div class="box"><p class="muted">Aún no tienes pedidos con tu cuenta. Cuando hagas uno con la sesión iniciada, aparecerá aquí.</p><a class="btn" href="#catalogo" style="display:inline-block;text-decoration:none">Ver catálogo</a></div>':
   custOrders.map(o=>{const st=STATUS.find(s=>s.id===o.status);const idx=STATUS.findIndex(s=>s.id===o.status);const df=new Intl.DateTimeFormat('es-CO',{day:'numeric',month:'short',year:'numeric'});
    return `<div class="box"><div class="dlghead"><div><h3 style="margin:0">Pedido ${esc(o.code)}</h3><span class="small muted">${o.date?df.format(new Date(o.date)):''} · ${esc(HOW[o.how]||'')}${o.zone?' · '+esc(o.zone):''}</span></div><span class="pill ${esc(o.status)}">${esc(st?st.name:'Cancelado')}</span></div>
    ${o.status!=='cancelado'?`<div class="prog" aria-hidden="true"><span style="width:${Math.max(6,(idx+1)/STATUS.length*100)}%"></span></div>`:''}
@@ -640,7 +678,8 @@ function viewLegal(k){
  <li>Al enviarnos logos, imágenes o textos declaras que tienes derecho a usarlos. Podemos rechazar trabajos con contenido ilegal o que infrinja derechos de terceros.</li></ul>
  <h2>3. Producción y tiempos</h2>
  <ul><li>La producción empieza cuando el pedido está confirmado, pagado o abonado y el diseño aprobado.</li>
- <li>Los tiempos de entrega se informan por WhatsApp y dependen de la cantidad, del servicio de diseño y de la disponibilidad de materiales y acabados.</li></ul>
+ <li>Los tiempos de entrega se informan por WhatsApp y dependen de la cantidad, del servicio de diseño y de la disponibilidad de materiales y acabados.</li>
+ <li><b>Entrega ágil:</b> si la eliges, priorizamos tu pedido para entregarlo más rápido. Tiene un adicional del ${S.agilPct??50}% sobre el valor de los productos (no incluye diseño ni envío). El tiempo exacto se confirma por WhatsApp según el producto y la cantidad.</li></ul>
  <h2>4. Colores, acabados y medidas</h2>
  <ul><li>Los colores pueden variar levemente entre lo que ves en una pantalla y el resultado impreso.</li>
  <li>Los laminados holográficos y glitter cambian su efecto según la luz y el ángulo; las fotos de la página son de referencia.</li>
@@ -716,7 +755,7 @@ function panelOrders(){
  <div class="qtyrow" style="margin-bottom:10px"><input id="oq" type="search" placeholder="Buscar por número de pedido, nombre o WhatsApp" value="${esc(oq)}" style="flex:1;min-width:200px">${LIVE?'<button class="btn alt sm" type="button" id="refreshOrders">Actualizar pedidos</button>':''}</div>
  <div class="chips" style="margin-bottom:12px">${[['activos','Activos'],['recibido','Por confirmar'],['saldo','Con saldo'],['listo','Listos'],['entregado','Entregados'],['todos','Todos']].map(([k,n])=>`<button class="chip" type="button" data-filt="${k}" aria-pressed="${filt===k}">${n}</button>`).join('')}</div>
  ${list.length?`<table class="stack"><thead><tr><th>Pedido</th><th>Cliente</th><th>Productos</th><th>Entrega</th><th class="r">Total</th><th>Pago</th><th>Estado</th><th></th></tr></thead><tbody>
- ${list.map(o=>`<tr><td><b>${esc(o.code)}</b></td><td>${esc(o.name)}<br><span class="small muted">${esc(o.wa)}</span></td><td class="small">${o.items.map(i=>`${i.qtyFinal} ${esc(i.name)}${i.vname?' · '+esc(i.vname.toLowerCase()):''}${i.design?' · diseño':''}${lacks(i)?' · <b>falta material</b>':''}`).join('<br>')}</td><td class="small">${o.how==='recogida'?'Recoge':o.how==='domicilio'?'Domicilio · '+esc(o.zone):'Nacional'}</td><td class="r price">${fmt(o.total)}${o.feePending?'<br><span class="small muted">+ envío</span>':''}</td><td><span class="pill pay-${payState(o)}">${PAYN[payState(o)]}</span>${payState(o)==='abono'?`<br><span class="small muted">Debe ${fmt(dueOf(o))}</span>`:''}</td><td><span class="pill ${esc(o.status)}">${esc((STATUS.find(s=>s.id===o.status)||{name:'Cancelado'}).name)}</span></td><td><button class="btn sm" type="button" data-open="${esc(o.code)}">Gestionar</button></td></tr>`).join('')}</tbody></table>`
+ ${list.map(o=>`<tr><td><b>${esc(o.code)}</b></td><td>${esc(o.name)}<br><span class="small muted">${esc(o.wa)}</span></td><td class="small">${o.items.map(i=>`${i.qtyFinal} ${esc(i.name)}${i.vname?' · '+esc(i.vname.toLowerCase()):''}${i.design?' · diseño':''}${lacks(i)?' · <b>falta material</b>':''}`).join('<br>')}</td><td class="small">${o.how==='recogida'?'Recoge':o.how==='domicilio'?'Domicilio · '+esc(o.zone):'Nacional'}${o.agil?'<br><span class="pill pay-pagado">Entrega ágil</span>':''}</td><td class="r price">${fmt(o.total)}${o.feePending?'<br><span class="small muted">+ envío</span>':''}</td><td><span class="pill pay-${payState(o)}">${PAYN[payState(o)]}</span>${payState(o)==='abono'?`<br><span class="small muted">Debe ${fmt(dueOf(o))}</span>`:''}</td><td><span class="pill ${esc(o.status)}">${esc((STATUS.find(s=>s.id===o.status)||{name:'Cancelado'}).name)}</span></td><td><button class="btn sm" type="button" data-open="${esc(o.code)}">Gestionar</button></td></tr>`).join('')}</tbody></table>`
  :`<p class="muted">No hay pedidos en esta vista. Cuando un cliente haga un pedido desde el catálogo aparecerá aquí.</p>`}`;
 }
 function orderDlg(code,justChanged){
@@ -727,6 +766,7 @@ function orderDlg(code,justChanged){
  const msg=o.status==='cancelado'?`Hola ${o.name}, tu pedido ${o.code} fue cancelado. Escríbenos si tienes dudas.`:`Hola ${o.name}, te escribimos de Impresos y Publicidad: ${st.id==='listo'?listo:st.msg}.\nPedido: ${o.code}${st.id==='recibido'||st.id==='confirmado'?`\nTotal: ${fmt(o.total)}${o.feePending?' + envío':''}`:''}${paidOf(o)>0&&o.status!=='cancelado'?`\nAbonado: ${fmt(paidOf(o))}${dueOf(o)?` · Saldo: ${fmt(dueOf(o))}`:' · ¡Pago completo!'}`:''}\nPuedes ver el avance en nuestra página, en "Mi pedido".`;
  open(`<div class="dlghead"><div><h2>${esc(o.code)} · ${esc(o.name)}</h2><p class="muted small" style="margin:0">WhatsApp ${esc(o.wa)} · ${esc(howLine(o))}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
  ${o.items.map(i=>`<div class="line"><div><b>${i.qtyFinal} ${esc(i.name)}</b><br><span class="small muted">${esc(itemDesc(i))}${i.notes?'<br>Nota: '+esc(i.notes):''}<br>${i.use.map(u=>`${esc(mat(u.m)?.name||u.m)}: ${u.got} de ${u.need} apartados${u.got<u.need?` (faltan ${u.need-u.got})`:''}`).join(' · ')}</span></div><b class="price">${fmt(i.price)}</b></div>`).join('')}
+ ${o.agil?`<div class="line"><span><b>Entrega ágil</b> (${S.agilPct}% de los productos)</span><b class="price">+${fmt(o.agilFee||0)}</b></div>`:''}
  ${o.how!=='recogida'?`<div class="line"><span>${o.how==='domicilio'?'Domicilio a '+esc(o.zone):'Envío nacional'}</span><span class="qtyrow"><input type="number" min="0" step="500" id="ofee" value="${o.feePending?'':o.fee}" placeholder="Valor" style="width:130px"><button class="btn alt sm" type="button" id="saveFee">Guardar</button></span></div>`:''}
  <div class="total"><span>Total</span><span class="price">${fmt(o.total)}${o.feePending?' + envío':''}</span></div>
  <div class="box paybox"><div class="dlghead"><h3 style="margin:0">Pagos</h3><span class="pill pay-${payState(o)}">${PAYN[payState(o)]}</span></div>
@@ -835,7 +875,7 @@ document.addEventListener('submit',async e=>{if(e.target.id!=='npForm')return;e.
  S.products.push(p);if(!save()){S.products.pop();return}close();render();toast('Producto creado 💖');
 });
 function panelProducts(){
- return `<div class="chips" style="justify-content:space-between;align-items:center;margin-bottom:8px"><span class="muted small">${S.products.length} productos · ${S.products.filter(p=>p.hidden).length} ocultos</span><button class="btn" type="button" id="newProd">+ Nuevo producto</button></div><p class="muted">Edita precios y cuántas unidades salen por hoja. Las tarjetas ya están en 8 por hoja; las demás vienen estimadas: ajústalas a tu realidad para que el inventario cuadre.</p>
+ return `<div class="chips" style="justify-content:space-between;align-items:center;margin-bottom:8px"><span class="muted small">${S.products.length} productos · ${S.products.filter(p=>p.hidden).length} ocultos</span><button class="btn" type="button" id="newProd">+ Nuevo producto</button></div><div class="box"><label for="phx">Recargo por papel fotográfico 280 g en tarjetas (se suma al precio)</label><input id="phx" type="number" min="0" step="1000" value="${S.photoExtra||0}" style="max-width:200px"></div><p class="muted">Edita precios y cuántas unidades salen por hoja. Las tarjetas ya están en 8 por hoja; las demás vienen estimadas: ajústalas a tu realidad para que el inventario cuadre.</p>
  ${S.products.map(p=>`<details class="box" style="margin-top:12px"><summary><b>${esc(p.name)}</b> <span class="muted small">· ${(CATS.find(c=>c[0]===p.cat)||['',''])[1]}</span>${p.hidden?' <span class="pill">Oculto</span>':''}</summary>
   <div class="chips" style="margin-top:10px"><button class="btn alt sm" type="button" data-hide="${esc(p.id)}">${p.hidden?'Mostrar en el catálogo':'Ocultar del catálogo'}</button><button class="btn alt sm" type="button" data-del="${esc(p.id)}">Borrar producto</button></div>
   ${typeof p.design==='number'?`<label>Precio del diseño</label><input type="number" min="0" step="1000" value="${p.design}" data-dp="${esc(p.id)}" style="max-width:200px">`:''}
@@ -848,6 +888,9 @@ function panelSched(){
  return `<div class="box"><h2>Tarifas de domicilio · Medellín y alrededores</h2><p class="muted small">El cliente escoge su municipio y el valor se suma a su cotización. Si dejas un valor vacío, le sale "por confirmar".</p>
  ${S.sched.zones.map((z,i)=>`<div class="line"><input value="${esc(z.name)}" data-zn="${i}" aria-label="Municipio o zona" style="max-width:260px"><span class="qtyrow"><input type="number" min="0" step="500" value="${z.price??''}" placeholder="Valor" data-zp="${i}" aria-label="Valor del domicilio"><button class="btn alt sm" type="button" data-zd="${i}" aria-label="Quitar">Quitar</button></span></div>`).join('')}
  <button class="btn alt sm" type="button" id="addZone" style="margin-top:12px">Agregar municipio o zona</button></div>
+ <div class="box"><h2>Entrega ágil</h2><p class="muted small">La clienta puede pedir que aceleres su pedido. Se suma un porcentaje del valor de los productos (sin diseño ni envío).</p>
+ <label class="toggle" style="border-style:solid"><input type="checkbox" id="agOn" ${S.agilOn!==false?'checked':''}><span><b>Ofrecer entrega ágil en el carrito</b></span></label>
+ <label for="agPct">Porcentaje adicional</label><input id="agPct" type="number" min="0" max="300" value="${S.agilPct??50}" style="max-width:140px"></div>
  <div class="box"><h2>Recogida y notas</h2>
  <label for="pk">Dirección para recoger</label><input id="pk" value="${esc(S.sched.pickup)}">
  <label for="ph">Horario de recogida</label><input id="ph" value="${esc(S.sched.hours)}">
@@ -895,6 +938,9 @@ document.addEventListener('change',e=>{
  if(t.dataset.ps){prod(t.dataset.ps).variants[+t.dataset.vi].per=Math.max(1,+t.value||1);save()}
  if(t.dataset.dp){prod(t.dataset.dp).design=+t.value||0;save()}
  if(t.id==='wd'){S.waitDays=Math.max(1,+t.value||10);save()}
+ if(t.id==='agOn'){S.agilOn=t.checked;save();toast(t.checked?'Entrega ágil activada':'Entrega ágil desactivada')}
+ if(t.id==='agPct'){S.agilPct=Math.max(0,+t.value||0);save();toast('Porcentaje guardado')}
+ if(t.id==='phx'){S.photoExtra=Math.max(0,+t.value||0);save();toast('Recargo guardado')}
  if(t.dataset.zn!=null){S.sched.zones[+t.dataset.zn].name=t.value.trim()||'Zona';save()}
  if(t.dataset.zp!=null){S.sched.zones[+t.dataset.zp].price=t.value===''?null:Math.max(0,+t.value);save()}
 });
@@ -925,7 +971,7 @@ document.addEventListener('click',e=>{
  if(t.dataset.zd!=null){S.sched.zones.splice(+t.dataset.zd,1);save();render()}
  if(t.id==='addZone'){S.sched.zones.push({name:'Nueva zona',price:null});save();render()}
  if(t.id==='saveSched'){S.sched.pickup=$('#pk').value;S.sched.hours=$('#ph').value;S.sched.delivery=$('#dl').value;S.sched.national=$('#na').value;save();toast('Guardado')}
- if(t.id==='saveFee'){const o=S.orders.find(x=>x.code===openOrder);const v=$('#ofee').value;if(v===''){o.fee=0;o.feePending=true}else{o.fee=Math.max(0,+v);o.feePending=false}o.total=(o.sub??o.items.reduce((s,i)=>s+i.price,0))+o.fee;save();render();orderDlg(o.code);toast('Valor del envío guardado')}
+ if(t.id==='saveFee'){const o=S.orders.find(x=>x.code===openOrder);const v=$('#ofee').value;if(v===''){o.fee=0;o.feePending=true}else{o.fee=Math.max(0,+v);o.feePending=false}o.total=(o.sub??o.items.reduce((s,i)=>s+i.price,0))+o.fee+(o.agilFee||0);save();render();orderDlg(o.code);toast('Valor del envío guardado')}
  if(t.id==='saveSet'){S.wa=$('#sw2').value.replace(/\D/g,'');S.ig=$('#sig').value.replace(/^@/,'').trim();if(!LIVE){S.pin=$('#sp').value||'1234';}const nq=LIVE?0:parseInt($('#sq').value);const used=Math.max(0,...S.orders.map(o=>+o.code.slice(3)||0));if(nq>used)S.seq=nq;else if(nq)toast('Ese número ya se usó; debe ser mayor a '+used);save();render();if(!(nq&&nq<=used))toast('Ajustes guardados')}
  if(t.id==='copyList'){const txt='Lista de compras – Impresos y Publicidad\n'+S.mats.filter(m=>m.stock!=null).map(m=>({m,s:matStats(m)})).filter(x=>x.s.sug).map(x=>`• ${x.m.name}: ${x.s.sug} ${munit(x.m)}`).join('\n');
   try{navigator.clipboard.writeText(txt).then(()=>toast('Lista copiada'),()=>toast('No se pudo copiar'))}catch(err){toast('No se pudo copiar')}}
@@ -956,15 +1002,18 @@ document.addEventListener('submit',e=>{
 $('#cartBtn').addEventListener('click',openCart);
 
 function render(){
- const h=location.hash.slice(1)||'catalogo';const view=['seguimiento','panel','terminos','privacidad','cuenta'].includes(h)?h:'catalogo';
- $('#app').innerHTML=view==='seguimiento'?viewTrack():view==='panel'?viewPanel():view==='cuenta'?viewAccount():view==='terminos'?viewLegal('terminos'):view==='privacidad'?viewLegal('privacidad'):viewCatalog();
- document.querySelectorAll('#nav a').forEach(a=>a.toggleAttribute('aria-current',a.getAttribute('href')==='#'+view));
+ const h=location.hash.slice(1)||'inicio';let view;
+ if(h.startsWith('cat-')&&CATS.some(c=>c[0]===h.slice(4))){cat=h.slice(4);view='catalogo'}else if(h==='catalogo'||h==='productos'){cat='todos';view='catalogo'}else view=['seguimiento','panel','terminos','privacidad','cuenta'].includes(h)?h:'inicio';
+ $('#app').innerHTML=view==='seguimiento'?viewTrack():view==='panel'?viewPanel():view==='cuenta'?viewAccount():view==='terminos'?viewLegal('terminos'):view==='privacidad'?viewLegal('privacidad'):view==='catalogo'?viewCatalog():viewHome();
+ document.querySelectorAll('#nav > a').forEach(a=>a.toggleAttribute('aria-current',a.getAttribute('href')==='#'+view));
+ $('#ddCats').innerHTML=[['todos','Ver todo'],...CATS].map(([k,n])=>`<a href="#${k==='todos'?'catalogo':'cat-'+k}"${view==='catalogo'&&cat===k?' aria-current="true"':''}>${n}</a>`).join('');
+ $('#navCat').classList.toggle('on',view==='catalogo');$('#navCuenta').textContent=cust?'Mi cuenta':'Iniciar sesión / Crear cuenta';
  $('#foot').innerHTML=`<div class="footgrid"><div><b>Impresos y Publicidad</b> · Medellín · Envíos a toda Colombia<br>WhatsApp <a href="${esc(waLink(S.wa,'¡Hola! Quiero información de impresos'))}" target="_blank" rel="noopener">${esc(S.wa.replace(/^57/,''))}</a> · Instagram <a href="https://instagram.com/${encodeURIComponent(S.ig)}" target="_blank" rel="noopener">@${esc(S.ig)}</a></div>
   <nav class="footlinks" aria-label="Información legal"><a href="#terminos">Términos y condiciones</a><a href="#privacidad">Política de privacidad</a><a href="#seguimiento">Mi pedido</a></nav></div>
   <p class="copy">© ${new Date().getFullYear()} Impresos y Publicidad · Medellín, Colombia. Todos los derechos reservados. Las fotos, textos, diseños y el logo de esta página son propiedad de Impresos y Publicidad y no pueden usarse sin autorización.</p>`;
  if(h==='productos')document.getElementById('productos')?.scrollIntoView();
 }
-window.addEventListener('hashchange',()=>{close();render();if(location.hash!=='#productos')scrollTo(0,0)});
+window.addEventListener('hashchange',()=>{close();$('#navCat').open=false;render();if(location.hash!=='#productos')scrollTo(0,0)});
 saveCart();render();
 if(LIVE){loadPublic().then(()=>sb.auth.getSession()).then(({data})=>{if(data.session)enterAdmin(true).then(ok=>{if(!ok)loadCustomer()})});
  sb.auth.onAuthStateChange(ev=>{if(ev==='PASSWORD_RECOVERY')setTimeout(()=>open(`<div class="dlghead"><h2>Nueva contraseña</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div><form id="newPass"><label for="np1">Escribe tu nueva contraseña</label><input id="np1" type="password" minlength="6" required autocomplete="new-password"><button class="btn pri" style="width:100%;margin-top:14px">Guardar contraseña</button></form>`),300)});setInterval(()=>{if(admin&&!document.hidden)refreshOrders()},60000)}
