@@ -164,6 +164,7 @@ a.chip{text-decoration:none;color:var(--ink)}
 .toggle.agil{border:2px solid var(--c2);background:#fff}
 [hidden]{display:none!important}
 /* v3 */
+.notice.okstock{background:#fff;border:2px solid var(--c1)}
 .sharerow{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 12px}
 .links summary{cursor:pointer}.linkrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.linkrow>div{display:flex;flex-direction:column;min-width:0}.linkrow .small{overflow-wrap:anywhere}.linkrow .acts{flex:none;display:flex;gap:6px}
 .npbox{background:var(--c3);margin:8px 0 10px}.npuse{background:#fff;border-radius:12px;padding:10px 12px;margin:12px 0 0}.npuse .warn{color:var(--c1d);font-weight:700}
@@ -274,7 +275,7 @@ const SWATCH={none:'linear-gradient(135deg,#fff,#eee)',mate:'linear-gradient(135
 const CATS=[['tarjetas','Tarjetas'],['detalles','Detalles para tus clientes'],['stickers','Stickers y etiquetas'],['papeleria','Papelería'],['publicidad','Publicidad']];
 const L=(id,name)=>({id,name});
 const DEF={
- seq:1001,owner:{name:'María José',photo:''},support:[],custs:[],photoExtra:15000,agilPct:50,agilOn:true,wa:'573054435259',ig:'impresosypublicidadmedellin',pin:'1234',waitDays:10,
+ seq:1001,owner:{name:'María José',photo:''},support:[],custs:[],photoExtra:15000,agilPct:50,agilOn:true,wa:'573054435259',ig:'impresosypublicidadmedellin',pin:'1234',waitDays:10,stockMsg:true,
  mats:[
   ...[['corazon','corazón'],['lentejuelas','lentejuelas'],['galaxia','galaxia'],['vidrio','vidrio'],['lluvia','lluvia'],['arcoiris','arcoíris'],['flores','flores'],['mariposas','mariposas'],['estrellas','estrellas'],['polvora','pólvora']].map(([k,n])=>({id:'holo-'+k,name:'Holográfico '+n,short:n[0].toUpperCase()+n.slice(1),group:'holo',kind:'laminado',stock:{corazon:15,lentejuelas:32,galaxia:32,vidrio:14,lluvia:32,arcoiris:13,flores:32,mariposas:32,estrellas:32,polvora:0}[k],min:8,cost:0,sw:'holo',img:k+'.jpg'})),
   {id:'glitter',name:'Laminado glitter',kind:'laminado',stock:null,min:8,cost:0,sw:'glitter',img:'l-glitter.jpg'},
@@ -372,6 +373,7 @@ const dueOf=o=>Math.max(0,o.total-paidOf(o));
 const payState=o=>{const p=paidOf(o);return p>=o.total&&o.total>0?'pagado':p>0?'abono':'pendiente'};
 const PAYN={pendiente:'Sin pagar',abono:'Abono',pagado:'Pagado'};
 function migrate(){
+ if(S.stockMsg==null)S.stockMsg=true;
  if(!S.owner)S.owner={name:'María José',photo:''};if(!Array.isArray(S.support))S.support=[];if(!Array.isArray(S.custs))S.custs=[];
  if(S.photoExtra==null)S.photoExtra=15000;if(S.agilPct==null)S.agilPct=50;if(S.agilOn==null)S.agilOn=true;
  if(!S.mats.some(m=>m.id==='foto120')){const i=S.mats.findIndex(m=>m.id==='foto135');const m={id:'foto120',name:'Papel fotográfico 120 g',short:'Fotográfico 120 g',kind:'papel',min:10,cost:0,sw:'papel'};if(admin||!LIVE)m.stock=null;S.mats.splice(i<0?S.mats.length:i,0,m)}
@@ -380,7 +382,7 @@ function migrate(){
 const save=()=>{if(LIVE){if(admin)queueSync();return true}try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){toast('No hay espacio para guardar más fotos en este dispositivo');return false}};
 /* ---------- sincronización con Supabase ---------- */
 const pubMat=({stock,min,cost,...m})=>m;
-const cfgData=()=>({products:S.products,sched:S.sched,page:S.page,wa:S.wa,ig:S.ig,waitDays:S.waitDays,photoExtra:S.photoExtra,agilPct:S.agilPct,agilOn:S.agilOn,owner:S.owner,mats:S.mats.map(pubMat)});
+const cfgData=()=>({products:S.products,sched:S.sched,page:S.page,wa:S.wa,ig:S.ig,waitDays:S.waitDays,stockMsg:S.stockMsg,photoExtra:S.photoExtra,agilPct:S.agilPct,agilOn:S.agilOn,owner:S.owner,mats:S.mats.map(pubMat)});
 const snap={cfg:'',mats:{},orders:{}};let syncT=null,syncing=false;
 function queueSync(){clearTimeout(syncT);syncT=setTimeout(syncNow,500)}
 async function syncNow(){if(!LIVE||!admin)return;if(syncing){queueSync();return}syncing=true;
@@ -394,12 +396,13 @@ async function syncNow(){if(!LIVE||!admin)return;if(syncing){queueSync();return}
  syncing=false}
 async function loadPublic(){if(!LIVE)return;
  const{data,error}=await sb.from('config').select('data').eq('id',1).maybeSingle();
- if(admin)return;if(!error&&data&&data.data){const d=data.data;['products','sched','page','wa','ig','waitDays','photoExtra','agilPct','agilOn','owner'].forEach(k=>{if(d[k]!=null)S[k]=d[k]});if(Array.isArray(d.mats))S.mats=d.mats}migrate();
+ if(admin)return;if(!error&&data&&data.data){const d=data.data;['products','sched','page','wa','ig','waitDays','stockMsg','photoExtra','agilPct','agilOn','owner'].forEach(k=>{if(d[k]!=null)S[k]=d[k]});if(Array.isArray(d.mats))S.mats=d.mats}migrate();
+ if(S.stockMsg!==false){const st=await sb.rpc('public_stock');if(!admin&&!st.error&&st.data&&typeof st.data==='object')S.mats.forEach(m=>{const n=st.data[m.id];if(Number.isFinite(n))m.stock=n})}
  render()}
 async function loadAdmin(){
  const[cfg,ms,os,mv]=await Promise.all([sb.from('config').select('data').eq('id',1).maybeSingle(),sb.from('materials').select('id,data'),sb.from('orders').select('code,data,user_id').order('created_at',{ascending:false}).limit(500),sb.from('moves').select('t,m,d,r,c').order('t',{ascending:false}).limit(400)]);
  if(ms.error||os.error)throw ms.error||os.error;
- if(cfg.data&&cfg.data.data){const d=cfg.data.data;['products','sched','page','wa','ig','waitDays','photoExtra','agilPct','agilOn','owner'].forEach(k=>{if(d[k]!=null)S[k]=d[k]})}
+ if(cfg.data&&cfg.data.data){const d=cfg.data.data;['products','sched','page','wa','ig','waitDays','stockMsg','photoExtra','agilPct','agilOn','owner'].forEach(k=>{if(d[k]!=null)S[k]=d[k]})}
  if(ms.data.length){const byId=Object.fromEntries(ms.data.map(x=>[x.id,x.data]));const pub=cfg.data?.data?.mats||S.mats;S.mats=pub.map(m=>byId[m.id]?{...m,...byId[m.id]}:m);ms.data.forEach(x=>{if(!S.mats.some(m=>m.id===x.id))S.mats.push(x.data)})}
  S.orders=os.data.map(x=>({...x.data,uid:x.user_id||undefined}));loadCrm();S.moves=(mv.data||[]).map(x=>({t:+new Date(x.t),m:x.m,d:x.d,r:x.r,c:x.c||undefined,s:1}));
  snap.cfg=cfg.data?JSON.stringify(cfg.data.data):'';ms.data.forEach(x=>snap.mats[x.id]=JSON.stringify(x.data));S.orders.forEach(o=>snap.orders[o.code]=JSON.stringify(o));
@@ -439,7 +442,7 @@ function avail(p,v,skip,h,back,paper){let units=Infinity,lim=null;for(const [mid
 function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2600)}
 let cfg=null;
 function open(html,wide){$('#dlg').classList.toggle('wide',!!wide);$('#dlg').innerHTML=html;$('#ov').classList.add('on');document.body.style.overflow='hidden'}
-function close(){$('#ov').classList.remove('on');document.body.style.overflow='';cfg=null;if(/^#p-/.test(location.hash)){const p=prod(location.hash.slice(3));history.replaceState(null,'',p?'#cat-'+p.cat:'#catalogo')}}
+function close(){const was=$('#ov').classList.contains('on')&&cfg&&location.hash==='#p-'+cfg.pid;$('#ov').classList.remove('on');document.body.style.overflow='';cfg=null;if(was){const p=prod(location.hash.slice(3));history.replaceState(null,'',p?'#cat-'+p.cat:'#catalogo')}}
 const SITE=/^https?:$/.test(location.protocol)&&!/claude|usercontent|localhost/.test(location.host)?location.origin+location.pathname:'https://impresosypublicidad.com/';
 const prodUrl=p=>SITE+'#p-'+p.id;
 const catUrl=k=>SITE+(k==='todos'?'#catalogo':'#cat-'+k);
@@ -563,7 +566,7 @@ function designRow(p){
 function renderCfg(){
  const p=prod(cfg.pid);const v=variant(p,cfg.vid);
  const {units,lim}=avail(p,v,cfg.edit,cfg.holo,cfg.back,cfg.paper);
- const short=false; // la clienta siempre ve todo disponible; el faltante se controla en el panel
+ const short=S.stockMsg!==false&&p.track!==false&&!!lim&&units<cfg.qty; // aviso amable: nunca dice que no hay
  const pq=!short?0:v.unit?units:Math.max(0,...v.tiers.map(x=>x[0]).filter(q=>q<=units&&q<cfg.qty));
  if(!short)cfg.mode='normal';else if(cfg.mode==='normal'||(cfg.mode==='parcial'&&pq<=0))cfg.mode='';
  const qtyFinal=cfg.mode==='parcial'?pq:cfg.qty;
@@ -571,9 +574,10 @@ function renderCfg(){
  const dz=cfg.design&&typeof p.design==='number'?p.design:0;const ppx=p.paperChoice&&cfg.paper==='foto280'?(S.photoExtra||0):0;const bkp=((p.backs||[]).find(x=>x.id===cfg.back)||{}).price||0;
  const total=(qtyFinal>0?priceFor(v,qtyFinal):0)+ex+dz+bkp+ppx;
  let notice='';
- if(short)notice=`<div class="notice">${pq>0?`<strong>¡Podemos entregarte ${pq} ${esc(p.unit)} de inmediato!</strong><br>Para ${cfg.qty} ${esc(p.unit)}, el tiempo de producción es de máximo ${S.waitDays} días hábiles. ¿Qué prefieres?`:`<strong>Este acabado lo producimos especialmente para ti.</strong><br>El tiempo de producción es de máximo ${S.waitDays} días hábiles.`}${p.variants.length>1||p.backs||v.lams.includes('holo')?'<br><span class="small">También puedes escoger otro acabado y revisar su tiempo de entrega.</span>':''}
-  <div class="choice"><button class="chip" type="button" aria-pressed="${cfg.mode==='espera'}" data-mode="espera"><span>${pq>0?`Prefiero esperar y llevar ${cfg.qty}`:`Sí, quiero ${cfg.qty}`}</span><span class="price">${fmt(priceFor(v,cfg.qty))}</span></button>
-  ${pq>0?`<button class="chip" type="button" aria-pressed="${cfg.mode==='parcial'}" data-mode="parcial"><span>Me llevo ${pq} de entrega inmediata</span><span class="price">${fmt(priceFor(v,pq))}</span></button>`:''}</div></div>`;
+ if(short){const what=lim.kind==='papel'?'papel':'laminado';const un=esc(p.unit);
+  notice=`<div class="notice okstock">${pq>0?`<strong>Actualmente tenemos ${what} para ${pq.toLocaleString('es-CO')} ${un}.</strong><br>Puedes llevarte ${pq.toLocaleString('es-CO')} ${un} de una vez, o esperar tus ${cfg.qty.toLocaleString('es-CO')} ${un} con un tiempo de producción de máximo ${S.waitDays} días hábiles. ¿Qué prefieres?`:`<strong>Tus ${cfg.qty.toLocaleString('es-CO')} ${un} las preparamos especialmente para ti.</strong><br>El tiempo de producción es de máximo ${S.waitDays} días hábiles.`}
+  <div class="choice">${pq>0?`<button class="chip" type="button" aria-pressed="${cfg.mode==='parcial'}" data-mode="parcial"><span>Me llevo ${pq.toLocaleString('es-CO')} ${un} de una vez</span><span class="price">${fmt(priceFor(v,pq))}</span></button>`:''}
+  <button class="chip" type="button" aria-pressed="${cfg.mode==='espera'}" data-mode="espera"><span>${pq>0?`Espero mis ${cfg.qty.toLocaleString('es-CO')} ${un} (máx. ${S.waitDays} días hábiles)`:`Sí, quiero mis ${cfg.qty.toLocaleString('es-CO')} ${un}`}</span><span class="price">${fmt(priceFor(v,cfg.qty))}</span></button></div></div>`}
  const qtyUI=v.unit?`<div class="qtyrow"><button class="btn alt sm" type="button" data-q="-1" aria-label="Menos">−</button><input id="qn" type="number" min="1" value="${cfg.qty}" inputmode="numeric" aria-label="Cantidad"><button class="btn alt sm" type="button" data-q="1" aria-label="Más">+</button><span class="muted small">${fmt(v.unit)} c/u</span></div>`
   :`<div class="chips">${v.tiers.map(([q,pr])=>`<button class="chip" type="button" data-qty="${q}" aria-pressed="${cfg.qty===q}">${q.toLocaleString('es-CO')} <span class="muted small price">${fmt(pr)}</span></button>`).join('')}</div>`;
  open(`<div class="cfggrid"><figure class="cfgimg"><img src="${esc(pimg(p))}" alt="${esc(p.name)}"></figure><div class="cfgbody"><div class="dlghead"><div><h2>${esc(p.name)}</h2><p class="muted small" style="margin:0">${esc(p.desc)}</p></div><button class="x" type="button" data-close aria-label="Cerrar">×</button></div><div class="sharerow"><button class="btn alt sm" type="button" data-plink="${esc(p.id)}">Copiar enlace</button><a class="btn alt sm" href="${esc(shareWa(shareTxt(p)))}" target="_blank" rel="noopener">Compartir por WhatsApp</a></div>
@@ -613,7 +617,7 @@ $('#dlg').addEventListener('click',e=>{
   const hasHolo=v.lams.includes('holo');const use=Object.entries(needsOf(p,v,cfg.holo,cfg.back,cfg.paper)).map(([mid,k])=>({m:mid,need:need*k,got:Math.min(need*k,freeSheets(mid,cfg.edit))}));
   const bk=(p.backs||[]).find(x=>x.id===cfg.back);const req=Object.entries(needsOf(p,v,cfg.holo,cfg.back,cfg.paper,true)).map(([mid,k])=>({m:mid,need:need*k}));
   const exNames=(p.extras||[]).filter(x=>cfg.extras.includes(x.id)).map(x=>x.name);
-  const item={designAmt:cfg.design&&typeof p.design==='number'?p.design:0,pid:p.id,vid:v.id,paper:p.paperChoice?cfg.paper:'',paperName:p.paperChoice?mat(cfg.paper)?.short||'':'',back:cfg.back||'',backName:bk?(p.backLabel||'Reverso')+': '+bk.name:'',holo:hasHolo?cfg.holo:'',holoName:hasHolo?mat(cfg.holo).name:'',name:p.name,vname:p.variants.length>1?v.name:'',unit:p.unit,qty:cfg.qty,qtyFinal:cfg._qty,choices:{...cfg.choices},extras:[...cfg.extras],exNames,design:cfg.design,designTxt:cfg.design?(p.design==='cotiza'?'diseño (se cotiza)':'con diseño'):(p.design==='incl'?'diseño incluido':''),mode:'normal',notes:$('#nt').value.trim(),price:cfg._total,use,req,wait:false};
+  const item={designAmt:cfg.design&&typeof p.design==='number'?p.design:0,pid:p.id,vid:v.id,paper:p.paperChoice?cfg.paper:'',paperName:p.paperChoice?mat(cfg.paper)?.short||'':'',back:cfg.back||'',backName:bk?(p.backLabel||'Reverso')+': '+bk.name:'',holo:hasHolo?cfg.holo:'',holoName:hasHolo?mat(cfg.holo).name:'',name:p.name,vname:p.variants.length>1?v.name:'',unit:p.unit,qty:cfg.qty,qtyFinal:cfg._qty,choices:{...cfg.choices},extras:[...cfg.extras],exNames,design:cfg.design,designTxt:cfg.design?(p.design==='cotiza'?'diseño (se cotiza)':'con diseño'):(p.design==='incl'?'diseño incluido':''),mode:cfg.mode==='parcial'||cfg.mode==='espera'?cfg.mode:'normal',notes:$('#nt').value.trim(),price:cfg._total,use,req,wait:cfg.mode==='espera'};
   const ed=cfg.edit;if(ed!=null)cart[ed]=item;else cart.push(item);
   saveCart();close();toast('Agregado al carrito');
  }
@@ -982,6 +986,7 @@ document.addEventListener('change',e=>{const id=e.target.id||'';
  if(id==='nCust'){const c=(S.custs||[]).find(x=>x.id===e.target.value);if(!c)return;$('#noName').value=c.name||'';$('#noWa').value=c.wa||'';
   ['city','barrio','addr','ref','unidad','torre','apto'].forEach(k=>{const el=$('#no'+k);if(el)el.value=c[k]||''});$('#nounit').checked=!!c.unit;$('#nounitBox').hidden=!c.unit;
   const zi=S.sched.zones.findIndex(z=>z.name===c.zone);if(zi>=0)$('#noZone').value=zi;zoneFee()}});
+document.addEventListener('change',e=>{const id=e.target.id;if(id==='smOn'){S.stockMsg=e.target.checked;save();render();toast(S.stockMsg?'Aviso a clientas activado':'Aviso apagado: todo sale disponible')}if(id==='wdx'){S.waitDays=Math.min(60,Math.max(1,Math.round(+e.target.value)||10));save();render();toast('Días de espera guardados')}});
 document.addEventListener('submit',e=>{if(e.target.id!=='npOrder')return;e.preventDefault();npSave()});
 
 /* ---------- soporte ---------- */
@@ -1104,6 +1109,7 @@ function panelMat(){
  const df=new Intl.DateTimeFormat('es-CO',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
  const G=[['ya','🔔 Comprar ya'],['pronto','Comprar pronto'],['bien','Inventario bien']];
  return `${cnt('ya')?`<div class="notice"><strong>Tienes ${cnt('ya')} material${cnt('ya')>1?'es':''} para comprar ya.</strong> Cuando surtas, toca "Ya compré" y quedará como inventario completado.</div>`:'<div class="okmsg">Todo tu inventario está al día. 💖</div>'}
+ <div class="box"><label class="toggle" style="border-style:solid;margin:0"><input type="checkbox" id="smOn" ${S.stockMsg!==false?'checked':''}><span><b>Avisar a la clienta cuando no alcance el material</b><br><span class="small muted">Le sale, por ejemplo: "Actualmente tenemos laminado para 50 tarjetas. Puedes llevarte 50 de una vez, o esperar tus 100 con un tiempo de producción de máximo ${S.waitDays} días hábiles". Nunca le dice que no hay. Si lo apagas, todo le sale disponible.</span></span></label><div class="calcrow" style="margin-top:10px"><label for="wdx">Días hábiles de espera</label><input id="wdx" type="number" min="1" max="60" value="${S.waitDays}" style="width:90px"></div></div>
  <div class="panelgrid"><div class="kpi"><span class="small muted">Comprar ya</span><b>${cnt('ya')}</b></div><div class="kpi"><span class="small muted">Comprar pronto</span><b>${cnt('pronto')}</b></div><div class="kpi"><span class="small muted">Inventario bien</span><b>${cnt('bien')}</b></div><div class="kpi"><span class="small muted">Costo aprox. de la compra</span><b class="price" style="font-size:22px">${cost?fmt(cost):'—'}</b></div></div>
  <div class="box calc"><h3 style="margin:0">Calculadora rápida</h3><div class="calcrow"><label for="calcQ">¿Cuántas tarjetas te pidieron?</label><input id="calcQ" type="number" min="1" value="100" inputmode="numeric"><span>=</span><b id="calcR">13 hojas</b></div><p class="small muted" style="margin:6px 0 0">Salen 8 tarjetas por hoja. Necesitas esas hojas de papel y de cada laminado; si el reverso lleva el mismo laminado, el doble de ese laminado.</p></div>
  <div class="chips" style="margin-bottom:12px">${[['todos','Todos'],['comprar','Por comprar'],['laminado','Laminados'],['papel','Papeles']].map(([k,n])=>`<button class="chip" type="button" data-mfilt="${k}" aria-pressed="${mfilt===k}">${n}</button>`).join('')}
